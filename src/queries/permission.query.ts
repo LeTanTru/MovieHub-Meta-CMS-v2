@@ -1,38 +1,55 @@
-'use client';
-
-import { permissionApiRequest } from '@/api-requests';
+import { apiConfig } from '@/constants';
 import { logger } from '@/logger';
-import { PermissionBodyType, PermissionSearchType } from '@/types';
-import { notify } from '@/utils';
+import {
+  ApiResponse,
+  ApiResponseList,
+  PermissionBodyType,
+  PermissionResType,
+  PermissionSearchType
+} from '@/types';
+import { http, notify } from '@/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const usePermissionListQuery = (params?: PermissionSearchType) => {
   return useQuery({
     queryKey: ['permission-list', params],
-    queryFn: () => permissionApiRequest.getList(params)
+    queryFn: () =>
+      http.get<ApiResponseList<PermissionResType>>(
+        apiConfig.permission.getList,
+        {
+          params
+        }
+      )
   });
 };
 
 // export const usePermissionQuery = (id: string) => {
 //   return useQuery({
 //     queryKey: ['permission', id],
-//     queryFn: () => permissionApiRequest.getById(id)
+//     queryFn: () =>
+//       http.get<ApiResponse<PermissionResType>>(apiConfig.permission.getById, {
+//         pathParams: { id }
+//       })
 //   });
 // };
 
 export const useCreatePermissionMutation = () => {
   return useMutation({
     mutationKey: ['permission-create'],
-    mutationFn: async (body: Omit<PermissionBodyType, 'id'>) =>
-      await permissionApiRequest.create(body)
+    mutationFn: (body: Omit<PermissionBodyType, 'id'>) =>
+      http.post<ApiResponse<any>>(apiConfig.permission.create, {
+        body
+      })
   });
 };
 
 export const useUpdatePermissionMutation = () => {
   return useMutation({
     mutationKey: ['permission-update'],
-    mutationFn: async (body: PermissionBodyType) =>
-      await permissionApiRequest.update(body)
+    mutationFn: (body: PermissionBodyType) =>
+      http.put<ApiResponse<any>>(apiConfig.permission.update, {
+        body
+      })
   });
 };
 
@@ -40,7 +57,12 @@ export const useDeletePermissionMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['permission-delete'],
-    mutationFn: async (id: string) => await permissionApiRequest.delete(id),
+    mutationFn: (id: string) =>
+      http.delete<ApiResponse<any>>(apiConfig.permission.delete, {
+        pathParams: {
+          id
+        }
+      }),
     onSuccess: (res) => {
       if (res.result) {
         queryClient.invalidateQueries({

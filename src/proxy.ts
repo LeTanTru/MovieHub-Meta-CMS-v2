@@ -1,5 +1,4 @@
 import { storageKeys } from '@/constants';
-import route from '@/routes';
 import { NextRequest, NextResponse } from 'next/server';
 
 const publicPaths = ['/login'];

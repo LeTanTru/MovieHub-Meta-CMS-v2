@@ -30,7 +30,7 @@ import {
   usePermissionListQuery,
   useUpdateGroupMutation
 } from '@/queries';
-import route from '@/routes';
+import { route } from '@/routes';
 import { groupSchema } from '@/schemaValidations';
 import { GroupBodyType, PermissionResType } from '@/types';
 import { applyFormErrors, notify } from '@/utils';

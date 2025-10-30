@@ -1,27 +1,43 @@
-import { fileApiRequest } from '@/api-requests';
+import { apiConfig, uploadOptions } from '@/constants';
+import { ApiResponse, UploadImageResponseType } from '@/types';
+import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosRequestConfig } from 'axios';
 
 export const useUploadAvatar = () => {
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       file,
       options
     }: {
       file: Blob;
       options?: AxiosRequestConfig;
-    }) => await fileApiRequest.uploadAvatar(file, options)
+    }) =>
+      http.post<ApiResponse<UploadImageResponseType>>(apiConfig.file.upload, {
+        body: {
+          file: file,
+          type: uploadOptions.AVATAR
+        },
+        options
+      })
   });
 };
 
 export const useUploadLogo = () => {
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       file,
       options
     }: {
       file: Blob;
       options?: AxiosRequestConfig;
-    }) => await fileApiRequest.uploadLogo(file, options)
+    }) =>
+      http.post<ApiResponse<UploadImageResponseType>>(apiConfig.file.upload, {
+        body: {
+          file: file,
+          type: uploadOptions.LOGO
+        },
+        options
+      })
   });
 };

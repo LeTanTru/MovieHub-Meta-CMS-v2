@@ -19,7 +19,7 @@ import {
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { useGroupListQuery, useUploadAvatar } from '@/queries';
-import route from '@/routes';
+import { route } from '@/routes';
 import { accountSchema } from '@/schemaValidations';
 import { AccountBodyType, AccountResType } from '@/types';
 import { renderImageUrl } from '@/utils';
@@ -72,7 +72,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       status: data?.status ?? STATUS_ACTIVE,
       confirmPassword: ''
     };
-  }, [data?.avatarPath, data?.email, data?.fullName, groupList]);
+  }, [data, groupList]);
 
   useEffect(() => {
     if (data?.avatarPath) setAvatarPath(data?.avatarPath);

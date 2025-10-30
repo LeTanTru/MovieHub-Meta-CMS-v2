@@ -13,7 +13,7 @@ import { storageKeys } from '@/constants';
 import { useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import { useUpdateProfileMutation, useUploadAvatar } from '@/queries';
-import route from '@/routes';
+import { route } from '@/routes';
 import { updateProfileSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
 import { ProfileBodyType } from '@/types';

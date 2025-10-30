@@ -1,8 +1,7 @@
 'use client';
 
 import { AvatarField } from '@/components/form';
-import { PageWrapper } from '@/components/layout';
-import ListPageWrapper from '@/components/layout/list-page-wrapper';
+import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
   apiConfig,
@@ -23,7 +22,7 @@ import { renderImageUrl } from '@/utils';
 import { CircleUserRound } from 'lucide-react';
 
 export default function AdminList({ queryKey }: { queryKey: string }) {
-  const { data, pagination, loading, handlers, listQuery } = useListBase<
+  const { data, pagination, loading, handlers } = useListBase<
     AccountAutoResType,
     AccountSearchType
   >({
@@ -35,7 +34,8 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
     options: {
       queryKey,
       objectName: 'tài khoản',
-      defaultFilters: { kind: GROUP_KIND_ADMIN }
+      defaultFilters: { kind: GROUP_KIND_ADMIN },
+      notShowFromSearchParams: ['kind']
     }
   });
 

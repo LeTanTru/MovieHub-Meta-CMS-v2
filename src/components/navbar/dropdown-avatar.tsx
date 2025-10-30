@@ -1,10 +1,11 @@
 'use client';
+
 import { AvatarField } from '@/components/form';
 import List from '@/components/list';
 import ListItem from '@/components/list/list-item';
 import { storageKeys } from '@/constants';
 import { useNavigate, useQueryParams } from '@/hooks';
-import route from '@/routes';
+import { route } from '@/routes';
 import { useAuthStore } from '@/store';
 import { getData, renderImageUrl, setData } from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';

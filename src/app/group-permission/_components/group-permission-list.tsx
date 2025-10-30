@@ -3,7 +3,7 @@
 import { Button, Col, InputField, Row, ToolTip } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { HasPermission } from '@/components/has-permission';
-import ListPageWrapper from '@/components/layout/list-page-wrapper';
+import { ListPageWrapper } from '@/components/layout';
 import { Modal } from '@/components/modal';
 import { BaseTable } from '@/components/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

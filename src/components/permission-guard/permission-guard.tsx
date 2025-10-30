@@ -1,5 +1,5 @@
 'use client';
-import route from '@/routes';
+
 import { useAuth, useFirstActiveRoute, useNavigate } from '@/hooks';
 import { usePathname } from 'next/navigation';
 import { getAccessTokenFromLocalStorage, validatePermission } from '@/utils';
@@ -8,6 +8,7 @@ import { Unauthorized } from '@/components/unauthorized';
 import { motion } from 'framer-motion';
 import { Loader } from 'lucide-react';
 import { useAuthStore } from '@/store';
+import { route } from '@/routes';
 
 export default function PermissionGuard({
   children

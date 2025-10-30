@@ -1,12 +1,14 @@
-import { accountApiRequest } from '@/api-requests';
+import { apiConfig } from '@/constants';
 import { useAuthStore } from '@/store';
-import { ProfileBodyType } from '@/types';
+import { ApiResponse, ProfileBodyType, ProfileResType } from '@/types';
+import { http } from '@/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useProfileQuery = (enabled: boolean = false) => {
   return useQuery({
     queryKey: ['profile'],
-    queryFn: async () => await accountApiRequest.getProfile(),
+    queryFn: () =>
+      http.get<ApiResponse<ProfileResType>>(apiConfig.account.getProfile),
     enabled: enabled
   });
 };
@@ -14,10 +16,14 @@ export const useProfileQuery = (enabled: boolean = false) => {
 export const useUpdateProfileMutation = () => {
   return useMutation({
     mutationKey: ['update-profile'],
-    mutationFn: async (body: ProfileBodyType) =>
-      await accountApiRequest.updateProfile(body),
+    mutationFn: (body: ProfileBodyType) =>
+      http.put<ApiResponse<any>>(apiConfig.account.updateAdmin, {
+        body
+      }),
     onSuccess: async () => {
-      const res = await accountApiRequest.getProfile();
+      const res = await http.get<ApiResponse<ProfileResType>>(
+        apiConfig.account.getProfile
+      );
       useAuthStore.getState().setProfile(res.data!);
     }
   });
