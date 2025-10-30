@@ -10,11 +10,11 @@ import {
   STATUS_LOCK,
   STATUS_PENDING,
   UPLOAD_AVATAR,
-  UPLOAD_SYSTEM
+  UPLOAD_LOGO
 } from '@/constants/constant';
 
 export const uploadOptions = {
-  SYSTEM: UPLOAD_SYSTEM,
+  LOGO: UPLOAD_LOGO,
   AVATAR: UPLOAD_AVATAR
 };
 
@@ -85,5 +85,6 @@ export const genderOptions: OptionType[] = [
 export const queryKeys = {
   ACCOUNT: 'account',
   GROUP: 'group',
+  CUSTOMER: 'customer',
   GROUP_PERMISSION: 'group-permission'
 };

@@ -53,7 +53,7 @@ export default function InputField<T extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormItem
           className={cn(
-            { 'cursor-not-allowed opacity-50': disabled },
+            { 'cursor-not-allowed select-none': disabled },
             formItemClassName
           )}
         >
@@ -82,7 +82,7 @@ export default function InputField<T extends FieldValues>({
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,
-                    'cursor-not-allowed opacity-50': disabled,
+                    'cursor-not-allowed': disabled,
                     'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
                       fieldState.error
                   },

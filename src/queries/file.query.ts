@@ -14,7 +14,7 @@ export const useUploadAvatar = () => {
   });
 };
 
-export const useUploadImageProduct = () => {
+export const useUploadLogo = () => {
   return useMutation({
     mutationFn: async ({
       file,
@@ -22,6 +22,6 @@ export const useUploadImageProduct = () => {
     }: {
       file: Blob;
       options?: AxiosRequestConfig;
-    }) => await fileApiRequest.uploadProductImage(file, options)
+    }) => await fileApiRequest.uploadLogo(file, options)
   });
 };

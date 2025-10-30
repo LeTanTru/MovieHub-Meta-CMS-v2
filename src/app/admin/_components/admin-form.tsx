@@ -2,7 +2,6 @@
 
 import {
   Col,
-  DatePickerField,
   InputField,
   Row,
   SelectField,
@@ -12,7 +11,12 @@ import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { apiConfig, GROUP_KIND_EMPLOYEE } from '@/constants';
+import {
+  apiConfig,
+  GROUP_KIND_ADMIN,
+  STATUS_ACTIVE,
+  statusOptions
+} from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { useGroupListQuery, useUploadAvatar } from '@/queries';
 import route from '@/routes';
@@ -21,15 +25,15 @@ import { AccountBodyType, AccountResType } from '@/types';
 import { renderImageUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
 
-export default function EmployeeForm({ queryKey }: { queryKey: string }) {
+export default function AdminForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
-  const groupListQuery = useGroupListQuery();
+  const groupListQuery = useGroupListQuery({ kind: GROUP_KIND_ADMIN });
   const groupList = groupListQuery.data?.data.content || [];
   const groupOptions = groupList.map((item) => ({
     label: item.name,
     value: item.id
   }));
-  const { data, loading, handleSubmit, renderActions } = useSaveBase<
+  const { data, loading, isEditing, handleSubmit, renderActions } = useSaveBase<
     AccountResType,
     AccountBodyType
   >({
@@ -41,31 +45,34 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
     options: {
       queryKey,
       objectName: 'tài khoản nhân viên',
-      listPageUrl: route.account.getList.path
+      listPageUrl: route.admin.getList.path
     }
   });
   const uploadImageMutation = useUploadAvatar();
 
   const defaultValues: AccountBodyType = {
+    username: '',
     email: '',
     fullName: '',
     groupId: '',
     password: '',
-    phone: '',
-    avatarPath: ''
+    avatarPath: '',
+    status: 0,
+    confirmPassword: ''
   };
 
   const initialValues: AccountBodyType = useMemo(() => {
     return {
+      username: data?.username ?? '',
       email: data?.email ?? '',
       fullName: data?.fullName ?? '',
-      groupId:
-        groupList.find((group) => group.kind === GROUP_KIND_EMPLOYEE)?.id ?? '',
+      groupId: data?.group?.id ?? '',
       password: '',
-      phone: data?.phone ?? '',
-      avatarPath: data?.avatarPath ?? ''
+      avatarPath: data?.avatarPath ?? '',
+      status: data?.status ?? STATUS_ACTIVE,
+      confirmPassword: ''
     };
-  }, [data?.avatarPath, data?.email, data?.fullName, data?.phone, groupList]);
+  }, [data?.avatarPath, data?.email, data?.fullName, groupList]);
 
   useEffect(() => {
     if (data?.avatarPath) setAvatarPath(data?.avatarPath);
@@ -78,8 +85,8 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Tài khoản', href: route.account.getList.path },
-        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} nhân viên` }
+        { label: 'Quản trị viên', href: route.admin.getList.path },
+        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} quản trị viên` }
       ]}
     >
       <BaseForm
@@ -87,7 +94,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={accountSchema}
         initialValues={initialValues}
-        className='w-250'
+        className='w-200'
       >
         {(form) => (
           <>
@@ -114,18 +121,19 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
               <Col span={12}>
                 <InputField
                   control={form.control}
-                  name='fullName'
-                  label='Họ tên nhân viên'
-                  placeholder='Họ tên nhân viên'
+                  name='username'
+                  label='Tên đăng nhập'
+                  placeholder='Tên đăng nhập'
                   required
+                  disabled={isEditing}
                 />
               </Col>
               <Col span={12}>
                 <InputField
                   control={form.control}
-                  name='email'
-                  label='Email'
-                  placeholder='Email'
+                  name='fullName'
+                  label='Họ tên nhân viên'
+                  placeholder='Họ tên nhân viên'
                   required
                 />
               </Col>
@@ -134,9 +142,9 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
               <Col span={12}>
                 <InputField
                   control={form.control}
-                  name='phone'
-                  label='Số điện thoại'
-                  placeholder='Số điện thoại'
+                  name='email'
+                  label='Email'
+                  placeholder='Email'
                   required
                 />
               </Col>
@@ -152,6 +160,15 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
             </Row>
             <Row>
               <Col span={12}>
+                <PasswordField
+                  control={form.control}
+                  name='confirmPassword'
+                  label='Nhập lại mật khẩu'
+                  placeholder='Nhập lại mật khẩu'
+                  required
+                />
+              </Col>
+              <Col span={12}>
                 <SelectField
                   getLabel={(opt) => opt.label}
                   getValue={(opt) => opt.value}
@@ -160,6 +177,20 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                   name='groupId'
                   label='Nhóm quyền'
                   placeholder='Nhóm quyền'
+                  required
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <SelectField
+                  getLabel={(opt) => opt.label}
+                  getValue={(opt) => opt.value}
+                  options={statusOptions || []}
+                  control={form.control}
+                  name='status'
+                  label='Trạng thái'
+                  placeholder='Trạng thái'
                   required
                 />
               </Col>

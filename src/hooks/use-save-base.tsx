@@ -1,4 +1,5 @@
 'use client';
+
 import { Button, Col, Row } from '@/components/form';
 import { CircleLoading } from '@/components/loading';
 import {
@@ -13,12 +14,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
-import { logger } from '@/logger';
 import { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
 import { applyFormErrors, http, notify } from '@/utils';
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AxiosError, isAxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -253,6 +253,7 @@ export default function useSaveBase<
     itemQuery,
     loading: loading || itemQuery.isLoading || itemQuery.isFetching,
     renderActions,
-    setDetailId
+    setDetailId,
+    isEditing: !isCreate
   };
 }

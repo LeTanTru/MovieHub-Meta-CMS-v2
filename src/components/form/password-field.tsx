@@ -75,7 +75,7 @@ export default function PasswordField<T extends FieldValues>({
         return (
           <FormItem
             className={cn(
-              { 'cursor-not-allowed opacity-50': disabled },
+              { 'cursor-not-allowed': disabled },
               formItemClassName
             )}
           >
@@ -100,10 +100,10 @@ export default function PasswordField<T extends FieldValues>({
                     className,
                     'py-[0.5px] leading-9 placeholder:text-gray-300 focus-visible:ring-2',
                     {
-                      'cursor-not-allowed opacity-50': disabled
+                      'cursor-not-allowed': disabled
                     },
                     {
-                      'cursor-not-allowed opacity-50': disabled,
+                      'cursor-not-allowed': disabled,
                       'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
                         fieldState.error
                     },

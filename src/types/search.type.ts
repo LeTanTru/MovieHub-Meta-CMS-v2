@@ -3,6 +3,7 @@ import { FieldValues } from 'react-hook-form';
 import { ZodObject } from 'zod';
 
 export type BaseSearchType = {
+  id?: string;
   page?: number;
   size?: number;
 };

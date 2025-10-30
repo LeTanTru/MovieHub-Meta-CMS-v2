@@ -46,6 +46,7 @@ import { Edit2, Info, PlusIcon, RefreshCcw, Trash } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   changePagination: (page: number) => void;
@@ -174,6 +175,7 @@ export default function useListBase<
     placeholderData: keepPreviousData,
     enabled
   });
+
   const deleteMutation = useMutation({
     mutationKey: [`delete-${queryKey}`],
     mutationFn: (id: string) =>
@@ -248,10 +250,10 @@ export default function useListBase<
             <span>
               <Button
                 onClick={() => handleEditClick(record.id)}
-                className='border-none bg-transparent shadow-none hover:bg-transparent'
+                className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                 {...buttonProps}
               >
-                <Edit2 className='stroke-dodger-blue size-3.5' />
+                <AiOutlineEdit className='text-dodger-blue size-4' />
               </Button>
             </span>
           </ToolTip>
@@ -267,10 +269,10 @@ export default function useListBase<
               <span>
                 <ToolTip title={`Xóa ${objectName}`}>
                   <Button
-                    className='border-none bg-transparent shadow-none hover:bg-transparent'
+                    className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                     {...buttonProps}
                   >
-                    <Trash className='size-3.5 stroke-red-600' />
+                    <AiOutlineDelete className='text-destructive size-4' />
                   </Button>
                 </ToolTip>
               </span>
@@ -342,7 +344,7 @@ export default function useListBase<
                 {idx < actions.length - 1 && (
                   <Separator
                     orientation='vertical'
-                    className='-mr-2 !h-4 w-px bg-gray-200'
+                    className='-mr-2 h-4! w-px bg-gray-200'
                   />
                 )}
               </div>
@@ -407,22 +409,27 @@ export default function useListBase<
     const mergedValues = {
       ...queryFilter,
       ...Object.fromEntries(
-        Object.entries(searchParams).map(([key, value]) => {
-          const field = searchFields.find((f) => f.key === key);
-          if (!field) return [key, value];
+        Object.entries(searchParams)
+          .map(([key, value]) => {
+            const field = searchFields.find((f) => f.key === key);
+            if (!field) return [key, value];
 
-          switch (field.type) {
-            case FieldTypes.NUMBER:
-              return [key, value ? Number(value) : undefined];
-            case FieldTypes.SELECT || FieldTypes.AUTOCOMPLETE:
-              const option = field.options?.find(
-                (opt: any) => String(opt.value) === String(value)
-              );
-              return [key, option ? option.value : value];
-            default:
-              return [key, value];
-          }
-        })
+            switch (field.type) {
+              case FieldTypes.NUMBER:
+                return [key, value ? Number(value) : undefined];
+              case FieldTypes.SELECT || FieldTypes.AUTOCOMPLETE:
+                const option = field.options?.find(
+                  (opt: any) => String(opt.value) === String(value)
+                );
+                return [key, option ? option.value : value];
+              default:
+                return [key, value];
+            }
+          })
+          .map(([key, value]) => [
+            key,
+            !isNaN(value) ? Number(value) : value.trim()
+          ])
       )
     };
 

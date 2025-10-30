@@ -250,7 +250,7 @@ export default function AutoCompleteField<
         return (
           <FormItem
             className={cn('relative', className, {
-              'cursor-not-allowed opacity-50': disabled
+              'cursor-not-allowed': disabled
             })}
           >
             {label && (
@@ -270,7 +270,7 @@ export default function AutoCompleteField<
                   disabled={disabled}
                   title={selectedOptions[0]?.label ?? ''}
                   className={cn(
-                    'w-full flex-nowrap justify-between truncate border-1 px-3 py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
+                    'w-full flex-nowrap justify-between truncate border px-3 py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
                     {
                       'disabled:cursor-not-allowed disabled:opacity-100 disabled:hover:bg-transparent disabled:[&>div>span]:opacity-80':
                         disabled,
@@ -353,7 +353,7 @@ export default function AutoCompleteField<
                 </FormDescription>
               )}
 
-              <PopoverContent className='w-[var(--radix-popover-trigger-width)] p-0'>
+              <PopoverContent className='w-(--radix-popover-trigger-width) p-0'>
                 <Command shouldFilter={false} className='bg-background'>
                   <CommandInput
                     placeholder={searchText}
