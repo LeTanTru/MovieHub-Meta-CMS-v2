@@ -83,7 +83,7 @@ export default function TimePickerField({
         return (
           <FormItem
             className={cn('relative', className, {
-              'cursor-not-allowed opacity-50': disabled
+              'cursor-not-allowed': disabled
             })}
           >
             {label && (

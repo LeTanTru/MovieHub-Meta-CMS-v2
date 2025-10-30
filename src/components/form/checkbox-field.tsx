@@ -49,7 +49,7 @@ export default function CheckboxField({
                   'cursor-pointer transition-colors duration-300 ease-in-out',
                   'data-[state=checked]:bg-primary',
                   'data-[state=unchecked]:bg-muted',
-                  disabled && 'cursor-not-allowed opacity-50'
+                  disabled && 'cursor-not-allowed'
                 )}
                 checked={!!field.value}
                 onCheckedChange={field.onChange}

@@ -141,7 +141,7 @@ export default function SelectField<
         return (
           <FormItem
             className={cn('relative', className, {
-              'cursor-not-allowed opacity-50': disabled
+              'cursor-not-allowed': disabled
             })}
           >
             {label && (
@@ -159,7 +159,7 @@ export default function SelectField<
                   aria-label='Select'
                   disabled={disabled}
                   className={cn(
-                    'w-full flex-wrap justify-between truncate border-1 px-3 py-0 text-black focus:ring-0 focus-visible:shadow-none',
+                    'w-full flex-wrap justify-between truncate border px-3 py-0 text-black focus:ring-0 focus-visible:shadow-none',
                     {
                       'pl-1!': selectedValues.length > 1,
                       'disabled:cursor-not-allowed disabled:opacity-100':
@@ -247,7 +247,7 @@ export default function SelectField<
                 </FormDescription>
               )}
 
-              <PopoverContent className='w-[var(--radix-popover-trigger-width)] p-0'>
+              <PopoverContent className='w-(--radix-popover-trigger-width) p-0'>
                 <Command className='bg-background' shouldFilter={false}>
                   <CommandInput
                     placeholder={searchText}

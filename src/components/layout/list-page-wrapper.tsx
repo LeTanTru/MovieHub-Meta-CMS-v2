@@ -16,14 +16,11 @@ export default function ListPageWrapper({
   return (
     <div
       tabIndex={-1}
-      className={cn(
-        'min-h-[calc(100vh_-_190px)] rounded-lg bg-white',
-        className
-      )}
+      className={cn('min-h-[calc(100vh-190px)] rounded-lg bg-white', className)}
     >
       <div
         className={cn(
-          'flex items-start justify-between rounded-tl-lg rounded-tr-lg bg-white p-4',
+          'flex items-center justify-between rounded-tl-lg rounded-tr-lg bg-white p-4',
           {
             'py-0': !(searchForm || addButton || reloadButton)
           }

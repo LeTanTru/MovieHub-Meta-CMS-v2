@@ -57,7 +57,16 @@ export default function SearchForm<S extends FieldValues>({
     buildDefaultValues(searchFields);
 
   const onSubmit = (values: z.infer<typeof schema>) => {
-    handleSearchSubmit(values);
+    const cleanedValues = Object.fromEntries(
+      Object.entries(values).map(([key, value]) => {
+        if (typeof value === 'string') {
+          return [key, value.replace(/[^a-zA-Z0-9\sÀ-ỹ]/g, '').trim()];
+        }
+        return [key, value];
+      })
+    );
+
+    handleSearchSubmit(cleanedValues);
   };
 
   const handleReset = (form: UseFormReturn<z.infer<typeof schema>>) => {
@@ -70,7 +79,7 @@ export default function SearchForm<S extends FieldValues>({
     form: UseFormReturn<Record<string, unknown>>
   ) => {
     return (
-      <Row className='my-0 flex-wrap gap-2'>
+      <>
         {searchFields.map((sf) => {
           switch (sf.type) {
             case FieldTypes.SELECT: {
@@ -152,7 +161,7 @@ export default function SearchForm<S extends FieldValues>({
             </Col>
           </>
         )}
-      </Row>
+      </>
     );
   };
 
@@ -167,14 +176,13 @@ export default function SearchForm<S extends FieldValues>({
       {(form) => (
         <>
           {searchFields.length < 4 ? (
-            renderField(searchFields, form)
+            <div className='flex gap-x-2'>
+              {renderField(searchFields, form)}
+            </div>
           ) : (
-            <Row className='my-0 flex-wrap gap-2'>
-              <div className={cn('flex flex-1 flex-wrap gap-2')}>
-                {renderField(searchFields, form)}
-              </div>
-
-              <div className='flex items-start gap-2'>
+            <Row className='mb-0 flex flex-1 flex-nowrap justify-start gap-2'>
+              {renderField(searchFields, form)}
+              <div className='flex items-center gap-2'>
                 <Button type='submit' variant='primary'>
                   <Search />
                 </Button>

@@ -1,19 +1,20 @@
 import apiConfig from '@/constants/api-config';
 import route from '@/routes';
 import { MenuItem } from '@/types';
-import { Settings, User } from 'lucide-react';
+import { Settings } from 'lucide-react';
+import { AiOutlineUser } from 'react-icons/ai';
 
 const menuConfig: MenuItem[] = [
   {
     key: 'account-management',
     label: 'Quản lý tài khoản',
-    icon: User,
+    icon: AiOutlineUser,
     permissionCode: [apiConfig.account.getList.permissionCode],
     children: [
       {
-        key: 'account-list',
-        label: 'Tài khoản',
-        path: route.account.getList.path,
+        key: 'admin-list',
+        label: 'Quản trị viên',
+        path: route.admin.getList.path,
         permissionCode: [apiConfig.account.getList.permissionCode]
       }
       // {

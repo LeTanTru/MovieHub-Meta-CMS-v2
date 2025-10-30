@@ -7,31 +7,46 @@ import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type Group = {
+  createdBy: string;
+  createdDate: string;
+  modifiedBy: string;
+  modifiedDate: string;
+  status: number;
   id: string;
   name: string;
-  kind: number;
-  subKind: number;
   description: string;
+  kind: number;
   isSystemRole: boolean;
-  status: number;
+  permissions: Permission[];
 };
 
 type GroupPermission = {
-  id: number;
+  createdBy: string;
+  createdDate: string;
+  modifiedBy: string;
+  modifiedDate: string;
+  status: number;
+  id: string;
   name: string;
 };
 
 type Permission = {
-  id: number;
+  createdBy: string;
+  createdDate: string;
+  modifiedBy: string;
+  modifiedDate: string;
+  status: number;
+  id: string;
   name: string;
   action: string;
   showMenu: boolean;
+  description: string;
   groupPermission: GroupPermission;
   permissionCode?: string;
 };
 
 type GroupProfile = {
-  id: number;
+  id: string;
   status: number;
   modifiedDate: string;
   createdDate: string;
@@ -61,18 +76,36 @@ export type ProfileBodyType = z.infer<typeof updateProfileSchema>;
 export type AccountSearchType = z.infer<typeof accountSearchSchema> &
   BaseSearchType;
 
-export type AccountResType = {
+export type AccountAutoResType = {
   id: string;
+  status: number;
+  kind: number;
+  username: string;
   email: string;
   fullName: string;
-  avatarPath: string;
-  phone: string;
-  kind: number;
-  isSuperAdmin: boolean;
   group: Group;
+  lastLogin: string;
+  isSuperAdmin: boolean;
+};
+
+export type AccountResType = {
+  createdBy: string;
   createdDate: string;
+  modifiedBy: string;
   modifiedDate: string;
   status: number;
+  id: string;
+  kind: number;
+  username: string;
+  email: string;
+  fullName: string;
+  group: Group;
+  lastLogin: string;
+  avatarPath: string;
+  resetPwdCode: string;
+  resetPwdTime: string;
+  attemptCode: number;
+  isSuperAdmin: boolean;
 };
 
 export type AccountBodyType = z.infer<typeof accountSchema>;

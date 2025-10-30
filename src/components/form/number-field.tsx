@@ -115,7 +115,7 @@ export default function NumberField<T extends FieldValues>({
         <FormItem
           className={cn(
             'relative',
-            { 'cursor-not-allowed opacity-50': disabled },
+            { 'cursor-not-allowed': disabled },
             formItemClassName
           )}
         >
@@ -173,7 +173,7 @@ export default function NumberField<T extends FieldValues>({
                     {
                       'pl-10': prefixIcon,
                       'pr-10': suffixIcon,
-                      'cursor-not-allowed opacity-50': disabled
+                      'cursor-not-allowed': disabled
                     },
                     fieldState.error
                       ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500'

@@ -6,9 +6,9 @@ const route = defineRoute({
   home: {
     path: '/'
   },
-  account: {
+  admin: {
     getList: {
-      path: '/account',
+      path: '/admin',
       auth: true,
       permissionCode: [apiConfig.account.getList.permissionCode]
     }
