@@ -85,5 +85,6 @@ export const genderOptions: OptionType[] = [
 export const queryKeys = {
   ACCOUNT: 'account',
   GROUP: 'group',
+  CUSTOMER: 'customer',
   GROUP_PERMISSION: 'group-permission'
 };
