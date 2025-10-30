@@ -12,3 +12,4 @@ export * from './permission.type';
 export * from './search.type';
 export * from './sidebar.type';
 export * from './table.type';
+export * from './customer.type';

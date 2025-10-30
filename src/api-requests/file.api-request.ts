@@ -10,18 +10,18 @@ const fileApiRequest = {
       {
         body: {
           file: file,
-          kind: uploadOptions.AVATAR
+          type: uploadOptions.AVATAR
         },
         options
       }
     ),
-  uploadProductImage: async (file: Blob, options?: AxiosRequestConfig) =>
+  uploadLogo: async (file: Blob, options?: AxiosRequestConfig) =>
     await http.post<ApiResponse<UploadImageResponseType>>(
       apiConfig.file.upload,
       {
         body: {
           file: file,
-          kind: uploadOptions.SYSTEM
+          type: uploadOptions.LOGO
         },
         options
       }
