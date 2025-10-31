@@ -6,7 +6,6 @@ import { BaseForm } from '@/components/form/base-form';
 import { storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { useLoginMutation } from '@/queries';
-import route from '@/routes';
 import { loginSchema } from '@/schemaValidations';
 import { LoginBodyType } from '@/types/auth.type';
 import { notify, setData } from '@/utils';
@@ -16,6 +15,7 @@ import { CircleLoading } from '@/components/loading';
 import { useNavigate } from '@/hooks';
 import { useAuthStore } from '@/store';
 import envConfig from '@/config';
+import { route } from '@/routes';
 
 export default function LoginForm() {
   const loginMutation = useLoginMutation();

@@ -1,6 +1,6 @@
 'use client';
 
-import ListPageWrapper from '@/components/layout/list-page-wrapper';
+import { ListPageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
 import { apiConfig, FieldTypes, groupKinds } from '@/constants';

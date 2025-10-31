@@ -1,6 +1,5 @@
 import ProfileForm from '@/app/profile/profile-form';
-import { PageWrapper } from '@/components/layout';
-import ListPageWrapper from '@/components/layout/list-page-wrapper';
+import { ListPageWrapper, PageWrapper } from '@/components/layout';
 
 export default function ProfilePage() {
   return (

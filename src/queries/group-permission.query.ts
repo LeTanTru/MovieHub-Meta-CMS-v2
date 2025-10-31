@@ -1,43 +1,58 @@
-'use client';
-
-import { groupPermissionApiRequest } from '@/api-requests';
-import { logger } from '@/logger';
+import { apiConfig } from '@/constants';
+import { ApiResponse, ApiResponseList } from '@/types';
 import {
   GroupPermissionBodyType,
+  GroupPermissionResType,
   GroupPermissionSearchType
 } from '@/types/group-permission.type';
-import { notify } from '@/utils';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { http } from '@/utils';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useGroupPermissionListQuery = (
   params?: GroupPermissionSearchType
 ) => {
   return useQuery({
     queryKey: ['group-permission-list', params],
-    queryFn: () => groupPermissionApiRequest.getList(params)
+    queryFn: () =>
+      http.get<ApiResponseList<GroupPermissionResType>>(
+        apiConfig.groupPermission.getList,
+        {
+          params
+        }
+      )
   });
 };
 
 export const useGroupPermissionQuery = (id: string) => {
   return useQuery({
     queryKey: ['permission', id],
-    queryFn: () => groupPermissionApiRequest.getById(id)
+    queryFn: () =>
+      http.get<ApiResponse<GroupPermissionBodyType>>(
+        apiConfig.groupPermission.getById,
+        {
+          pathParams: { id }
+        }
+      )
   });
 };
 
 export const useCreateGroupPermissionMutation = () => {
   return useMutation({
     mutationKey: ['group-permission-create'],
-    mutationFn: async (body: Omit<GroupPermissionBodyType, 'id'>) =>
-      await groupPermissionApiRequest.create(body)
+    mutationFn: (body: Omit<GroupPermissionBodyType, 'id'>) =>
+      http.post<ApiResponse<any>>(apiConfig.groupPermission.create, {
+        body
+      })
   });
 };
 
 export const useUpdateGroupPermissionMutation = () => {
   return useMutation({
     mutationKey: ['group-permission-update'],
-    mutationFn: async (body: GroupPermissionBodyType) =>
-      await groupPermissionApiRequest.update(body)
+    mutationFn: (body: GroupPermissionBodyType) =>
+      http.put<ApiResponse<any>>(apiConfig.groupPermission.update, {
+        body
+      })
   });
 };
 

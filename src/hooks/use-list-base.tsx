@@ -42,7 +42,7 @@ import {
   useQuery,
   useQueryClient
 } from '@tanstack/react-query';
-import { Edit2, Info, PlusIcon, RefreshCcw, Trash } from 'lucide-react';
+import { Info, PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -97,6 +97,7 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
     defaultFilters?: Partial<S>;
     enabled?: boolean;
     excludeFromQueryFilter?: string[];
+    notShowFromSearchParams?: string[];
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
@@ -111,7 +112,8 @@ export default function useListBase<
     pageSize = DEFAULT_TABLE_PAGE_SIZE,
     defaultFilters = {} as Partial<S>,
     enabled = true,
-    excludeFromQueryFilter = []
+    excludeFromQueryFilter = [],
+    notShowFromSearchParams = []
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
@@ -152,13 +154,14 @@ export default function useListBase<
   useEffect(() => {
     Object.entries(defaultFilters).forEach(([key, value]) => {
       if (
-        searchParams[key as keyof S] === undefined ||
-        searchParams[key as keyof S] === null
+        (searchParams[key as keyof S] === undefined ||
+          searchParams[key as keyof S] === null) &&
+        !notShowFromSearchParams.includes(key)
       ) {
         setQueryParam(key as keyof S, value as S[keyof S]);
       }
     });
-  }, [defaultFilters, searchParams, setQueryParam]);
+  }, [defaultFilters, notShowFromSearchParams, searchParams, setQueryParam]);
 
   const additionalPathParams = () => ({});
 
@@ -441,7 +444,13 @@ export default function useListBase<
         )
       );
 
-      setQueryParams({ ...values, ...preservedParams } as Partial<S>);
+      const filteredValues = Object.fromEntries(
+        Object.entries(values).filter(
+          ([key]) => !notShowFromSearchParams.includes(key)
+        )
+      );
+
+      setQueryParams({ ...filteredValues, ...preservedParams } as Partial<S>);
     };
 
     // Handle reset
@@ -459,7 +468,14 @@ export default function useListBase<
           excludeFromQueryFilter.includes(key)
         )
       );
-      setQueryParams({ ...defaultFilters, ...preservedParams });
+
+      const filteredValues = Object.fromEntries(
+        Object.entries(defaultFilters).filter(
+          ([key]) => !notShowFromSearchParams.includes(key)
+        )
+      );
+
+      setQueryParams({ ...(filteredValues as Partial<S>), ...preservedParams });
     };
 
     return (

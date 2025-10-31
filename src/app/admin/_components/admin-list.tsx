@@ -1,8 +1,7 @@
 'use client';
 
 import { AvatarField } from '@/components/form';
-import { PageWrapper } from '@/components/layout';
-import ListPageWrapper from '@/components/layout/list-page-wrapper';
+import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
   apiConfig,
@@ -21,9 +20,10 @@ import {
 } from '@/types';
 import { renderImageUrl } from '@/utils';
 import { CircleUserRound } from 'lucide-react';
+import { AiOutlineUser } from 'react-icons/ai';
 
 export default function AdminList({ queryKey }: { queryKey: string }) {
-  const { data, pagination, loading, handlers, listQuery } = useListBase<
+  const { data, pagination, loading, handlers } = useListBase<
     AccountAutoResType,
     AccountSearchType
   >({
@@ -35,7 +35,8 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
     options: {
       queryKey,
       objectName: 'tài khoản',
-      defaultFilters: { kind: GROUP_KIND_ADMIN }
+      defaultFilters: { kind: GROUP_KIND_ADMIN },
+      notShowFromSearchParams: ['kind']
     }
   });
 
@@ -48,15 +49,9 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
       render: (value) => (
         <AvatarField
           size={50}
-          className={cn('mx-auto rounded-full', {
-            rounded: value
-          })}
-          previewClassName='rounded'
           disablePreview={!value}
           src={renderImageUrl(value)}
-          icon={
-            <CircleUserRound className='fill-transparent stroke-slate-800' />
-          }
+          icon={<AiOutlineUser className='size-7 text-slate-800' />}
         />
       )
     },

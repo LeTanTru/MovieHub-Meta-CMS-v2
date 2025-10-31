@@ -1,21 +1,21 @@
-'use client';
-
-import { groupApiRequest } from '@/api-requests';
-import { ErrorCode } from '@/constants';
-import { logger } from '@/logger';
-import { GroupBodyType, GroupSearchType } from '@/types';
-import { notify } from '@/utils';
+import { apiConfig } from '@/constants';
 import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient
-} from '@tanstack/react-query';
+  ApiResponse,
+  ApiResponseList,
+  GroupBodyType,
+  GroupResType,
+  GroupSearchType
+} from '@/types';
+import { http } from '@/utils';
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 
 export const useGroupListQuery = (params?: GroupSearchType) => {
   return useQuery({
     queryKey: ['group-list', params],
-    queryFn: async () => await groupApiRequest.getList(params),
+    queryFn: () =>
+      http.get<ApiResponseList<GroupResType>>(apiConfig.group.getList, {
+        params
+      }),
     placeholderData: keepPreviousData
   });
 };
@@ -23,7 +23,10 @@ export const useGroupListQuery = (params?: GroupSearchType) => {
 export const useGroupQuery = (id: string) => {
   return useQuery({
     queryKey: ['group', id],
-    queryFn: async () => await groupApiRequest.getById(id),
+    queryFn: () =>
+      http.get<ApiResponse<GroupResType>>(apiConfig.group.getById, {
+        pathParams: { id }
+      }),
     enabled: !!id && id !== 'create'
   });
 };
@@ -31,16 +34,20 @@ export const useGroupQuery = (id: string) => {
 export const useCreateGroupMutation = () => {
   return useMutation({
     mutationKey: ['group-create'],
-    mutationFn: async (body: Omit<GroupBodyType, 'id'>) =>
-      await groupApiRequest.create(body)
+    mutationFn: (body: Omit<GroupBodyType, 'id'>) =>
+      http.post<ApiResponse<any>>(apiConfig.group.create, {
+        body
+      })
   });
 };
 
 export const useUpdateGroupMutation = () => {
   return useMutation({
     mutationKey: ['group-update'],
-    mutationFn: async (body: GroupBodyType) =>
-      await groupApiRequest.update(body)
+    mutationFn: (body: GroupBodyType) =>
+      http.put<ApiResponse<any>>(apiConfig.group.update, {
+        body
+      })
   });
 };
 

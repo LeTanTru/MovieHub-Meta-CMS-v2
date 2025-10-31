@@ -10,7 +10,7 @@ export default function Col({
   children,
   className,
   span = 24,
-  gutter = 8,
+  gutter = 0,
   ...rest
 }: ColProps) {
   const width = gutter

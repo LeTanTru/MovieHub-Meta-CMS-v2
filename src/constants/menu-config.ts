@@ -1,5 +1,5 @@
 import apiConfig from '@/constants/api-config';
-import route from '@/routes';
+import { route } from '@/routes';
 import { MenuItem } from '@/types';
 import { Settings } from 'lucide-react';
 import { AiOutlineUser } from 'react-icons/ai';
@@ -16,12 +16,13 @@ const menuConfig: MenuItem[] = [
         label: 'Quản trị viên',
         path: route.admin.getList.path,
         permissionCode: [apiConfig.account.getList.permissionCode]
+      },
+      {
+        key: 'customer-list',
+        label: 'Khách hàng',
+        path: route.customer.getList.path,
+        permissionCode: [apiConfig.customer.getList.permissionCode]
       }
-      // {
-      //   key: 'employee-list',
-      //   label: 'Nhân viên',
-      //   path: route.employee.path
-      // }
     ]
   },
   {

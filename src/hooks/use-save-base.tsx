@@ -130,14 +130,12 @@ export default function useSaveBase<
     return backPath;
   };
 
-  const loading = createMutation.isPending || updateMutation.isPending;
-
+  const mutation = isCreate ? createMutation : updateMutation;
   const handleSubmit = async (
     values: T,
     form?: UseFormReturn<T>,
     errorMaps?: ErrorMaps<T>
   ) => {
-    const mutation = isCreate ? createMutation : updateMutation;
     await mutation.mutateAsync(
       isCreate ? { ...values } : { ...values, id: values.id ?? id },
       {
@@ -149,6 +147,13 @@ export default function useSaveBase<
             notify.success(
               `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`
             );
+            if (listPageUrl) {
+              navigate(getBackPath());
+            }
+          } else {
+            const code = res.code;
+            if (code && errorMaps && form)
+              applyFormErrors(form, code, errorMaps);
           }
         },
         onError: (error) => {
@@ -160,9 +165,6 @@ export default function useSaveBase<
         }
       }
     );
-    if (listPageUrl) {
-      navigate(getBackPath());
-    }
   };
 
   const renderActions = (
@@ -229,11 +231,11 @@ export default function useSaveBase<
       </Col>
       <Col span={4} className='w-30'>
         <Button
-          disabled={!form.formState.isDirty || loading}
+          disabled={!form.formState.isDirty || mutation.isPending}
           type='submit'
           variant={'primary'}
         >
-          {loading ? (
+          {mutation.isPending ? (
             <CircleLoading />
           ) : (
             <>
@@ -251,7 +253,7 @@ export default function useSaveBase<
     detailId,
     handleSubmit,
     itemQuery,
-    loading: loading || itemQuery.isLoading || itemQuery.isFetching,
+    loading: itemQuery.isLoading || itemQuery.isFetching,
     renderActions,
     setDetailId,
     isEditing: !isCreate

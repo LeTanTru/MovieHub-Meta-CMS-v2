@@ -11,7 +11,7 @@ import {
   ToolTip
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import ListPageWrapper from '@/components/layout/list-page-wrapper';
+import { ListPageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
 import {

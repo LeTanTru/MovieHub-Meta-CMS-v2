@@ -50,7 +50,7 @@ export const statusOptions = [
   {
     value: STATUS_LOCK,
     label: 'Khóa',
-    color: '#fd7e14'
+    color: '#dc3545'
   },
   {
     value: STATUS_DELETED,
