@@ -35,6 +35,7 @@ import {
   FieldValues,
   useController
 } from 'react-hook-form';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 type Area = { x: number; y: number; width: number; height: number };
 
@@ -94,6 +95,7 @@ type UploadImageFieldProps<T extends FieldValues> = {
   size?: number;
   uploadImageFn: (file: Blob) => Promise<string>;
   loading?: boolean;
+  aspect?: number;
 };
 
 export default function UploadImageField<T extends FieldValues>({
@@ -107,7 +109,8 @@ export default function UploadImageField<T extends FieldValues>({
   className,
   size = 70,
   uploadImageFn,
-  loading
+  loading,
+  aspect = 1
 }: UploadImageFieldProps<T>) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -191,7 +194,7 @@ export default function UploadImageField<T extends FieldValues>({
 
   return (
     <div className='space-y-2'>
-      <div className='flex flex-col items-center justify-center gap-y-5'>
+      <div className='relative flex flex-col items-center justify-center gap-y-5'>
         {label && (
           <FormLabel
             className={cn(
@@ -210,9 +213,9 @@ export default function UploadImageField<T extends FieldValues>({
           <Button
             variant={'ghost'}
             type='button'
-            style={{ width: size, height: size }}
+            style={{ width: size * aspect, height: size }}
             className={cn(
-              'border-input hover:bg-accent/50 focus-visible:border-ring relative flex cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-dashed p-0 transition-colors outline-none focus-visible:ring-[3px]',
+              'border-input hover:bg-accent/50 focus-visible:border-ring relative flex cursor-pointer items-center justify-center overflow-hidden border border-dashed p-0 transition-colors outline-none focus-visible:ring-[3px]',
               className
             )}
             onClick={openFileDialog}
@@ -228,8 +231,9 @@ export default function UploadImageField<T extends FieldValues>({
               <AvatarField
                 disablePreview
                 src={value}
-                className='size-full rounded-lg object-cover'
+                className='size-full rounded-none object-cover'
                 size={size}
+                aspect={aspect}
               />
             ) : (
               <UploadIcon
@@ -248,7 +252,7 @@ export default function UploadImageField<T extends FieldValues>({
               onClick={handleRemove}
               size='icon'
               type='button'
-              className='border-background absolute -top-2 -right-2 size-6 rounded-full border-2'
+              className='border-background absolute -top-2 -right-2 size-5 rounded-full border'
               aria-label='Remove image'
             >
               <XIcon className='size-3.5' />
@@ -265,7 +269,9 @@ export default function UploadImageField<T extends FieldValues>({
           </label>
         </div>
         {error?.message && (
-          <p className='text-destructive text-sm'>{error.message}</p>
+          <p className='text-destructive animate-in fade-in absolute -bottom-6 text-sm'>
+            {error.message}
+          </p>
         )}
       </div>
 
@@ -300,25 +306,29 @@ export default function UploadImageField<T extends FieldValues>({
             </DialogTitle>
           </DialogHeader>
 
-          {previewUrl && shouldCrop ? (
-            <Cropper
-              className='h-96 sm:h-120'
-              image={previewUrl}
-              zoom={zoom}
-              onCropChange={handleCropChange}
-              onZoomChange={setZoom}
-            >
-              <CropperDescription />
-              <CropperImage />
-              <CropperCropArea />
-            </Cropper>
-          ) : (
-            <img
-              src={previewUrl}
-              alt='Preview'
-              className='mx-auto max-h-96 sm:max-h-120'
-            />
-          )}
+          <AspectRatio ratio={aspect} className='bg-muted'>
+            {previewUrl && shouldCrop ? (
+              <Cropper
+                className='h-full w-full'
+                image={previewUrl}
+                zoom={zoom}
+                onCropChange={handleCropChange}
+                onZoomChange={setZoom}
+              >
+                <CropperDescription />
+                <CropperImage />
+                <CropperCropArea />
+              </Cropper>
+            ) : (
+              previewUrl && (
+                <img
+                  src={previewUrl}
+                  alt='Preview'
+                  className='h-full w-full object-cover'
+                />
+              )
+            )}
+          </AspectRatio>
 
           <DialogFooter className='flex flex-col gap-4 border-t px-4 py-6 sm:justify-between'>
             <label className='flex cursor-pointer items-center gap-2'>

@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 type AvatarFieldProps = {
   size?: number;
@@ -18,6 +19,7 @@ type AvatarFieldProps = {
   autosize?: boolean;
   width?: number;
   height?: number;
+  aspect?: number;
 } & React.HTMLAttributes<HTMLElement>;
 
 export default function AvatarField({
@@ -32,6 +34,7 @@ export default function AvatarField({
   autosize = false,
   width,
   height,
+  aspect = 1,
   ...props
 }: AvatarFieldProps) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -51,20 +54,22 @@ export default function AvatarField({
           'relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full border shadow-sm',
           className
         )}
-        style={{ width: size, height: size }}
+        style={{ width: size * aspect, height: size }}
       >
         {src ? (
-          autosize ? (
-            <Image src={src} alt='Avatar' fill className='object-cover' />
-          ) : (
-            <Image
-              src={src}
-              alt='Avatar'
-              width={size}
-              height={size}
-              className='object-cover'
-            />
-          )
+          <AspectRatio ratio={aspect} className='h-full w-full'>
+            {autosize ? (
+              <Image src={src} alt='Avatar' fill className='object-cover' />
+            ) : (
+              <Image
+                src={src}
+                alt='Avatar'
+                width={size * aspect}
+                height={size}
+                className='h-full w-full object-cover'
+              />
+            )}
+          </AspectRatio>
         ) : (
           icon || <ImageIcon className='h-1/2 w-1/2 opacity-40' />
         )}

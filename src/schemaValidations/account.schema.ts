@@ -36,7 +36,8 @@ export const accountSchema = z
     avatarPath: z.string().optional(),
     groupId: z.string().nonempty('Bắt buộc'),
     status: z.number({ error: 'Bắt buộc' }),
-    username: z.string().nonempty('Bắt buộc')
+    username: z.string().nonempty('Bắt buộc'),
+    kind: z.number().optional()
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],

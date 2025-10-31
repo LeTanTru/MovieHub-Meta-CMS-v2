@@ -31,8 +31,9 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
   const groupList = groupListQuery.data?.data.content || [];
   const groupOptions = groupList.map((item) => ({
     label: item.name,
-    value: item.id
+    value: item.id.toString()
   }));
+  const uploadImageMutation = useUploadAvatar();
   const { data, loading, isEditing, handleSubmit, renderActions } = useSaveBase<
     AccountResType,
     AccountBodyType
@@ -44,11 +45,10 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     },
     options: {
       queryKey,
-      objectName: 'tài khoản nhân viên',
+      objectName: 'nhân viên',
       listPageUrl: route.admin.getList.path
     }
   });
-  const uploadImageMutation = useUploadAvatar();
 
   const defaultValues: AccountBodyType = {
     username: '',
@@ -79,7 +79,11 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
   }, [data]);
 
   const onSubmit = async (values: AccountBodyType) => {
-    await handleSubmit({ ...values, avatarPath: avatarPath });
+    await handleSubmit({
+      ...values,
+      avatarPath: avatarPath,
+      kind: GROUP_KIND_ADMIN
+    });
   };
 
   return (
@@ -113,7 +117,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
-                  label='Tải ảnh lên'
+                  label='Ảnh đại diện'
                 />
               </Col>
             </Row>

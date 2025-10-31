@@ -22,12 +22,12 @@ export default function PageWrapper({
   ];
   return (
     <main
-      className={cn('bg-page-wrapper h-[calc(100vh_-_64px)]', {
+      className={cn('bg-page-wrapper h-[calc(100vh-64px)]', {
         'overflow-y-auto': !loading
       })}
       {...props}
     >
-      <div className='min-h-[calc(100vh_-_128px)]'>
+      <div className='min-h-[calc(100vh-128px)]'>
         <div className='page-header px-5 py-4'>
           <Breadcrumb items={fullBreadcrumbs} />
         </div>

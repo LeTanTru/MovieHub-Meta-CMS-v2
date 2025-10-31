@@ -27,6 +27,11 @@ const route = defineRoute({
       path: '/customer',
       auth: true,
       permissionCode: [apiConfig.account.getList.permissionCode]
+    },
+    savePage: {
+      path: '/customer/:id',
+      auth: true,
+      permissionCode: [apiConfig.customer.getList.permissionCode]
     }
   },
   group: {

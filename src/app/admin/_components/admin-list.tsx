@@ -20,6 +20,7 @@ import {
 } from '@/types';
 import { renderImageUrl } from '@/utils';
 import { CircleUserRound } from 'lucide-react';
+import { AiOutlineUser } from 'react-icons/ai';
 
 export default function AdminList({ queryKey }: { queryKey: string }) {
   const { data, pagination, loading, handlers } = useListBase<
@@ -48,15 +49,9 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
       render: (value) => (
         <AvatarField
           size={50}
-          className={cn('mx-auto rounded-full', {
-            rounded: value
-          })}
-          previewClassName='rounded'
           disablePreview={!value}
           src={renderImageUrl(value)}
-          icon={
-            <CircleUserRound className='fill-transparent stroke-slate-800' />
-          }
+          icon={<AiOutlineUser className='size-7 text-slate-800' />}
         />
       )
     },

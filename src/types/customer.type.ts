@@ -1,4 +1,7 @@
-import { customerSearchSchema } from '@/schemaValidations/customer.schema';
+import {
+  customerSchema,
+  customerSearchSchema
+} from '@/schemaValidations/customer.schema';
 import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
@@ -20,3 +23,10 @@ export type CustomerResType = {
 
 export type CustomerSearchType = z.infer<typeof customerSearchSchema> &
   BaseSearchType;
+
+export type ChangeStatusCustomerBodyType = {
+  id: string;
+  status: number;
+};
+
+export type CustomerBodyType = z.infer<typeof customerSchema>;
