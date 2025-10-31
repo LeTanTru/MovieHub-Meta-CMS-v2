@@ -122,7 +122,9 @@ export default function SelectField<
               ? Array.isArray(field.value)
                 ? field.value
                 : []
-              : [field.value].filter(Boolean);
+              : [field.value].filter(
+                  (item) => item !== undefined && item !== null
+                );
 
         const toggleValue = (val: string | number) => {
           if (multiple) {

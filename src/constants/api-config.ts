@@ -16,7 +16,7 @@ const apiConfig = defineApiConfig({
   },
   account: {
     createAdmin: {
-      baseUrl: `${AppConstants.apiUrl}/v1/account/create_admin`,
+      baseUrl: `${AppConstants.apiUrl}/v1/account/create-admin`,
       method: 'POST',
       headers: baseHeader,
       permissionCode: 'ACC_C_AD'
@@ -45,13 +45,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader
     },
     updateAdmin: {
-      baseUrl: `${AppConstants.apiUrl}/v1/account/update_admin`,
+      baseUrl: `${AppConstants.apiUrl}/v1/account/update-admin`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'ACC_U_AD'
     },
     updateProfileAdmin: {
-      baseUrl: `${AppConstants.apiUrl}/v1/account/update_profile_admin`,
+      baseUrl: `${AppConstants.apiUrl}/v1/account/update-profile-admin`,
       method: 'PUT',
       headers: baseHeader
     }

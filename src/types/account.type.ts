@@ -106,6 +106,7 @@ export type AccountResType = {
   resetPwdTime: string;
   attemptCode: number;
   isSuperAdmin: boolean;
+  phone: string;
 };
 
-export type AccountBodyType = z.infer<typeof accountSchema>;
+export type AccountBodyType = z.infer<ReturnType<typeof accountSchema>>;

@@ -251,11 +251,11 @@ export default function useSaveBase<
   return {
     data,
     detailId,
-    handleSubmit,
     itemQuery,
+    isEditing: !isCreate,
     loading: itemQuery.isLoading || itemQuery.isFetching,
+    handleSubmit,
     renderActions,
-    setDetailId,
-    isEditing: !isCreate
+    setDetailId
   };
 }

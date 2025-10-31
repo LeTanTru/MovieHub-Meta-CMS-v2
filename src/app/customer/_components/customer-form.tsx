@@ -12,7 +12,7 @@ import PasswordField from '@/components/form/password-field';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
-  accountErrorMaps,
+  customerErrorMaps,
   apiConfig,
   STATUS_ACTIVE,
   statusOptions
@@ -43,7 +43,6 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
   });
 
   const defaultValues: CustomerBodyType = {
-    id: '',
     username: '',
     email: '',
     fullName: '',
@@ -57,7 +56,6 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
 
   const initialValues: CustomerBodyType = useMemo(() => {
     return {
-      id: data?.id?.toString(),
       username: data?.account?.username ?? '',
       email: data?.account?.email ?? '',
       fullName: data?.account?.fullName ?? '',
@@ -85,7 +83,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
     await handleSubmit(
       { ...values, avatarPath: avatarPath },
       form,
-      accountErrorMaps
+      customerErrorMaps
     );
   };
 
@@ -99,7 +97,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
       <BaseForm
         onSubmit={onSubmit}
         defaultValues={defaultValues}
-        schema={customerSchema}
+        schema={customerSchema(isEditing)}
         initialValues={initialValues}
         className='w-200'
       >

@@ -1,4 +1,5 @@
 import {
+  AccountBodyType,
   CustomerBodyType,
   ErrorMaps,
   GroupBodyType,
@@ -133,7 +134,25 @@ export const permissionErrorMaps: ErrorMaps<PermissionBodyType> = {
   ]
 };
 
-export const accountErrorMaps: ErrorMaps<CustomerBodyType> = {
+export const adminErrorMaps: ErrorMaps<AccountBodyType> = {
+  [ErrorCode.ACCOUNT_ERROR_UNKNOWN]: [
+    ['username', { type: 'manual', message: 'Lỗi không xác định' }]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_USERNAME_EXIST]: [
+    ['username', { type: 'manual', message: 'Tên đăng nhập đã tồn tại' }]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD]: [
+    ['password', { type: 'manual', message: 'Mật khẩu không đúng' }]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_EMAIL_EXISTED]: [
+    ['email', { type: 'manual', message: 'Email đã tồn tại' }]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_PHONE_EXISTED]: [
+    ['phone', { type: 'manual', message: 'Số điện thoại đã tồn tại' }]
+  ]
+};
+
+export const customerErrorMaps: ErrorMaps<CustomerBodyType> = {
   [ErrorCode.ACCOUNT_ERROR_UNKNOWN]: [
     ['username', { type: 'manual', message: 'Lỗi không xác định' }]
   ],

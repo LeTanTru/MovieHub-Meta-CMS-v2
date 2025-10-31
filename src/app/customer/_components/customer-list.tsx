@@ -13,6 +13,7 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { useChangeStatusCustomerMutation } from '@/queries/customer.query';
+import { route } from '@/routes';
 import { customerSearchSchema } from '@/schemaValidations/customer.schema';
 import {
   Column,
@@ -20,7 +21,8 @@ import {
   CustomerSearchType,
   SearchFormProps
 } from '@/types';
-import { notify, renderImageUrl } from '@/utils';
+import { generatePath, notify, renderImageUrl } from '@/utils';
+import Link from 'next/link';
 import { AiOutlineCheck, AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 
 export default function CustomerList({ queryKey }: { queryKey: string }) {
@@ -116,7 +118,16 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
     {
       title: 'Tên',
       dataIndex: ['account', 'fullName'],
-      render: (value) => value ?? '---'
+      render: (value, record) => (
+        <Link
+          href={generatePath(route.customer.business.getList.path, {
+            id: record.id
+          })}
+          className='text-dodger-blue'
+        >
+          {value ?? '---'}
+        </Link>
+      )
     },
     {
       title: 'Email',

@@ -6,138 +6,133 @@ export const customerSearchSchema = z.object({
   status: z.number().optional().nullable()
 });
 
-export const customerSchema = z
-  .object({
-    id: z.string().optional().nullable(),
+export const customerSchema = (isEditing: boolean) =>
+  z
+    .object({
+      avatarPath: z.string().optional().nullable(),
+      email: z.string().nonempty('Bắt buộc'),
+      fullName: z.string().nonempty('Bắt buộc'),
+      logoPath: z.string().nonempty('Bắt buộc'),
+      username: z.string().nonempty('Bắt buộc'),
+      phone: z
+        .string()
+        .nonempty('Bắt buộc')
+        .regex(/^\d{10}$/, 'Số điện thoại phải gồm 10 chữ số'),
+      status: z.number({ error: 'Bắt buộc' }),
 
-    avatarPath: z.string().optional().nullable(),
-    email: z.string().nonempty('Bắt buộc'),
-    fullName: z.string().nonempty('Bắt buộc'),
-    logoPath: z.string().nonempty('Bắt buộc'),
-    username: z.string().nonempty('Bắt buộc'),
-    phone: z
-      .string()
-      .nonempty('Bắt buộc')
-      .regex(/^\d{10}$/, 'Số điện thoại phải gồm 10 chữ số'),
-    status: z.number({ error: 'Bắt buộc' }),
+      password: z.string().optional().nullable(),
+      confirmPassword: z.string().optional().nullable(),
 
-    password: z.string().optional().nullable(),
-    confirmPassword: z.string().optional().nullable(),
-
-    oldPassword: z.string().optional().nullable(),
-    newPassword: z.string().optional().nullable(),
-    confirmNewPassword: z.string().optional().nullable()
-  })
-  .superRefine((data, ctx) => {
-    const isEdit = !!data.id;
-
-    if (!isEdit) {
-      if (!data.password) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['password'],
-          message: 'Bắt buộc'
-        });
-      } else {
-        if (data.password.length < 8)
+      oldPassword: z.string().optional().nullable(),
+      newPassword: z.string().optional().nullable(),
+      confirmNewPassword: z.string().optional().nullable()
+    })
+    .superRefine((data, ctx) => {
+      if (!isEditing) {
+        if (!data.password) {
           ctx.addIssue({
             code: 'custom',
             path: ['password'],
-            message: 'Mật khẩu tối thiểu 8 ký tự'
-          });
-        if (!/[A-Z]/.test(data.password))
-          ctx.addIssue({
-            code: 'custom',
-            path: ['password'],
-            message: 'Phải có ít nhất 1 chữ hoa'
-          });
-        if (!/[a-z]/.test(data.password))
-          ctx.addIssue({
-            code: 'custom',
-            path: ['password'],
-            message: 'Phải có ít nhất 1 chữ thường'
-          });
-        if (!/[0-9]/.test(data.password))
-          ctx.addIssue({
-            code: 'custom',
-            path: ['password'],
-            message: 'Phải có ít nhất 1 chữ số'
-          });
-        if (!/[^A-Za-z0-9]/.test(data.password))
-          ctx.addIssue({
-            code: 'custom',
-            path: ['password'],
-            message: 'Phải có ít nhất 1 ký tự đặc biệt'
-          });
-      }
-
-      if (data.password !== data.confirmPassword) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['confirmPassword'],
-          message: 'Mật khẩu nhập lại không khớp'
-        });
-      }
-    }
-
-    // === CASE 2: CHỈNH SỬA ===
-    if (isEdit) {
-      // Nếu có nhập vào bất kỳ trường đổi mật khẩu nào
-      if (data.newPassword || data.confirmNewPassword || data.oldPassword) {
-        if (!data.oldPassword) {
-          ctx.addIssue({
-            code: 'custom',
-            path: ['oldPassword'],
-            message: 'Vui lòng nhập mật khẩu cũ'
-          });
-        }
-
-        if (!data.newPassword) {
-          ctx.addIssue({
-            code: 'custom',
-            path: ['newPassword'],
-            message: 'Vui lòng nhập mật khẩu mới'
+            message: 'Bắt buộc'
           });
         } else {
-          if (data.newPassword.length < 8)
+          if (data.password.length < 8)
             ctx.addIssue({
               code: 'custom',
-              path: ['newPassword'],
+              path: ['password'],
               message: 'Mật khẩu tối thiểu 8 ký tự'
             });
-          if (!/[A-Z]/.test(data.newPassword))
+          if (!/[A-Z]/.test(data.password))
             ctx.addIssue({
               code: 'custom',
-              path: ['newPassword'],
+              path: ['password'],
               message: 'Phải có ít nhất 1 chữ hoa'
             });
-          if (!/[a-z]/.test(data.newPassword))
+          if (!/[a-z]/.test(data.password))
             ctx.addIssue({
               code: 'custom',
-              path: ['newPassword'],
+              path: ['password'],
               message: 'Phải có ít nhất 1 chữ thường'
             });
-          if (!/[0-9]/.test(data.newPassword))
+          if (!/[0-9]/.test(data.password))
             ctx.addIssue({
               code: 'custom',
-              path: ['newPassword'],
+              path: ['password'],
               message: 'Phải có ít nhất 1 chữ số'
             });
-          if (!/[^A-Za-z0-9]/.test(data.newPassword))
+          if (!/[^A-Za-z0-9]/.test(data.password))
             ctx.addIssue({
               code: 'custom',
-              path: ['newPassword'],
+              path: ['password'],
               message: 'Phải có ít nhất 1 ký tự đặc biệt'
             });
         }
 
-        if (data.newPassword !== data.confirmNewPassword) {
+        if (data.password !== data.confirmPassword) {
           ctx.addIssue({
             code: 'custom',
-            path: ['confirmNewPassword'],
+            path: ['confirmPassword'],
             message: 'Mật khẩu nhập lại không khớp'
           });
         }
       }
-    }
-  });
+
+      if (isEditing) {
+        if (data.newPassword || data.confirmNewPassword || data.oldPassword) {
+          if (!data.oldPassword) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['oldPassword'],
+              message: 'Vui lòng nhập mật khẩu cũ'
+            });
+          }
+
+          if (!data.newPassword) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['newPassword'],
+              message: 'Vui lòng nhập mật khẩu mới'
+            });
+          } else {
+            if (data.newPassword.length < 8)
+              ctx.addIssue({
+                code: 'custom',
+                path: ['newPassword'],
+                message: 'Mật khẩu tối thiểu 8 ký tự'
+              });
+            if (!/[A-Z]/.test(data.newPassword))
+              ctx.addIssue({
+                code: 'custom',
+                path: ['newPassword'],
+                message: 'Phải có ít nhất 1 chữ hoa'
+              });
+            if (!/[a-z]/.test(data.newPassword))
+              ctx.addIssue({
+                code: 'custom',
+                path: ['newPassword'],
+                message: 'Phải có ít nhất 1 chữ thường'
+              });
+            if (!/[0-9]/.test(data.newPassword))
+              ctx.addIssue({
+                code: 'custom',
+                path: ['newPassword'],
+                message: 'Phải có ít nhất 1 chữ số'
+              });
+            if (!/[^A-Za-z0-9]/.test(data.newPassword))
+              ctx.addIssue({
+                code: 'custom',
+                path: ['newPassword'],
+                message: 'Phải có ít nhất 1 ký tự đặc biệt'
+              });
+          }
+
+          if (data.newPassword !== data.confirmNewPassword) {
+            ctx.addIssue({
+              code: 'custom',
+              path: ['confirmNewPassword'],
+              message: 'Mật khẩu nhập lại không khớp'
+            });
+          }
+        }
+      }
+    });
