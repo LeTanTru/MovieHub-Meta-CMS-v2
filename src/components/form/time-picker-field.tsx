@@ -87,7 +87,11 @@ export default function TimePickerField({
             })}
           >
             {label && (
-              <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
+              <FormLabel
+                className={cn('ml-1 gap-1.5', labelClassName, {
+                  'opacity-50 select-none': disabled
+                })}
+              >
                 {label}
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
@@ -105,7 +109,11 @@ export default function TimePickerField({
                     variant='outline'
                     className={cn(
                       'w-full justify-start text-left font-normal',
-                      !field.value && 'text-muted-foreground'
+                      !field.value && 'text-muted-foreground',
+                      {
+                        'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
+                          fieldState.error
+                      }
                     )}
                   >
                     <span suppressHydrationWarning>

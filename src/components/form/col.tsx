@@ -9,7 +9,7 @@ type ColProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
 export default function Col({
   children,
   className,
-  span = 24,
+  span = 12,
   gutter = 0,
   ...rest
 }: ColProps) {

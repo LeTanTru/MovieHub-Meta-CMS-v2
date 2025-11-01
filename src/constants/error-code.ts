@@ -1,5 +1,6 @@
 import {
   AccountBodyType,
+  BusinessBodyType,
   CustomerBodyType,
   ErrorMaps,
   GroupBodyType,
@@ -176,5 +177,11 @@ export const customerErrorMaps: ErrorMaps<CustomerBodyType> = {
         message: 'Mật khẩu mới không được trùng với mật khẩu cũ'
       }
     ]
+  ]
+};
+
+export const customerBusinessErrorMaps: ErrorMaps<BusinessBodyType> = {
+  [ErrorCode.BUSINESS_ERROR_NOT_OWNER]: [
+    ['tenantId', { type: 'manual', message: 'Mã thuê bao đã tồn tại' }]
   ]
 };

@@ -120,7 +120,11 @@ export default function NumberField<T extends FieldValues>({
           )}
         >
           {label && (
-            <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
+            <FormLabel
+              className={cn('ml-1 gap-1.5', labelClassName, {
+                'opacity-50 select-none': disabled
+              })}
+            >
               {label} {required && <span className='text-destructive'>*</span>}
             </FormLabel>
           )}

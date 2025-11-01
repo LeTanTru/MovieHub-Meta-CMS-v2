@@ -85,6 +85,12 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'BUS_U'
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/business/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'BUS_D'
     }
   },
   customer: {
@@ -147,7 +153,8 @@ const apiConfig = defineApiConfig({
     getByCareerId: {
       baseUrl: `${AppConstants.apiUrl}/v1/db-config/get/:careerId`,
       method: 'GET',
-      headers: baseHeader
+      headers: baseHeader,
+      permissionCode: 'DB_V_ST'
     },
     update: {
       baseUrl: `${AppConstants.apiUrl}/v1/db-config/update`,

@@ -125,8 +125,13 @@ export default function useListBase<
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
     total: 0
   });
-  const { searchParams, setQueryParams, setQueryParam, serializeParams } =
-    useQueryParams<S>();
+  const {
+    searchParams,
+    queryString,
+    setQueryParams,
+    setQueryParam,
+    serializeParams
+  } = useQueryParams<S>();
 
   // Combined current params with default params
   const mergedSearchParams = useMemo(() => {
@@ -534,6 +539,7 @@ export default function useListBase<
     handlers,
     queryFilter,
     listQuery,
+    queryString,
     setData
   };
 }

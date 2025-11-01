@@ -12,7 +12,7 @@ import {
   statusOptions
 } from '@/constants';
 import { useListBase } from '@/hooks';
-import { useChangeStatusCustomerMutation } from '@/queries/customer.query';
+import { useChangeStatusCustomerMutation } from '@/queries';
 import { route } from '@/routes';
 import { customerSearchSchema } from '@/schemaValidations/customer.schema';
 import {

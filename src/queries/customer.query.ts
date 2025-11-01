@@ -1,7 +1,11 @@
 import { apiConfig, queryKeys } from '@/constants';
-import { ApiResponse, ChangeStatusCustomerBodyType } from '@/types';
+import {
+  ApiResponse,
+  ChangeStatusCustomerBodyType,
+  CustomerResType
+} from '@/types';
 import { http } from '@/utils';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useChangeStatusCustomerMutation = () => {
   return useMutation({
@@ -10,5 +14,16 @@ export const useChangeStatusCustomerMutation = () => {
       http.put<ApiResponse<any>>(apiConfig.customer.changeStatus, {
         body
       })
+  });
+};
+
+export const useCustomerQuery = (id: string) => {
+  return useQuery({
+    queryKey: [`${queryKeys.CUSTOMER}`, id],
+    queryFn: () =>
+      http.get<ApiResponse<CustomerResType>>(apiConfig.customer.getById, {
+        pathParams: { id }
+      }),
+    enabled: !!id
   });
 };

@@ -19,11 +19,11 @@ import {
   statusOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useGroupListQuery, useUploadAvatar } from '@/queries';
+import { useGroupListQuery, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
 import { accountSchema } from '@/schemaValidations';
 import { AccountBodyType, AccountResType } from '@/types';
-import { renderImageUrl } from '@/utils';
+import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -35,22 +35,20 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     label: item.name,
     value: item.id.toString()
   }));
-  const uploadImageMutation = useUploadAvatar();
-  const { data, loading, isEditing, handleSubmit, renderActions } = useSaveBase<
-    AccountResType,
-    AccountBodyType
-  >({
-    apiConfig: {
-      create: apiConfig.account.createAdmin,
-      update: apiConfig.account.updateAdmin,
-      getById: apiConfig.account.getById
-    },
-    options: {
-      queryKey,
-      objectName: 'nhân viên',
-      listPageUrl: route.admin.getList.path
-    }
-  });
+  const uploadImageMutation = useUploadAvatarMutation();
+  const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
+    useSaveBase<AccountResType, AccountBodyType>({
+      apiConfig: {
+        create: apiConfig.account.createAdmin,
+        update: apiConfig.account.updateAdmin,
+        getById: apiConfig.account.getById
+      },
+      options: {
+        queryKey,
+        objectName: 'nhân viên',
+        listPageUrl: route.admin.getList.path
+      }
+    });
 
   const defaultValues: AccountBodyType = {
     username: '',
@@ -100,7 +98,10 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Quản trị viên', href: route.admin.getList.path },
+        {
+          label: 'Quản trị viên',
+          href: renderListPageUrl(route.admin.getList.path, queryString)
+        },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} quản trị viên` }
       ]}
     >

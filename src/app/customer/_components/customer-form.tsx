@@ -18,22 +18,28 @@ import {
   statusOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useUploadAvatar } from '@/queries';
+import { useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
 import { customerSchema } from '@/schemaValidations';
 import { CustomerBodyType, CustomerResType } from '@/types';
-import { renderImageUrl } from '@/utils';
+import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function CustomerForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
   const [logoPath, setLogoPath] = useState<string>('');
-  const uploadImageMutation = useUploadAvatar();
-  const { data, loading, isEditing, handleSubmit, renderActions } = useSaveBase<
-    CustomerResType,
-    CustomerBodyType
-  >({
+  const uploadImageMutation = useUploadAvatarMutation();
+
+  const {
+    data,
+    loading,
+    isEditing,
+    queryString,
+    handleSubmit,
+    renderActions,
+    setDetailId
+  } = useSaveBase<CustomerResType, CustomerBodyType>({
     apiConfig: apiConfig.customer,
     options: {
       queryKey,
@@ -70,11 +76,11 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
 
   useEffect(() => {
     if (data?.account?.avatarPath) setAvatarPath(data?.account?.avatarPath);
-  }, [data]);
+  }, [data?.account?.avatarPath]);
 
   useEffect(() => {
     if (data?.logoPath) setLogoPath(data?.logoPath);
-  }, [data]);
+  }, [data?.logoPath]);
 
   const onSubmit = async (
     values: CustomerBodyType,
@@ -90,7 +96,10 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Khách hàng', href: route.customer.getList.path },
+        {
+          label: 'Khách hàng',
+          href: renderListPageUrl(route.customer.getList.path, queryString)
+        },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} khách hàng` }
       ]}
     >

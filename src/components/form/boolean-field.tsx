@@ -14,6 +14,7 @@ type BooleanFieldProps = {
   required?: boolean;
   labelClassName?: string;
   className?: string;
+  disabled?: boolean;
 };
 
 export default function BooleanField({
@@ -22,7 +23,8 @@ export default function BooleanField({
   label,
   required,
   className,
-  labelClassName
+  labelClassName,
+  disabled
 }: BooleanFieldProps) {
   const id = useId();
 
@@ -40,6 +42,7 @@ export default function BooleanField({
       >
         <Switch
           id={id}
+          disabled={disabled}
           checked={value}
           onCheckedChange={onChange}
           className='peer data-[state=unchecked]:bg-input/50 data-[state=checked]:bg-dodger-blue absolute inset-0 h-[inherit] w-auto cursor-pointer [&_span]:z-10 [&_span]:h-full [&_span]:w-1/2 [&_span]:transition-transform [&_span]:duration-300 [&_span]:ease-[cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:translate-x-full [&_span]:data-[state=checked]:rtl:-translate-x-full'
@@ -52,7 +55,11 @@ export default function BooleanField({
         </span>
       </div>
       {label && (
-        <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
+        <FormLabel
+          className={cn('ml-1 gap-1.5', labelClassName, {
+            'opacity-50 select-none': disabled
+          })}
+        >
           {label}
           {required && <span className='text-destructive'>*</span>}
         </FormLabel>

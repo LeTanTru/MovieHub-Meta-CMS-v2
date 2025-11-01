@@ -36,8 +36,13 @@ export const COUPON_TYPE_FIXED = 1;
 export const COUPON_TYPE_PERCENTAGE = 2;
 
 export const DEFAULT_DATE_FORMAT = 'dd/MM/yyyy';
-export const DATE_TIME_FORMAT = 'HH:mm:ss, dd/MM/yyyy ';
-export const DATE_DAY_TIME_FORMAT = 'EEEE, HH:mm:ss, dd/MM/yyyy';
+export const TIME_DATE_FORMAT = 'HH:mm:ss dd/MM/yyyy';
+export const DATE_TIME_FORMAT = 'dd/MM/yyyy HH:mm:ss';
+export const DATE_DAY_TIME_FORMAT = 'EEEE HH:mm:ss dd/MM/yyyy';
+
+export const DEFAULT_DATE_FORMAT_UTC = 'MM/dd/yyyy';
+export const DATE_TIME_FORMAT_UTC = 'HH:mm:ss MM/dd/yyyy';
+export const DATE_DAY_TIME_FORMAT_UTC = 'EEEE HH:mm:ss MM/dd/yyyy';
 
 export const CONTRIBUTOR_AUTHOR = 1;
 export const CONTRIBUTOR_TRANSLATOR = 2;

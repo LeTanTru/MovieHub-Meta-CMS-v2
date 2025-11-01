@@ -55,7 +55,7 @@ export default function useSaveBase<
   const [detailId, setDetailId] = useState('');
   const navigate = useNavigate();
   const isCreate = !detailId || detailId === 'create';
-  const { searchParams, serializeParams } = useQueryParams();
+  const { searchParams, queryString, serializeParams } = useQueryParams();
 
   useEffect(() => {
     if (id) setDetailId(id);
@@ -137,7 +137,7 @@ export default function useSaveBase<
     errorMaps?: ErrorMaps<T>
   ) => {
     await mutation.mutateAsync(
-      isCreate ? { ...values } : { ...values, id: values.id ?? id },
+      isCreate ? { ...values } : { ...values, id: values.id ?? detailId },
       {
         onSuccess: (res) => {
           if (res.result) {
@@ -254,6 +254,7 @@ export default function useSaveBase<
     itemQuery,
     isEditing: !isCreate,
     loading: itemQuery.isLoading || itemQuery.isFetching,
+    queryString,
     handleSubmit,
     renderActions,
     setDetailId

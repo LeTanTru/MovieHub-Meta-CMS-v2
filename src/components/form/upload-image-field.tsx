@@ -239,8 +239,8 @@ export default function UploadImageField<T extends FieldValues>({
               <UploadIcon
                 strokeWidth={1}
                 style={{
-                  width: size / 2.2,
-                  height: size / 2.2
+                  width: size / 3,
+                  height: size / 3
                 }}
                 className='opacity-60'
               />
@@ -309,15 +309,16 @@ export default function UploadImageField<T extends FieldValues>({
           <AspectRatio ratio={aspect} className='bg-muted'>
             {previewUrl && shouldCrop ? (
               <Cropper
-                className='h-full w-full'
+                aspectRatio={aspect}
+                className='1 h-full w-full'
                 image={previewUrl}
                 zoom={zoom}
                 onCropChange={handleCropChange}
                 onZoomChange={setZoom}
               >
-                <CropperDescription />
-                <CropperImage />
-                <CropperCropArea />
+                <CropperDescription className='2' />
+                <CropperImage className='3' />
+                <CropperCropArea className='4' />
               </Cropper>
             ) : (
               previewUrl && (

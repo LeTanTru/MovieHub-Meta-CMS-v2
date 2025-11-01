@@ -143,11 +143,15 @@ export default function SelectField<
         return (
           <FormItem
             className={cn('relative', className, {
-              'cursor-not-allowed': disabled
+              'cursor-not-allowed select-none': disabled
             })}
           >
             {label && (
-              <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
+              <FormLabel
+                className={cn('ml-1 gap-1.5', labelClassName, {
+                  'opacity-50 select-none': disabled
+                })}
+              >
                 {label}
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
@@ -164,7 +168,7 @@ export default function SelectField<
                     'w-full flex-wrap justify-between truncate border px-3 py-0 text-black focus:ring-0 focus-visible:shadow-none',
                     {
                       'pl-1!': selectedValues.length > 1,
-                      'disabled:cursor-not-allowed disabled:opacity-100':
+                      'disabled:cursor-not-allowed disabled:opacity-50':
                         disabled,
                       'border-dodger-blue ring-dodger-blue ring-1': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,

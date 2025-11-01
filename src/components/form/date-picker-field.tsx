@@ -83,7 +83,11 @@ export default function DatePickerField({
             })}
           >
             {label && (
-              <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
+              <FormLabel
+                className={cn('ml-1 gap-1.5', labelClassName, {
+                  'opacity-50 select-none': disabled
+                })}
+              >
                 {label}
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
@@ -98,7 +102,11 @@ export default function DatePickerField({
                       'w-full justify-start text-left font-normal text-black opacity-100',
                       'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
                       'data-[state=open]:border-dodger-blue data-[state=open]:ring-dodger-blue data-[state=open]:ring-1',
-                      !field.value && 'text-muted-foreground'
+                      !field.value && 'text-muted-foreground',
+                      {
+                        'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
+                          fieldState.error
+                      }
                     )}
                     disabled={disabled}
                   >

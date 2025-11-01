@@ -13,8 +13,7 @@ import {
   FormControl,
   FormDescription,
   FormItem,
-  FormLabel,
-  FormMessage
+  FormLabel
 } from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Control, Controller } from 'react-hook-form';
@@ -40,6 +39,7 @@ type Props = {
   required?: boolean;
   format?: string;
   labelClassName?: string;
+  disabled?: boolean;
 };
 
 export default function DateTimePickerField({
@@ -49,7 +49,8 @@ export default function DateTimePickerField({
   description,
   required,
   format: dateFormat = DATE_TIME_FORMAT,
-  labelClassName
+  labelClassName,
+  disabled
 }: Props) {
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
@@ -71,7 +72,7 @@ export default function DateTimePickerField({
               selected.getMonth(),
               selected.getDate()
             );
-            field.onChange(updated);
+            field.onChange(updated.toISOString());
           }
         };
 
@@ -83,7 +84,7 @@ export default function DateTimePickerField({
           if (type === 'hour') current.setHours(val);
           if (type === 'minute') current.setMinutes(val);
           if (type === 'second') current.setSeconds(val);
-          field.onChange(current);
+          field.onChange(current.toISOString());
         };
 
         const getSelectedTime = () => {
@@ -100,7 +101,11 @@ export default function DateTimePickerField({
         return (
           <FormItem className='relative'>
             {label && (
-              <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
+              <FormLabel
+                className={cn('ml-1 gap-1.5', labelClassName, {
+                  'opacity-50 select-none': disabled
+                })}
+              >
                 {label}
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
@@ -109,17 +114,22 @@ export default function DateTimePickerField({
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
+                    disabled={disabled}
                     variant='outline'
                     className={cn(
                       'w-full justify-start text-left font-normal text-black opacity-100',
                       'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
                       'data-[state=open]:border-dodger-blue data-[state=open]:ring-dodger-blue data-[state=open]:ring-1',
-                      !field.value && 'text-muted-foreground'
+                      !field.value && 'text-muted-foreground',
+                      {
+                        'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
+                          fieldState.error
+                      }
                     )}
                   >
                     <CalendarIcon className='mr-2 h-4 w-4' />
                     <span suppressHydrationWarning>
-                      {field.value
+                      {field.value && !isNaN(new Date(field.value).getTime())
                         ? format(new Date(field.value), dateFormat)
                         : dateFormat}
                     </span>
@@ -132,7 +142,7 @@ export default function DateTimePickerField({
                     className='flex-1'
                     classNames={{
                       day_button:
-                        'data-[selected-single=true]:bg-dodger-blue data-[selected-single=true]:text-white cursor-pointer !ring-0 !focus-visible:ring-0 !focus-visible:ring-offset-0',
+                        'data-[selected-single=true]:bg-dodger-blue data-[selected-single=true]:text-white cursor-pointer ring-0! !focus-visible:ring-0 !focus-visible:ring-offset-0',
                       button_next:
                         'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -mr-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-dodger-blue',
                       button_previous:
@@ -158,7 +168,7 @@ export default function DateTimePickerField({
                         month.getMonth(),
                         1
                       );
-                      field.onChange(firstDay);
+                      field.onChange(firstDay.toISOString());
                     }}
                   />
                   <div className='flex flex-col divide-y sm:h-85 sm:flex-row sm:divide-x sm:divide-y-0'>
@@ -231,7 +241,7 @@ export default function DateTimePickerField({
                     className='mx-auto'
                     onClick={() => {
                       const now = new Date();
-                      field.onChange(now);
+                      field.onChange(now.toISOString());
                       setIsOpen(false);
                     }}
                   >
@@ -243,7 +253,7 @@ export default function DateTimePickerField({
             {description && <FormDescription>{description}</FormDescription>}
             {fieldState.error && (
               <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
-                <FormMessage />
+                {fieldState.error.message}
               </div>
             )}
           </FormItem>
