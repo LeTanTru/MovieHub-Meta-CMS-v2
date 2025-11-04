@@ -14,9 +14,11 @@ import { Modal } from '@/components/modal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { apiConfig, dbConfigErrorMaps, queryKeys } from '@/constants';
 import { useSaveBase } from '@/hooks';
+import { logger } from '@/logger';
 import { useServerProviderListQuery } from '@/queries';
 import { dbConfigSchema } from '@/schemaValidations';
 import { DbConfigBodyType, DbConfigResType, BusinessResType } from '@/types';
+import { useQueryClient } from '@tanstack/react-query';
 import { omit } from 'lodash';
 import { X } from 'lucide-react';
 import { useMemo } from 'react';
@@ -31,6 +33,8 @@ export default function DbConfigModal({
   open: boolean;
   onClose: () => void;
 }) {
+  console.log('🚀 ~ DbConfigModal ~ data:', data);
+  const queryClient = useQueryClient();
   const serverProviderListQuery = useServerProviderListQuery({ enabled: open });
   const serverProviderList =
     serverProviderListQuery.data?.data?.content?.map((item) => ({
@@ -122,7 +126,7 @@ export default function DbConfigModal({
       host: dbInfo?.host,
       port: dbInfo?.port
     };
-  }, [data?.id, dbConfig, dbInfo]);
+  }, [dbConfig, data?.id]);
 
   const onSubmit = async (
     values: DbConfigBodyType,
@@ -139,13 +143,26 @@ export default function DbConfigModal({
       },
       ['host', 'port', 'dbName']
     );
-    await handleSubmit({ ...(payload as any) }, form, dbConfigErrorMaps);
-    onClose();
+    try {
+      const res = await handleSubmit(
+        { ...(payload as any) },
+        form,
+        dbConfigErrorMaps
+      );
+      if (res.result) {
+        queryClient.invalidateQueries({
+          queryKey: [`${queryKeys.BUSINESS}-list`]
+        });
+        onClose();
+      }
+    } catch (error) {
+      logger.error(error);
+    }
   };
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Card className='w-175 bg-white'>
+      <Card className='w-200 bg-white'>
         <CardHeader className='flex flex-row items-center justify-between p-4'>
           <CardTitle className='mb-0 font-normal'>{`Cấu hình cơ sở dữ liệu`}</CardTitle>
           <X

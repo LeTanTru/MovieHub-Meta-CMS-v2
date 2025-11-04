@@ -110,7 +110,7 @@ export default function ProfileForm() {
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col span={24}>
               <InputField
                 control={form.control}
                 name='email'
@@ -121,7 +121,7 @@ export default function ProfileForm() {
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col span={24}>
               <InputField
                 control={form.control}
                 name='fullName'
@@ -132,7 +132,7 @@ export default function ProfileForm() {
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col span={24}>
               <InputField
                 control={form.control}
                 name='phone'

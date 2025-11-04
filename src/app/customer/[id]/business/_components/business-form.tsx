@@ -57,7 +57,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
           id: customerId
         }),
         pathParams: {
-          businessId
+          id: businessId
         },
         mode: businessId === 'create' ? 'create' : 'edit'
       }
@@ -99,7 +99,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
       note: data?.note ?? '',
       settings: data?.settings ?? '',
       taxNumber: data?.taxNumber ?? '',
-      tenantId: data?.tenantId ?? '',
+      tenantId: data?.businessTenantId ?? '',
       zipCode: data?.zipCode ?? '',
       status: data?.status ?? STATUS_ACTIVE
     };
@@ -135,6 +135,10 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
       breadcrumbs={[
         {
           label: 'Khách hàng',
+          href: renderListPageUrl(route.customer.getList.path, queryString)
+        },
+        {
+          label: 'Doanh nghiệp',
           href: renderListPageUrl(
             generatePath(route.customer.business.getList.path, {
               id: customerId
@@ -142,7 +146,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
             queryString
           )
         },
-        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} khách hàng` }
+        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} doanh nghiệp` }
       ]}
     >
       <BaseForm

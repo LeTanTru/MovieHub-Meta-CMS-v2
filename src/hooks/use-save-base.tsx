@@ -137,7 +137,7 @@ export default function useSaveBase<
     form?: UseFormReturn<T>,
     errorMaps?: ErrorMaps<T>
   ) => {
-    await mutation.mutateAsync(
+    return await mutation.mutateAsync(
       isCreate
         ? { ...values }
         : { ...values, id: values.id ?? data?.id ?? pathParams.id },

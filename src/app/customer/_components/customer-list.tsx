@@ -171,7 +171,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
   ];
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Quản trị viên' }]}>
+    <PageWrapper breadcrumbs={[{ label: 'Khách hàng' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,

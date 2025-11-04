@@ -1,5 +1,4 @@
 'use client';
-
 import DbConfigModal from '@/app/customer/[id]/business/_components/db-config-modal';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
@@ -12,6 +11,7 @@ import {
   TIME_DATE_FORMAT
 } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
+import { route } from '@/routes';
 import { businessSearchSchema } from '@/schemaValidations';
 import {
   BusinessResType,
@@ -19,7 +19,7 @@ import {
   Column,
   SearchFormProps
 } from '@/types';
-import { formatDateUTC, renderImageUrl } from '@/utils';
+import { formatDateUTC, renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { AiOutlineApartment, AiOutlineFileImage } from 'react-icons/ai';
@@ -29,7 +29,7 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
   const [selectedRow, setSelectedRow] = useState<BusinessResType | null>(null);
   const dbConfigModal = useDisclosure();
 
-  const { data, loading, pagination, handlers } = useListBase<
+  const { data, loading, pagination, handlers, queryString } = useListBase<
     BusinessResType,
     BusinessSearchType
   >({
@@ -150,7 +150,17 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
   ];
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Quản trị viên' }]}>
+    <PageWrapper
+      breadcrumbs={[
+        {
+          label: 'Khách hàng',
+          href: renderListPageUrl(route.customer.getList.path, queryString)
+        },
+        {
+          label: 'Doanh nghiệp'
+        }
+      ]}
+    >
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,

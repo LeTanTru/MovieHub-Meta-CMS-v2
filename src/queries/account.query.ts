@@ -17,7 +17,7 @@ export const useUpdateProfileMutation = () => {
   return useMutation({
     mutationKey: ['update-profile'],
     mutationFn: (body: ProfileBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.account.updateAdmin, {
+      http.put<ApiResponse<any>>(apiConfig.account.updateProfileAdmin, {
         body
       }),
     onSuccess: async () => {
