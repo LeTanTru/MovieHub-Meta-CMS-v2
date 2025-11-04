@@ -33,7 +33,6 @@ export default function DbConfigModal({
   open: boolean;
   onClose: () => void;
 }) {
-  console.log('🚀 ~ DbConfigModal ~ data:', data);
   const queryClient = useQueryClient();
   const serverProviderListQuery = useServerProviderListQuery({ enabled: open });
   const serverProviderList =
