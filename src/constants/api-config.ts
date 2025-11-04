@@ -150,8 +150,8 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       permissionCode: 'DB_V_NAME'
     },
-    getByCareerId: {
-      baseUrl: `${AppConstants.apiUrl}/v1/db-config/get/:careerId`,
+    getByBusinessId: {
+      baseUrl: `${AppConstants.apiUrl}/v1/db-config/get/:businessId`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'DB_V_ST'

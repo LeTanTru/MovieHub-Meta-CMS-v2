@@ -24,6 +24,7 @@ import { route } from '@/routes';
 import { accountSchema } from '@/schemaValidations';
 import { AccountBodyType, AccountResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
+import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -36,6 +37,8 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     value: item.id.toString()
   }));
   const uploadImageMutation = useUploadAvatarMutation();
+  const { id } = useParams<{ id: string }>();
+
   const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
     useSaveBase<AccountResType, AccountBodyType>({
       apiConfig: {
@@ -46,7 +49,11 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       options: {
         queryKey,
         objectName: 'nhân viên',
-        listPageUrl: route.admin.getList.path
+        listPageUrl: route.admin.getList.path,
+        pathParams: {
+          id
+        },
+        mode: id === 'create' ? 'create' : 'edit'
       }
     });
 

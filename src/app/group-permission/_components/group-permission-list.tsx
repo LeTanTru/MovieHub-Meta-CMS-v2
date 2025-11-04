@@ -1,5 +1,4 @@
 'use client';
-
 import { Button, Col, InputField, Row, ToolTip } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { HasPermission } from '@/components/has-permission';
@@ -76,14 +75,17 @@ export default function GroupPermissionList({
   });
   const {
     data: groupPermission,
-    setDetailId,
     handleSubmit,
     renderActions
   } = useSaveBase<GroupPermissionResType, GroupPermissionBodyType>({
     apiConfig: apiConfig.groupPermission,
     options: {
       queryKey,
-      objectName: 'nhóm quyền'
+      objectName: 'nhóm quyền',
+      pathParams: {
+        id: selectedRow?.id
+      },
+      mode: selectedRow === null ? 'create' : 'edit'
     }
   });
 
@@ -91,7 +93,6 @@ export default function GroupPermissionList({
     setIsEditing(false);
     open();
     setSelectedRow(null);
-    setDetailId('');
   };
 
   const handleClose = () => {
@@ -101,7 +102,7 @@ export default function GroupPermissionList({
   const handleEditClick = (record: GroupPermissionResType) => {
     setIsEditing(true);
     open();
-    setDetailId(record.id);
+    setSelectedRow(record);
   };
 
   useEffect(() => {

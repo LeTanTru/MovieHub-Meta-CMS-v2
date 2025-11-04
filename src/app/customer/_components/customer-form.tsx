@@ -23,6 +23,7 @@ import { route } from '@/routes';
 import { customerSchema } from '@/schemaValidations';
 import { CustomerBodyType, CustomerResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
+import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -30,23 +31,21 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
   const [logoPath, setLogoPath] = useState<string>('');
   const uploadImageMutation = useUploadAvatarMutation();
+  const { id } = useParams<{ id: string }>();
 
-  const {
-    data,
-    loading,
-    isEditing,
-    queryString,
-    handleSubmit,
-    renderActions,
-    setDetailId
-  } = useSaveBase<CustomerResType, CustomerBodyType>({
-    apiConfig: apiConfig.customer,
-    options: {
-      queryKey,
-      objectName: 'khách hàng',
-      listPageUrl: route.customer.getList.path
-    }
-  });
+  const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
+    useSaveBase<CustomerResType, CustomerBodyType>({
+      apiConfig: apiConfig.customer,
+      options: {
+        queryKey,
+        objectName: 'khách hàng',
+        listPageUrl: route.customer.getList.path,
+        pathParams: {
+          id
+        },
+        mode: id === 'create' ? 'create' : 'edit'
+      }
+    });
 
   const defaultValues: CustomerBodyType = {
     username: '',

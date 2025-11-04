@@ -47,23 +47,21 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
   const customerQuery = useCustomerQuery(customerId);
   const customer = customerQuery.data?.data;
 
-  const {
-    data,
-    loading,
-    queryString,
-    handleSubmit,
-    renderActions,
-    setDetailId
-  } = useSaveBase<BusinessResType, BusinessBodyType>({
-    apiConfig: apiConfig.business,
-    options: {
-      queryKey,
-      objectName: 'khách hàng',
-      listPageUrl: generatePath(route.customer.business.getList.path, {
-        id: customerId
-      })
-    }
-  });
+  const { data, loading, queryString, handleSubmit, renderActions } =
+    useSaveBase<BusinessResType, BusinessBodyType>({
+      apiConfig: apiConfig.business,
+      options: {
+        queryKey,
+        objectName: 'khách hàng',
+        listPageUrl: generatePath(route.customer.business.getList.path, {
+          id: customerId
+        }),
+        pathParams: {
+          businessId
+        },
+        mode: businessId === 'create' ? 'create' : 'edit'
+      }
+    });
 
   const defaultValues: BusinessBodyType = {
     address: '',
@@ -114,10 +112,6 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
   useEffect(() => {
     if (data?.logoPath) setLogoPath(data?.logoPath);
   }, [data?.logoPath]);
-
-  useEffect(() => {
-    setDetailId(businessId);
-  }, [businessId, setDetailId]);
 
   const onSubmit = async (
     values: BusinessBodyType,

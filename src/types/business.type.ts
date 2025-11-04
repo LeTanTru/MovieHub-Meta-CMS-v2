@@ -13,7 +13,7 @@ export type BusinessResType = {
   hotline: string;
   settings: string;
   lang: string;
-  serverProvider: ServerProviderResType;
+  serverProviderDto: ServerProviderResType;
   customer: CustomerResType;
   address: string;
   city: string;

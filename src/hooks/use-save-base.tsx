@@ -20,12 +20,11 @@ import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type HandlerType<T> = {
-  id: () => any;
+  additionParams: () => { [key: string]: any };
 };
 
 type UseSaveBaseProps<R, T> = {
@@ -38,6 +37,9 @@ type UseSaveBaseProps<R, T> = {
     objectName: string;
     listPageUrl?: string;
     queryKey: string;
+    enabled?: boolean;
+    pathParams: { [key: string]: any };
+    mode: 'create' | 'edit';
   };
   override?: (handlers: HandlerType<T>) => HandlerType<T> | void;
 };
@@ -47,36 +49,35 @@ export default function useSaveBase<
   T extends FieldValues
 >({
   apiConfig,
-  options: { queryKey = '', objectName = '', listPageUrl = '' },
+  options: {
+    queryKey = '',
+    objectName = '',
+    listPageUrl = '',
+    enabled = true,
+    pathParams,
+    mode
+  },
   override
 }: UseSaveBaseProps<R, T>) {
   const queryClient = useQueryClient();
-  const { id } = useParams<{ id: string }>();
-  const [detailId, setDetailId] = useState('');
   const navigate = useNavigate();
-  const isCreate = !detailId || detailId === 'create';
+  const isCreate = mode === 'create';
   const { searchParams, queryString, serializeParams } = useQueryParams();
 
-  useEffect(() => {
-    if (id) setDetailId(id);
-  }, [id]);
-
   const itemQuery = useQuery({
-    queryKey: [queryKey, detailId],
+    queryKey: [queryKey, pathParams],
     queryFn: () =>
       http.get<ApiResponse<R>>(apiConfig.getById, {
-        pathParams: {
-          id: detailId
-        }
+        pathParams
       }),
-    enabled: !isCreate
+    enabled: false
   });
 
   const data = itemQuery.data?.data;
 
   useEffect(() => {
-    if (!isCreate) itemQuery.refetch();
-  }, [isCreate]);
+    if (!isCreate && enabled) itemQuery.refetch();
+  }, [enabled, mode]);
 
   const createMutation = useMutation({
     mutationKey: [`create-${queryKey}`],
@@ -137,12 +138,14 @@ export default function useSaveBase<
     errorMaps?: ErrorMaps<T>
   ) => {
     await mutation.mutateAsync(
-      isCreate ? { ...values } : { ...values, id: values.id ?? detailId },
+      isCreate
+        ? { ...values }
+        : { ...values, id: values.id ?? data?.id ?? pathParams.id },
       {
         onSuccess: (res) => {
           if (res.result) {
             queryClient.invalidateQueries({
-              queryKey: [queryKey, detailId]
+              queryKey: [queryKey, pathParams.id]
             });
             notify.success(
               `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`
@@ -219,7 +222,13 @@ export default function useSaveBase<
                   </Button>
                 </AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={() => navigate(listPageUrl)}
+                  onClick={() => {
+                    if (listPageUrl) {
+                      navigate(listPageUrl);
+                    } else {
+                      options?.onCancel?.();
+                    }
+                  }}
                   className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
                 >
                   Có
@@ -250,13 +259,11 @@ export default function useSaveBase<
 
   return {
     data,
-    detailId,
     itemQuery,
     isEditing: !isCreate,
     loading: itemQuery.isLoading || itemQuery.isFetching,
     queryString,
     handleSubmit,
-    renderActions,
-    setDetailId
+    renderActions
   };
 }

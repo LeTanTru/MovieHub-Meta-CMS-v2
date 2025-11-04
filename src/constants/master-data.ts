@@ -87,7 +87,9 @@ export const queryKeys = {
   GROUP: 'group',
   CUSTOMER: 'customer',
   GROUP_PERMISSION: 'group-permission',
-  BUSINESS: 'business'
+  BUSINESS: 'business',
+  DB_CONFIG: 'db_config',
+  SERVER_PROVIDER: 'server_provider'
 };
 
 export const languageOptions = [

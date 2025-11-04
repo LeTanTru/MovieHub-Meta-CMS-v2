@@ -5,6 +5,7 @@ export * from './base-table.type';
 export * from './breadcrumb.type';
 export * from './business.type';
 export * from './customer.type';
+export * from './db-config.type';
 export * from './file.type';
 export * from './form-error.type';
 export * from './group-permission.type';

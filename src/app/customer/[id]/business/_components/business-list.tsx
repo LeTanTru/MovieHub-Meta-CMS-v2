@@ -1,5 +1,6 @@
 'use client';
 
+import DbConfigModal from '@/app/customer/[id]/business/_components/db-config-modal';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
@@ -10,7 +11,7 @@ import {
   statusOptions,
   TIME_DATE_FORMAT
 } from '@/constants';
-import { useListBase } from '@/hooks';
+import { useDisclosure, useListBase } from '@/hooks';
 import { businessSearchSchema } from '@/schemaValidations';
 import {
   BusinessResType,
@@ -20,10 +21,14 @@ import {
 } from '@/types';
 import { formatDateUTC, renderImageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
+import { useState } from 'react';
 import { AiOutlineApartment, AiOutlineFileImage } from 'react-icons/ai';
 
 export default function BusinessList({ queryKey }: { queryKey: string }) {
   const { id: customerId } = useParams<{ id: string }>();
+  const [selectedRow, setSelectedRow] = useState<BusinessResType | null>(null);
+  const dbConfigModal = useDisclosure();
+
   const { data, loading, pagination, handlers } = useListBase<
     BusinessResType,
     BusinessSearchType
@@ -43,12 +48,13 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
         ) => (
           <HasPermission
             requiredPermissions={[
-              apiConfig.dbConfig.getByCareerId.permissionCode as string
+              apiConfig.dbConfig.getByBusinessId.permissionCode as string
             ]}
           >
             <ToolTip title={'Cấu hình cơ sở dữ liệu'}>
               <span>
                 <Button
+                  onClick={() => handleOpenDbConfigModal(record)}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
@@ -61,6 +67,16 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
       });
     }
   });
+
+  const handleOpenDbConfigModal = (record: BusinessResType) => {
+    setSelectedRow(record);
+    dbConfigModal.open();
+  };
+
+  const handleCloseDbConfigModal = () => {
+    setSelectedRow(null);
+    dbConfigModal.close();
+  };
 
   const columns: Column<BusinessResType>[] = [
     {
@@ -151,6 +167,11 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>
+      <DbConfigModal
+        data={selectedRow}
+        onClose={handleCloseDbConfigModal}
+        open={dbConfigModal.opened}
+      />
     </PageWrapper>
   );
 }

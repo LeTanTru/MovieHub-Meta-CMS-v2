@@ -168,7 +168,7 @@ export default function SelectField<
                     'w-full flex-wrap justify-between truncate border px-3 py-0 text-black focus:ring-0 focus-visible:shadow-none',
                     {
                       'pl-1!': selectedValues.length > 1,
-                      'disabled:cursor-not-allowed disabled:opacity-50':
+                      'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/80 text-gray-500':
                         disabled,
                       'border-dodger-blue ring-dodger-blue ring-1': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
