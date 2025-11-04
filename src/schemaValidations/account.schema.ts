@@ -20,26 +20,43 @@ export const accountSearchSchema = z.object({
   username: z.string().optional().nullable()
 });
 
-export const accountSchema = z
-  .object({
-    email: z.string().nonempty('Bắt buộc'),
-    password: z
-      .string()
-      .nonempty('Bắt buộc')
-      .min(8, 'Mật khẩu tối thiểu 8 ký tự')
-      .regex(/[A-Z]/, 'Phải có ít nhất 1 chữ hoa')
-      .regex(/[a-z]/, 'Phải có ít nhất 1 chữ thường')
-      .regex(/[0-9]/, 'Phải có ít nhất 1 chữ số')
-      .regex(/[^A-Za-z0-9]/, 'Phải có ít nhất 1 ký tự đặc biệt'),
-    confirmPassword: z.string().nonempty('Bắt buộc'),
-    fullName: z.string().nonempty('Bắt buộc'),
-    avatarPath: z.string().optional(),
-    groupId: z.string().nonempty('Bắt buộc'),
-    status: z.number({ error: 'Bắt buộc' }),
-    username: z.string().nonempty('Bắt buộc'),
-    kind: z.number().optional()
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    message: 'Mật khẩu xác nhận không khớp'
-  });
+export const accountSchema = (isEditing: boolean) =>
+  z
+    .object({
+      email: z.string().nonempty('Bắt buộc'),
+      password: isEditing
+        ? z.string().optional()
+        : z
+            .string()
+            .nonempty('Bắt buộc')
+            .min(8, 'Mật khẩu tối thiểu 8 ký tự')
+            .regex(/[A-Z]/, 'Phải có ít nhất 1 chữ hoa')
+            .regex(/[a-z]/, 'Phải có ít nhất 1 chữ thường')
+            .regex(/[0-9]/, 'Phải có ít nhất 1 chữ số')
+            .regex(/[^A-Za-z0-9]/, 'Phải có ít nhất 1 ký tự đặc biệt'),
+      confirmPassword: isEditing
+        ? z.string().optional()
+        : z.string().nonempty('Bắt buộc'),
+      fullName: z.string().nonempty('Bắt buộc'),
+      avatarPath: z.string().optional(),
+      groupId: z.string().nonempty('Bắt buộc'),
+      status: z.number({ error: 'Bắt buộc' }),
+      username: z.string().nonempty('Bắt buộc'),
+      kind: z.number().optional(),
+      phone: z
+        .string()
+        .nonempty('Bắt buộc')
+        .regex(/^\d{10}$/, 'Số điện thoại phải gồm 10 chữ số')
+    })
+    .refine(
+      (data) => {
+        if (!isEditing) {
+          return data.password === data.confirmPassword;
+        }
+        return true;
+      },
+      {
+        path: ['confirmPassword'],
+        message: 'Mật khẩu xác nhận không khớp'
+      }
+    );

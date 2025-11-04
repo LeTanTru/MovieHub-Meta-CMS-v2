@@ -1,5 +1,8 @@
 import {
+  AccountBodyType,
+  BusinessBodyType,
   CustomerBodyType,
+  DbConfigBodyType,
   ErrorMaps,
   GroupBodyType,
   PermissionBodyType
@@ -133,7 +136,25 @@ export const permissionErrorMaps: ErrorMaps<PermissionBodyType> = {
   ]
 };
 
-export const accountErrorMaps: ErrorMaps<CustomerBodyType> = {
+export const adminErrorMaps: ErrorMaps<AccountBodyType> = {
+  [ErrorCode.ACCOUNT_ERROR_UNKNOWN]: [
+    ['username', { type: 'manual', message: 'Lỗi không xác định' }]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_USERNAME_EXIST]: [
+    ['username', { type: 'manual', message: 'Tên đăng nhập đã tồn tại' }]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD]: [
+    ['password', { type: 'manual', message: 'Mật khẩu không đúng' }]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_EMAIL_EXISTED]: [
+    ['email', { type: 'manual', message: 'Email đã tồn tại' }]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_PHONE_EXISTED]: [
+    ['phone', { type: 'manual', message: 'Số điện thoại đã tồn tại' }]
+  ]
+};
+
+export const customerErrorMaps: ErrorMaps<CustomerBodyType> = {
   [ErrorCode.ACCOUNT_ERROR_UNKNOWN]: [
     ['username', { type: 'manual', message: 'Lỗi không xác định' }]
   ],
@@ -159,3 +180,28 @@ export const accountErrorMaps: ErrorMaps<CustomerBodyType> = {
     ]
   ]
 };
+
+export const customerBusinessErrorMaps: ErrorMaps<BusinessBodyType> = {
+  [ErrorCode.BUSINESS_ERROR_NOT_OWNER]: [
+    ['tenantId', { type: 'manual', message: 'Mã thuê bao đã tồn tại' }]
+  ]
+};
+
+export const dbConfigErrorMaps: ErrorMaps<DbConfigBodyType> = {
+  [ErrorCode.DB_CONFIG_USER_NAME_EXISTED]: [
+    ['username', { type: 'manual', message: 'Tên đăng nhập đã tồn tại' }]
+  ]
+};
+
+/*
+  DB_CONFIG_ERROR_UNAUTHORIZED: 'ERROR-DB-CONFIG-000',
+  DB_CONFIG_ERROR_NOT_FOUND: 'ERROR-DB-CONFIG-001',
+  DB_CONFIG_ERROR_NOT_INITIALIZE: 'ERROR-DB-CONFIG-002',
+  DB_CONFIG_ERROR_CANNOT_CREATE_DB: 'ERROR-DB-CONFIG-003',
+  DB_CONFIG_ERROR_CANNOT_RESTORE_DB: 'ERROR-DB-CONFIG-004',
+  DB_CONFIG_ERROR_UPLOAD: 'ERROR-DB-RESTORE-005',
+  DB_CONFIG_UPGRADE_TENANT_ALREADY_IN_PROCESS: 'ERROR-DB-CONFIG-006',
+  DB_CONFIG_ERROR_DROP: 'ERROR-DB-CONFIG-007',
+  DB_CONFIG_SHOP_EXISTED: 'ERROR-DB-CONFIG-008',
+  DB_CONFIG_USER_NAME_EXISTED: 'ERROR-DB-CONFIG-009',
+*/

@@ -50,7 +50,11 @@ export default function CheckboxGroupField<T extends FieldValues>({
         return (
           <FormItem className={cn('relative space-y-2', className)}>
             {label && (
-              <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
+              <FormLabel
+                className={cn('ml-1 gap-1.5', labelClassName, {
+                  'opacity-50 select-none': disabled
+                })}
+              >
                 {label}
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
@@ -72,7 +76,7 @@ export default function CheckboxGroupField<T extends FieldValues>({
                           'cursor-pointer transition-colors duration-300 ease-in-out',
                           'data-[state=checked]:bg-primary',
                           'data-[state=unchecked]:bg-muted',
-                          disabled && 'cursor-not-allowed'
+                          disabled && 'cursor-not-allowed opacity-50'
                         )}
                         checked={isChecked}
                         disabled={disabled}

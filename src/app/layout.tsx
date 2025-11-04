@@ -19,8 +19,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Biblio CMS',
-    default: 'Biblio CMS'
+    template: '%s | MovieHub CMS',
+    default: 'MovieHub CMS'
   }
 };
 

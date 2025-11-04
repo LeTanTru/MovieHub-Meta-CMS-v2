@@ -86,5 +86,19 @@ export const queryKeys = {
   ACCOUNT: 'account',
   GROUP: 'group',
   CUSTOMER: 'customer',
-  GROUP_PERMISSION: 'group-permission'
+  GROUP_PERMISSION: 'group-permission',
+  BUSINESS: 'business',
+  DB_CONFIG: 'db_config',
+  SERVER_PROVIDER: 'server_provider'
 };
+
+export const languageOptions = [
+  {
+    label: 'Tiếng Việt',
+    value: 'vi'
+  },
+  {
+    label: 'Tiếng Anh',
+    value: 'en'
+  }
+];

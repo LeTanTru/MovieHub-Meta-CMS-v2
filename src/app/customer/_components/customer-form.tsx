@@ -12,38 +12,42 @@ import PasswordField from '@/components/form/password-field';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
-  accountErrorMaps,
+  customerErrorMaps,
   apiConfig,
   STATUS_ACTIVE,
   statusOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useUploadAvatar } from '@/queries';
+import { useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
 import { customerSchema } from '@/schemaValidations';
 import { CustomerBodyType, CustomerResType } from '@/types';
-import { renderImageUrl } from '@/utils';
+import { renderImageUrl, renderListPageUrl } from '@/utils';
+import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function CustomerForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
   const [logoPath, setLogoPath] = useState<string>('');
-  const uploadImageMutation = useUploadAvatar();
-  const { data, loading, isEditing, handleSubmit, renderActions } = useSaveBase<
-    CustomerResType,
-    CustomerBodyType
-  >({
-    apiConfig: apiConfig.customer,
-    options: {
-      queryKey,
-      objectName: 'khách hàng',
-      listPageUrl: route.customer.getList.path
-    }
-  });
+  const uploadImageMutation = useUploadAvatarMutation();
+  const { id } = useParams<{ id: string }>();
+
+  const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
+    useSaveBase<CustomerResType, CustomerBodyType>({
+      apiConfig: apiConfig.customer,
+      options: {
+        queryKey,
+        objectName: 'khách hàng',
+        listPageUrl: route.customer.getList.path,
+        pathParams: {
+          id
+        },
+        mode: id === 'create' ? 'create' : 'edit'
+      }
+    });
 
   const defaultValues: CustomerBodyType = {
-    id: '',
     username: '',
     email: '',
     fullName: '',
@@ -57,7 +61,6 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
 
   const initialValues: CustomerBodyType = useMemo(() => {
     return {
-      id: data?.id?.toString(),
       username: data?.account?.username ?? '',
       email: data?.account?.email ?? '',
       fullName: data?.account?.fullName ?? '',
@@ -72,11 +75,11 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
 
   useEffect(() => {
     if (data?.account?.avatarPath) setAvatarPath(data?.account?.avatarPath);
-  }, [data]);
+  }, [data?.account?.avatarPath]);
 
   useEffect(() => {
     if (data?.logoPath) setLogoPath(data?.logoPath);
-  }, [data]);
+  }, [data?.logoPath]);
 
   const onSubmit = async (
     values: CustomerBodyType,
@@ -85,21 +88,24 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
     await handleSubmit(
       { ...values, avatarPath: avatarPath },
       form,
-      accountErrorMaps
+      customerErrorMaps
     );
   };
 
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Khách hàng', href: route.customer.getList.path },
+        {
+          label: 'Khách hàng',
+          href: renderListPageUrl(route.customer.getList.path, queryString)
+        },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} khách hàng` }
       ]}
     >
       <BaseForm
         onSubmit={onSubmit}
         defaultValues={defaultValues}
-        schema={customerSchema}
+        schema={customerSchema(isEditing)}
         initialValues={initialValues}
         className='w-200'
       >

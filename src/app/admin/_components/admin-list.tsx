@@ -10,7 +10,6 @@ import {
   statusOptions
 } from '@/constants';
 import { useListBase } from '@/hooks';
-import { cn } from '@/lib';
 import { accountSearchSchema } from '@/schemaValidations';
 import {
   AccountAutoResType,
@@ -19,7 +18,6 @@ import {
   SearchFormProps
 } from '@/types';
 import { renderImageUrl } from '@/utils';
-import { CircleUserRound } from 'lucide-react';
 import { AiOutlineUser } from 'react-icons/ai';
 
 export default function AdminList({ queryKey }: { queryKey: string }) {
@@ -66,9 +64,20 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
       width: 250,
       render: (value) => (
         <span className='line-clamp-1' title={value}>
-          {value}
+          {value ?? '----'}
         </span>
       )
+    },
+    {
+      title: 'Số điện thoại',
+      dataIndex: 'phone',
+      width: 120,
+      render: (value) => (
+        <span className='line-clamp-1' title={value}>
+          {value ?? '-----'}
+        </span>
+      ),
+      align: 'center'
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({

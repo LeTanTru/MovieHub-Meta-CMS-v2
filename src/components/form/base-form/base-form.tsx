@@ -2,6 +2,7 @@
 
 import { Form } from '@/components/ui/form';
 import { cn } from '@/lib';
+import { logger } from '@/logger';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { DefaultValues, useForm, UseFormReturn } from 'react-hook-form';
@@ -40,6 +41,7 @@ export default function BaseForm<T extends Record<string, any>>({
       form.reset(initialValues);
     }
   }, [initialValues, form]);
+  logger.info('🚀 ~ BaseForm ~ form:', form.formState.errors);
 
   return (
     <Form {...form}>

@@ -12,18 +12,21 @@ import PasswordField from '@/components/form/password-field';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
+  adminErrorMaps,
   apiConfig,
   GROUP_KIND_ADMIN,
   STATUS_ACTIVE,
   statusOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useGroupListQuery, useUploadAvatar } from '@/queries';
+import { useGroupListQuery, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
 import { accountSchema } from '@/schemaValidations';
 import { AccountBodyType, AccountResType } from '@/types';
-import { renderImageUrl } from '@/utils';
+import { renderImageUrl, renderListPageUrl } from '@/utils';
+import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 
 export default function AdminForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
@@ -33,22 +36,26 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     label: item.name,
     value: item.id.toString()
   }));
-  const uploadImageMutation = useUploadAvatar();
-  const { data, loading, isEditing, handleSubmit, renderActions } = useSaveBase<
-    AccountResType,
-    AccountBodyType
-  >({
-    apiConfig: {
-      create: apiConfig.account.createAdmin,
-      update: apiConfig.account.updateAdmin,
-      getById: apiConfig.account.getById
-    },
-    options: {
-      queryKey,
-      objectName: 'nhân viên',
-      listPageUrl: route.admin.getList.path
-    }
-  });
+  const uploadImageMutation = useUploadAvatarMutation();
+  const { id } = useParams<{ id: string }>();
+
+  const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
+    useSaveBase<AccountResType, AccountBodyType>({
+      apiConfig: {
+        create: apiConfig.account.createAdmin,
+        update: apiConfig.account.updateAdmin,
+        getById: apiConfig.account.getById
+      },
+      options: {
+        queryKey,
+        objectName: 'nhân viên',
+        listPageUrl: route.admin.getList.path,
+        pathParams: {
+          id
+        },
+        mode: id === 'create' ? 'create' : 'edit'
+      }
+    });
 
   const defaultValues: AccountBodyType = {
     username: '',
@@ -58,7 +65,8 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     password: '',
     avatarPath: '',
     status: 0,
-    confirmPassword: ''
+    confirmPassword: '',
+    phone: ''
   };
 
   const initialValues: AccountBodyType = useMemo(() => {
@@ -66,11 +74,12 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       username: data?.username ?? '',
       email: data?.email ?? '',
       fullName: data?.fullName ?? '',
-      groupId: data?.group?.id ?? '',
+      groupId: data?.group?.id?.toString() ?? '',
       password: '',
       avatarPath: data?.avatarPath ?? '',
       status: data?.status ?? STATUS_ACTIVE,
-      confirmPassword: ''
+      confirmPassword: '',
+      phone: data?.phone ?? ''
     };
   }, [data, groupList]);
 
@@ -78,25 +87,35 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     if (data?.avatarPath) setAvatarPath(data?.avatarPath);
   }, [data]);
 
-  const onSubmit = async (values: AccountBodyType) => {
-    await handleSubmit({
-      ...values,
-      avatarPath: avatarPath,
-      kind: GROUP_KIND_ADMIN
-    });
+  const onSubmit = async (
+    values: AccountBodyType,
+    form: UseFormReturn<AccountBodyType>
+  ) => {
+    await handleSubmit(
+      {
+        ...values,
+        avatarPath: avatarPath,
+        kind: GROUP_KIND_ADMIN
+      },
+      form,
+      adminErrorMaps
+    );
   };
 
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Quản trị viên', href: route.admin.getList.path },
+        {
+          label: 'Quản trị viên',
+          href: renderListPageUrl(route.admin.getList.path, queryString)
+        },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} quản trị viên` }
       ]}
     >
       <BaseForm
         onSubmit={onSubmit}
         defaultValues={defaultValues}
-        schema={accountSchema}
+        schema={accountSchema(isEditing)}
         initialValues={initialValues}
         className='w-200'
       >
@@ -153,11 +172,11 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                 />
               </Col>
               <Col span={12}>
-                <PasswordField
+                <InputField
                   control={form.control}
-                  name='password'
-                  label='Mật khẩu'
-                  placeholder='Mật khẩu'
+                  name='phone'
+                  label='Số điện thoại'
+                  placeholder='Số điện thoại'
                   required
                 />
               </Col>
@@ -166,12 +185,23 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               <Col span={12}>
                 <PasswordField
                   control={form.control}
+                  name='password'
+                  label='Mật khẩu'
+                  placeholder='Mật khẩu'
+                  required={!isEditing}
+                />
+              </Col>
+              <Col span={12}>
+                <PasswordField
+                  control={form.control}
                   name='confirmPassword'
                   label='Nhập lại mật khẩu'
                   placeholder='Nhập lại mật khẩu'
-                  required
+                  required={!isEditing}
                 />
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <SelectField
                   getLabel={(opt) => opt.label}
@@ -184,8 +214,6 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <SelectField
                   getLabel={(opt) => opt.label}

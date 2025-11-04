@@ -4,7 +4,7 @@ import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosRequestConfig } from 'axios';
 
-export const useUploadAvatar = () => {
+export const useUploadAvatarMutation = () => {
   return useMutation({
     mutationFn: ({
       file,
@@ -23,7 +23,7 @@ export const useUploadAvatar = () => {
   });
 };
 
-export const useUploadLogo = () => {
+export const useUploadLogoMutation = () => {
   return useMutation({
     mutationFn: ({
       file,

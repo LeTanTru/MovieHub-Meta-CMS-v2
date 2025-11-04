@@ -24,7 +24,7 @@ export default function Modal({
   open,
   onClose,
   backdrop = true,
-  closeOnBackdropClick = true,
+  closeOnBackdropClick = false,
   className,
   variants = {
     initial: {
