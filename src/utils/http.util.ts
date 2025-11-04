@@ -44,9 +44,12 @@ export const sendRequest = async <T>(
   }
 
   if (isRequiredTenantId) {
-    tenantId = getData(storageKeys.X_TENANT) || envConfig.NEXT_PUBLIC_TENANT_ID;
-  } else {
-    tenantId = process.env.TENANT_ID;
+    if (isClient()) {
+      tenantId =
+        getData(storageKeys.X_TENANT) || envConfig.NEXT_PUBLIC_TENANT_ID;
+    } else {
+      tenantId = process.env.TENANT_ID;
+    }
   }
 
   const baseHeader: Record<string, string> = { ...headers };
@@ -59,8 +62,8 @@ export const sendRequest = async <T>(
     baseHeader['Authorization'] = authorization;
   }
 
-  if (isRequiredTenantId) {
-    baseHeader[storageKeys.X_TENANT] = tenantId!;
+  if (tenantId) {
+    baseHeader[storageKeys.X_TENANT] = tenantId;
   }
 
   Object.entries(pathParams).forEach(([key, value]) => {
