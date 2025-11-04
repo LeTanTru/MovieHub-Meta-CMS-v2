@@ -150,7 +150,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='username'
@@ -160,7 +160,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
                   disabled={isEditing}
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='fullName'
@@ -171,7 +171,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='phone'
@@ -180,7 +180,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='email'
@@ -192,7 +192,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
             </Row>
             {isEditing ? (
               <Row>
-                <Col span={12}>
+                <Col>
                   <PasswordField
                     control={form.control}
                     name='oldPassword'
@@ -200,7 +200,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
                     placeholder='Mật khẩu cũ'
                   />
                 </Col>
-                <Col span={12}>
+                <Col>
                   <PasswordField
                     control={form.control}
                     name='newPassword'
@@ -211,7 +211,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
               </Row>
             ) : (
               <Row>
-                <Col span={12}>
+                <Col>
                   <PasswordField
                     control={form.control}
                     name='password'
@@ -220,7 +220,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
                     required
                   />
                 </Col>
-                <Col span={12}>
+                <Col>
                   <PasswordField
                     control={form.control}
                     name='confirmPassword'
@@ -233,7 +233,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
             )}
             {isEditing ? (
               <Row>
-                <Col span={12}>
+                <Col>
                   <PasswordField
                     control={form.control}
                     name='confirmNewPassword'
@@ -241,7 +241,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
                     placeholder='Nhập lại mật khẩu mới'
                   />
                 </Col>
-                <Col span={12}>
+                <Col>
                   <SelectField
                     getLabel={(opt) => opt.label}
                     getValue={(opt) => opt.value}
@@ -256,7 +256,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
               </Row>
             ) : (
               <Row>
-                <Col span={12}>
+                <Col>
                   <SelectField
                     getLabel={(opt) => opt.label}
                     getValue={(opt) => opt.value}

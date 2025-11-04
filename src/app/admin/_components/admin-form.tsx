@@ -121,8 +121,8 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       >
         {(form) => (
           <>
-            <Row>
-              <Col>
+            <Row className='pr-0'>
+              <Col span={24}>
                 <UploadImageField
                   value={renderImageUrl(avatarPath)}
                   loading={uploadImageMutation.isPending}
@@ -141,7 +141,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='username'
@@ -151,7 +151,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   disabled={isEditing}
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='fullName'
@@ -162,7 +162,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='email'
@@ -171,7 +171,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='phone'
@@ -182,7 +182,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <PasswordField
                   control={form.control}
                   name='password'
@@ -191,7 +191,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   required={!isEditing}
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <PasswordField
                   control={form.control}
                   name='confirmPassword'
@@ -202,7 +202,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <SelectField
                   getLabel={(opt) => opt.label}
                   getValue={(opt) => opt.value}
@@ -214,7 +214,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <SelectField
                   getLabel={(opt) => opt.label}
                   getValue={(opt) => opt.value}

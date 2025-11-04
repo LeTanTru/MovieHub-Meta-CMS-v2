@@ -7,7 +7,9 @@ export const updateProfileSchema = z.object({
   phone: z
     .string()
     .regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ')
-    .optional()
+    .optional(),
+  oldPassword: z.string().optional().nullable(),
+  password: z.string().optional().nullable()
 });
 
 export const accountSearchSchema = z.object({

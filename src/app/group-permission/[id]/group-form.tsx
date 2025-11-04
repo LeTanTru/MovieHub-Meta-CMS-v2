@@ -147,7 +147,7 @@ export default function GroupForm() {
         {(form) => (
           <>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='name'
@@ -157,7 +157,7 @@ export default function GroupForm() {
                 />
               </Col>
               {isCreate && (
-                <Col span={12}>
+                <Col>
                   <SelectField
                     getLabel={(option) => option.label}
                     getValue={(option) => option.value}
@@ -172,7 +172,7 @@ export default function GroupForm() {
               )}
             </Row>
             <Row>
-              <Col>
+              <Col span={24}>
                 <TextAreaField
                   control={form.control}
                   name='description'

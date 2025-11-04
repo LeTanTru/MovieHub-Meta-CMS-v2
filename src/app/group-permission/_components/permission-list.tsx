@@ -328,7 +328,7 @@ export default function PermissionList() {
                   {isEditing ? (
                     <>
                       <Row>
-                        <Col span={12} gutter={0}>
+                        <Col>
                           <InputField
                             control={form.control}
                             name='name'
@@ -338,7 +338,7 @@ export default function PermissionList() {
                             labelClassName='font-normal'
                           />
                         </Col>
-                        <Col span={12} gutter={0}>
+                        <Col>
                           <InputField
                             control={form.control}
                             name='pCode'
@@ -353,7 +353,7 @@ export default function PermissionList() {
                   ) : (
                     <>
                       <Row>
-                        <Col span={12} gutter={0}>
+                        <Col>
                           <SelectField
                             name='permissionGroupId'
                             control={form.control}
@@ -371,7 +371,7 @@ export default function PermissionList() {
                             placeholder='Chọn nhóm quyền'
                           />
                         </Col>
-                        <Col span={12} gutter={0}>
+                        <Col>
                           <InputField
                             control={form.control}
                             name='name'
@@ -383,7 +383,7 @@ export default function PermissionList() {
                         </Col>
                       </Row>
                       <Row>
-                        <Col span={12} gutter={0}>
+                        <Col>
                           <InputField
                             control={form.control}
                             name='pCode'
@@ -397,7 +397,7 @@ export default function PermissionList() {
                     </>
                   )}
                   <Row>
-                    <Col gutter={0}>
+                    <Col>
                       <TextAreaField
                         control={form.control}
                         name='description'

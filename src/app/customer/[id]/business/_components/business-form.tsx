@@ -202,7 +202,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='name'
@@ -211,7 +211,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='hotline'
@@ -222,7 +222,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='zipCode'
@@ -231,7 +231,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <SelectField
                   control={form.control}
                   name='customerId'
@@ -250,7 +250,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <DateTimePickerField
                   control={form.control}
                   name='expireDate'
@@ -259,7 +259,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                   format={TIME_DATE_FORMAT}
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <DateTimePickerField
                   control={form.control}
                   name='extDate'
@@ -270,7 +270,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <SelectField
                   control={form.control}
                   name='lang'
@@ -282,7 +282,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <SelectField
                   control={form.control}
                   name='status'
@@ -296,7 +296,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='taxNumber'
@@ -305,7 +305,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='tenantId'
@@ -316,7 +316,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='city'
