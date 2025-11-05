@@ -66,7 +66,7 @@ export default function GroupForm() {
   const updateGroupMutation = useUpdateGroupMutation();
 
   const groupedPermissions = (permissions || []).reduce((acc, permission) => {
-    const group = permission.permissionGroup.name || 'Unknown';
+    const group = permission.groupPermission.name || 'Unknown';
     if (!acc[group]) {
       acc[group] = [];
     }

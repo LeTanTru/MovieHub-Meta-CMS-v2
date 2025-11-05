@@ -12,22 +12,22 @@ import { useIsMounted } from '@/hooks';
 
 export default function GroupPermissionPage() {
   const [activeTab, setActiveTab] = useState(
-    getData(storageKeys.ACTIVE_GROUP_TAB) || 'tab-1'
+    getData(storageKeys.ACTIVE_GROUP_TAB) || 'group-list'
   );
   const isMounted = useIsMounted();
 
   const tabs = [
     {
-      value: 'tab-1',
+      value: 'group-list',
       label: 'Vai trò',
       component: <GroupList queryKey={queryKeys.GROUP} />
     },
     {
-      value: 'tab-2',
+      value: 'group-permission-list',
       label: 'Nhóm quyền',
       component: <GroupPermissionList queryKey={queryKeys.GROUP_PERMISSION} />
     },
-    { value: 'tab-3', label: 'Quyền', component: <PermissionList /> }
+    { value: 'permission', label: 'Quyền', component: <PermissionList /> }
   ];
 
   if (!isMounted) return null;

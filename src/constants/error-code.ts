@@ -132,7 +132,7 @@ export const permissionErrorMaps: ErrorMaps<PermissionBodyType> = {
     ['name', { type: 'manual', message: 'Tên quyền đã tồn tại' }]
   ],
   [ErrorCode.PERMISSION_ERROR_CODE_EXIST]: [
-    ['pCode', { type: 'manual', message: 'Mã quyền đã tồn tại' }]
+    ['permissionCode', { type: 'manual', message: 'Mã quyền đã tồn tại' }]
   ]
 };
 
