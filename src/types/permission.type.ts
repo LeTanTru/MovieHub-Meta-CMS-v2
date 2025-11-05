@@ -5,13 +5,15 @@ import z from 'zod';
 
 export type PermissionResType = {
   id: string;
-  name: string;
-  description: string;
-  pCode: string;
-  permissionGroup: GroupPermissionResType;
-  createdDate: string;
-  modifiedDate: string;
   status: number;
+  modifiedDate: string;
+  createdDate: string;
+  name: string;
+  action: string;
+  showMenu: boolean;
+  description: string;
+  groupPermission: GroupPermissionResType;
+  permissionCode: string;
 };
 
 export type PermissionBodyType = z.infer<typeof permissionSchema>;

@@ -33,7 +33,7 @@ export default function LoginForm() {
         notify.success('Đăng nhập thành công');
         setData(storageKeys.ACCESS_TOKEN, res?.access_token!);
         setData(storageKeys.REFRESH_TOKEN, res?.refresh_token!);
-        setData(storageKeys.USER_KIND, res?.user_kind.toString()!);
+        setData(storageKeys.USER_KIND, res?.user_kind?.toString()!);
         setAuthenticated(true);
         setLoading(true);
         navigate(route.home.path);
@@ -55,7 +55,7 @@ export default function LoginForm() {
       {(form) => (
         <>
           <Row className='mb-2'>
-            <Col className='items-center'>
+            <Col span={24} className='items-center'>
               <Image
                 src={logoWithText.src}
                 width={180}
@@ -64,8 +64,8 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row className='flex-col gap-5'>
-            <Col>
+          <Row className='flex-col gap-5 *:px-0'>
+            <Col span={24}>
               <InputField
                 name='username'
                 control={form.control}
@@ -74,7 +74,7 @@ export default function LoginForm() {
                 required
               />
             </Col>
-            <Col>
+            <Col span={24}>
               <PasswordField
                 name='password'
                 control={form.control}
@@ -86,7 +86,7 @@ export default function LoginForm() {
             </Col>
           </Row>
           <Row className='mb-0'>
-            <Col className='my-0'>
+            <Col className='my-0' span={24}>
               <Button
                 disabled={!form.formState.isDirty || loginMutation.isPending}
                 variant={'primary'}

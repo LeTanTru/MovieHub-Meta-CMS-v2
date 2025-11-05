@@ -7,11 +7,11 @@ import { storageKeys } from '@/constants';
 import { useNavigate, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import { useAuthStore } from '@/store';
-import { getData, renderImageUrl, setData } from '@/utils';
+import { getData, removeData, renderImageUrl, setData } from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, CircleUserRound, LogOut, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function DropdownAvatar() {
   const navigate = useNavigate();
@@ -37,6 +37,11 @@ export default function DropdownAvatar() {
     );
     navigate(route.profile.savePage.path);
   };
+
+  useEffect(() => {
+    if (pathname !== route.profile.savePage.path)
+      removeData(storageKeys.PREVIOUS_PATH);
+  }, [pathname]);
 
   return (
     <div

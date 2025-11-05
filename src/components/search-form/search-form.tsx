@@ -4,13 +4,13 @@ import {
   AutoCompleteField,
   Button,
   Col,
+  DateTimePickerField,
   InputField,
   Row,
   SelectField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
-import { cn } from '@/lib';
+import { DATE_TIME_FORMAT, DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
 import { ApiConfig, AutoCompleteOption, SearchFormProps } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
@@ -57,16 +57,7 @@ export default function SearchForm<S extends FieldValues>({
     buildDefaultValues(searchFields);
 
   const onSubmit = (values: z.infer<typeof schema>) => {
-    const cleanedValues = Object.fromEntries(
-      Object.entries(values).map(([key, value]) => {
-        if (typeof value === 'string') {
-          return [key, value.replace(/[^a-zA-Z0-9\sÀ-ỹ]/g, '').trim()];
-        }
-        return [key, value];
-      })
-    );
-
-    handleSearchSubmit(cleanedValues);
+    handleSearchSubmit(values);
   };
 
   const handleReset = (form: UseFormReturn<z.infer<typeof schema>>) => {
@@ -87,6 +78,7 @@ export default function SearchForm<S extends FieldValues>({
                 <Col
                   key={sf.key as string}
                   span={sf.colSpan || DEFAULT_COL_SPAN}
+                  className='px-0'
                 >
                   <SelectField
                     control={form.control}
@@ -110,6 +102,7 @@ export default function SearchForm<S extends FieldValues>({
                 <Col
                   key={sf.key as string}
                   span={sf.colSpan || DEFAULT_COL_SPAN}
+                  className='px-0'
                 >
                   <AutoCompleteField
                     apiConfig={sf.apiConfig as ApiConfig}
@@ -127,11 +120,27 @@ export default function SearchForm<S extends FieldValues>({
                 </Col>
               );
             }
+            case FieldTypes.DATE: {
+              return (
+                <Col
+                  key={sf.key as string}
+                  span={sf.colSpan || DEFAULT_COL_SPAN}
+                  className='px-0'
+                >
+                  <DateTimePickerField
+                    control={form.control}
+                    name={sf.key as string}
+                    placeholder={sf.placeholder}
+                  />
+                </Col>
+              );
+            }
             default: {
               return (
                 <Col
                   key={sf.key as string}
                   span={sf.colSpan || DEFAULT_COL_SPAN}
+                  className='px-0'
                 >
                   <InputField
                     control={form.control}
@@ -145,12 +154,12 @@ export default function SearchForm<S extends FieldValues>({
         })}
         {searchFields.length < 4 && (
           <>
-            <Col className='w-9!'>
+            <Col className='w-11! px-1'>
               <Button type='submit' variant={'primary'}>
                 <Search />
               </Button>
             </Col>
-            <Col className='w-9!'>
+            <Col className='w-10! px-1'>
               <Button
                 type='button'
                 onClick={() => handleReset(form)}
@@ -176,9 +185,7 @@ export default function SearchForm<S extends FieldValues>({
       {(form) => (
         <>
           {searchFields.length < 4 ? (
-            <div className='flex gap-x-2'>
-              {renderField(searchFields, form)}
-            </div>
+            <Row className='mb-0'>{renderField(searchFields, form)}</Row>
           ) : (
             <Row className='mb-0 flex flex-1 flex-nowrap justify-start gap-2'>
               {renderField(searchFields, form)}

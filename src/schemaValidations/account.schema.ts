@@ -1,14 +1,27 @@
 import z from 'zod';
 
-export const updateProfileSchema = z.object({
-  email: z.string().nonempty('Bắt buộc').email('Email không đúng định dạng'),
-  fullName: z.string().nonempty('Bắt buộc'),
-  avatarPath: z.string().optional(),
-  phone: z
-    .string()
-    .regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ')
-    .optional()
-});
+export const updateProfileSchema = z
+  .object({
+    email: z.string().nonempty('Bắt buộc').email('Email không đúng định dạng'),
+    fullName: z.string().nonempty('Bắt buộc'),
+    avatarPath: z.string().optional(),
+    phone: z
+      .string()
+      .regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ')
+      .optional(),
+    oldPassword: z.string().nonempty('Bắt buộc'),
+    password: z.string().optional().nullable(),
+    confirmPassword: z.string().optional().nullable()
+  })
+  .refine(
+    (data) => {
+      return data.password === data.confirmPassword;
+    },
+    {
+      path: ['confirmPassword'],
+      message: 'Mật khẩu xác nhận không khớp'
+    }
+  );
 
 export const accountSearchSchema = z.object({
   email: z.string().optional().nullable(),

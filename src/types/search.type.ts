@@ -32,6 +32,7 @@ export type SearchFormProps<S extends FieldValues> = {
     mappingData?: (option: any) => AutoCompleteOption;
     searchParams?: string[];
     initialParams?: Record<string, any>;
+    dateFormat?: string;
   }[];
   initialValues: Partial<S>;
   schema: ZodObject;

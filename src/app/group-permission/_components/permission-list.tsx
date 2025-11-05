@@ -2,6 +2,7 @@
 
 import { emptyData } from '@/assets';
 import {
+  BooleanField,
   Button,
   Col,
   InputField,
@@ -45,10 +46,11 @@ import { permissionSchema } from '@/schemaValidations';
 import { PermissionBodyType, PermissionResType } from '@/types';
 import { applyFormErrors, notify } from '@/utils';
 import { omit } from 'lodash';
-import { Edit2, Info, Plus, Save, Trash, X } from 'lucide-react';
+import { Info, Plus, Save, X } from 'lucide-react';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import MediaQuery from 'react-responsive';
 
 export default function PermissionList() {
@@ -72,17 +74,14 @@ export default function PermissionList() {
   const updatePermissionMutation = useUpdatePermissionMutation();
   const deletePermissionMutation = useDeletePermissionMutation();
 
-  const groupPermissions = groupPermissionListQuery.data?.data.content || [];
+  const groupPermissions = groupPermissionListQuery.data?.data?.content || [];
   const permissions = permissionListQuery.data?.data.content || [];
 
   const loading =
-    permissionListQuery.isLoading ||
-    groupPermissionListQuery.isLoading ||
-    permissionListQuery.isRefetching ||
-    groupPermissionListQuery.isRefetching;
+    permissionListQuery.isLoading || groupPermissionListQuery.isLoading;
 
   const groupedPermissions = (permissions || []).reduce((acc, permission) => {
-    const group = permission.permissionGroup.name || 'Unknown';
+    const group = permission.groupPermission.name || 'Unknown';
     if (!acc[group]) {
       acc[group] = [];
     }
@@ -101,23 +100,23 @@ export default function PermissionList() {
   const defaultValues: PermissionBodyType = {
     name: '',
     description: '',
-    permissionGroupId: '',
-    pCode: ''
+    groupPermissionId: '',
+    permissionCode: '',
+    action: '',
+    showMenu: false
   };
 
-  const initialValues = useMemo(
+  const initialValues: PermissionBodyType = useMemo(
     () => ({
       description: selectedPermission?.description ?? '',
       name: selectedPermission?.name ?? '',
-      pCode: selectedPermission?.pCode ?? '',
-      permissionGroupId: selectedGroupPermissionId
+      pCode: selectedPermission?.permissionCode ?? '',
+      groupPermissionId: selectedGroupPermissionId.toString(),
+      permissionCode: selectedPermission?.permissionCode ?? '',
+      action: selectedPermission?.action ?? '',
+      showMenu: selectedPermission?.showMenu ?? false
     }),
-    [
-      selectedGroupPermissionId,
-      selectedPermission?.description,
-      selectedPermission?.name,
-      selectedPermission?.pCode
-    ]
+    [selectedGroupPermissionId, selectedPermission]
   );
 
   const onSubmit = async (
@@ -171,7 +170,7 @@ export default function PermissionList() {
     setIsEditing(true);
     open();
     setSelectedPermission(record);
-    setSelectedGroupPermissionId(record.permissionGroup.id);
+    setSelectedGroupPermissionId(record.groupPermission.id);
   };
 
   const handleDelete = async (record: PermissionResType) => {
@@ -227,7 +226,7 @@ export default function PermissionList() {
                                     className='h-5 border-none bg-transparent p-0! shadow-none hover:bg-transparent'
                                     onClick={() => handleEdit(permission)}
                                   >
-                                    <Edit2 className='stroke-dodger-blue size-3.5' />
+                                    <AiOutlineEdit className='text-dodger-blue size-4' />
                                   </Button>
                                 </ToolTip>
                                 <AlertDialog>
@@ -235,7 +234,7 @@ export default function PermissionList() {
                                     <span>
                                       <ToolTip title={`Xóa ${permission.name}`}>
                                         <Button className='h-5 border-none bg-transparent p-0! shadow-none hover:bg-transparent'>
-                                          <Trash className='size-3.5 stroke-red-600' />
+                                          <AiOutlineDelete className='text-destructive size-3.5' />
                                         </Button>
                                       </ToolTip>
                                     </span>
@@ -325,79 +324,67 @@ export default function PermissionList() {
             >
               {(form) => (
                 <>
-                  {isEditing ? (
-                    <>
-                      <Row>
-                        <Col span={12} gutter={0}>
-                          <InputField
-                            control={form.control}
-                            name='name'
-                            label='Tên quyền'
-                            placeholder='Nhập tên quyền...'
-                            required
-                            labelClassName='font-normal'
-                          />
-                        </Col>
-                        <Col span={12} gutter={0}>
-                          <InputField
-                            control={form.control}
-                            name='pCode'
-                            label='Mã quyền'
-                            placeholder='Mã quyền...'
-                            required
-                            labelClassName='font-normal'
-                          />
-                        </Col>
-                      </Row>
-                    </>
-                  ) : (
-                    <>
-                      <Row>
-                        <Col span={12} gutter={0}>
-                          <SelectField
-                            name='permissionGroupId'
-                            control={form.control}
-                            options={
-                              groupPermissions.map((gp) => ({
-                                label: gp.name,
-                                value: gp.id
-                              })) || []
-                            }
-                            getLabel={(opt) => opt.label}
-                            getValue={(opt) => opt.value}
-                            label='Nhóm quyền'
-                            required
-                            disabled
-                            placeholder='Chọn nhóm quyền'
-                          />
-                        </Col>
-                        <Col span={12} gutter={0}>
-                          <InputField
-                            control={form.control}
-                            name='name'
-                            label='Tên quyền'
-                            placeholder='Nhập tên quyền...'
-                            required
-                            labelClassName='font-normal'
-                          />
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col span={12} gutter={0}>
-                          <InputField
-                            control={form.control}
-                            name='pCode'
-                            label='Mã quyền'
-                            placeholder='Mã quyền...'
-                            required
-                            labelClassName='font-normal'
-                          />
-                        </Col>
-                      </Row>
-                    </>
-                  )}
                   <Row>
-                    <Col gutter={0}>
+                    <Col>
+                      <SelectField
+                        name='groupPermissionId'
+                        control={form.control}
+                        options={
+                          groupPermissions.map((gp) => ({
+                            label: gp.name,
+                            value: gp.id.toString()
+                          })) || []
+                        }
+                        getLabel={(opt) => opt.label}
+                        getValue={(opt) => opt.value.toString()}
+                        label='Nhóm quyền'
+                        required
+                        disabled
+                        placeholder='Chọn nhóm quyền'
+                      />
+                    </Col>
+                    <Col>
+                      <InputField
+                        control={form.control}
+                        name='name'
+                        label='Tên quyền'
+                        placeholder='Nhập tên quyền...'
+                        required
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <InputField
+                        control={form.control}
+                        name='permissionCode'
+                        label='Mã quyền'
+                        placeholder='Mã quyền...'
+                        required
+                      />
+                    </Col>
+                    <Col>
+                      <InputField
+                        control={form.control}
+                        name='action'
+                        label='Hành động'
+                        placeholder='Hành động...'
+                        required
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <BooleanField
+                        control={form.control}
+                        name='showMenu'
+                        label='Hiển thị trên menu'
+                        required
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={24}>
                       <TextAreaField
                         control={form.control}
                         name='description'

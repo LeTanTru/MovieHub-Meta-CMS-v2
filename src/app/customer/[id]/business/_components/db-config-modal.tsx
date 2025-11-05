@@ -183,7 +183,7 @@ export default function DbConfigModal({
               {(form) => (
                 <>
                   <Row>
-                    <Col span={12}>
+                    <Col>
                       <InputField
                         control={form.control}
                         name='username'
@@ -193,7 +193,7 @@ export default function DbConfigModal({
                         disabled={isEditing}
                       />
                     </Col>
-                    <Col span={12}>
+                    <Col>
                       <InputField
                         control={form.control}
                         name='password'
@@ -205,7 +205,7 @@ export default function DbConfigModal({
                     </Col>
                   </Row>
                   <Row>
-                    <Col span={12}>
+                    <Col>
                       <InputField
                         control={form.control}
                         name='driverClassName'
@@ -215,7 +215,7 @@ export default function DbConfigModal({
                         disabled={isEditing}
                       />
                     </Col>
-                    <Col span={12}>
+                    <Col>
                       <InputField
                         control={form.control}
                         name='host'
@@ -227,7 +227,7 @@ export default function DbConfigModal({
                     </Col>
                   </Row>
                   <Row>
-                    <Col span={12}>
+                    <Col>
                       <InputField
                         control={form.control}
                         name='port'
@@ -237,7 +237,7 @@ export default function DbConfigModal({
                         disabled={isEditing}
                       />
                     </Col>
-                    <Col span={12}>
+                    <Col>
                       <InputField
                         control={form.control}
                         name='dbName'
@@ -249,7 +249,7 @@ export default function DbConfigModal({
                     </Col>
                   </Row>
                   <Row>
-                    <Col span={12}>
+                    <Col>
                       <NumberField
                         control={form.control}
                         name='maxConnection'
@@ -258,7 +258,7 @@ export default function DbConfigModal({
                         required
                       />
                     </Col>
-                    <Col span={12}>
+                    <Col>
                       <SelectField
                         control={form.control}
                         name='serverProviderId'

@@ -2,16 +2,16 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-const useQueryParams = <T extends Record<string, any>>() => {
+const useQueryParams = <S extends Record<string, any>>() => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const getQueryParam = (key: keyof T) => {
+  const getQueryParam = (key: keyof S) => {
     return searchParams.get(String(key));
   };
 
-  const setQueryParam = (key: keyof T, value: T[keyof T] | null) => {
+  const setQueryParam = (key: keyof S, value: S[keyof S] | null) => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (value === null || value === '') {
@@ -29,7 +29,7 @@ const useQueryParams = <T extends Record<string, any>>() => {
     router.push(`${pathname}?${sortedParams.toString()}`);
   };
 
-  const setQueryParams = (newParams: Partial<T>) => {
+  const setQueryParams = (newParams: Partial<S>) => {
     const params = new URLSearchParams();
 
     Object.entries(newParams).forEach(([key, value]) => {
@@ -69,15 +69,15 @@ const useQueryParams = <T extends Record<string, any>>() => {
     );
   };
 
-  const paramsObject = Object.fromEntries(searchParams.entries()) as Partial<T>;
+  const paramsObject = Object.fromEntries(searchParams.entries()) as Partial<S>;
   const queryString = serializeParams(paramsObject);
 
   return {
-    deserializeParams,
-    getQueryParam,
     queryString,
     searchParams: paramsObject,
     serializeParams,
+    deserializeParams,
+    getQueryParam,
     setQueryParam,
     setQueryParams
   };

@@ -2,9 +2,13 @@ import {
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
-  KIND_ADMIN,
-  KIND_EMPLOYEE,
-  KIND_USER,
+  GROUP_KIND_ADMIN,
+  GROUP_KIND_COMPANY,
+  GROUP_KIND_EMPLOYEE,
+  GROUP_KIND_INTERNAL,
+  GROUP_KIND_MANAGER,
+  GROUP_KIND_USER,
+  GROUP_KIND_USER_VIP,
   STATUS_ACTIVE,
   STATUS_DELETED,
   STATUS_LOCK,
@@ -21,18 +25,38 @@ export const uploadOptions = {
 export const groupKinds = [
   {
     label: 'ADMIN',
-    value: KIND_ADMIN,
+    value: GROUP_KIND_ADMIN,
     color: '#EF4444'
   },
   {
+    label: 'MANAGER',
+    value: GROUP_KIND_MANAGER,
+    color: '#F59E0B'
+  },
+  {
     label: 'EMPLOYEE',
-    value: KIND_EMPLOYEE,
+    value: GROUP_KIND_EMPLOYEE,
     color: '#3B82F6'
   },
   {
+    label: 'INTERNAL',
+    value: GROUP_KIND_INTERNAL,
+    color: '#8B5CF6'
+  },
+  {
+    label: 'COMPANY',
+    value: GROUP_KIND_COMPANY,
+    color: '#6366F1'
+  },
+  {
     label: 'USER',
-    value: KIND_USER,
+    value: GROUP_KIND_USER,
     color: '#10B981'
+  },
+  {
+    label: 'USER_VIP',
+    value: GROUP_KIND_USER_VIP,
+    color: '#D946EF'
   }
 ];
 

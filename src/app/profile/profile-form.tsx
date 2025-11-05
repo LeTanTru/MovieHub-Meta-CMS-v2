@@ -8,6 +8,7 @@ import {
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
+import PasswordField from '@/components/form/password-field';
 import { CircleLoading } from '@/components/loading';
 import { storageKeys } from '@/constants';
 import { useNavigate } from '@/hooks';
@@ -33,7 +34,10 @@ export default function ProfileForm() {
     email: '',
     fullName: '',
     avatarPath: '',
-    phone: ''
+    phone: '',
+    oldPassword: '',
+    password: '',
+    confirmPassword: ''
   };
 
   const initialValues: ProfileBodyType = useMemo(
@@ -41,7 +45,8 @@ export default function ProfileForm() {
       email: profile?.email ?? '',
       fullName: profile?.fullName ?? '',
       avatarPath: profile?.avatarPath ?? '',
-      phone: profile?.phone ?? ''
+      phone: profile?.phone ?? '',
+      oldPassword: ''
     }),
     [profile?.avatarPath, profile?.email, profile?.fullName, profile?.phone]
   );
@@ -89,7 +94,7 @@ export default function ProfileForm() {
       {(form) => (
         <>
           <Row>
-            <Col>
+            <Col span={24}>
               <UploadImageField
                 value={renderImageUrl(avatarPath)}
                 loading={fileMutation.isPending}
@@ -126,7 +131,7 @@ export default function ProfileForm() {
                 control={form.control}
                 name='fullName'
                 label='Họ tên'
-                placeholder='Nhập họ tên'
+                placeholder='Họ tên'
                 required
               />
             </Col>
@@ -137,8 +142,39 @@ export default function ProfileForm() {
                 control={form.control}
                 name='phone'
                 label='Số điện thoại'
-                placeholder='Nhập số điện thoại'
+                placeholder='Số điện thoại'
                 required
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <PasswordField
+                control={form.control}
+                name='oldPassword'
+                label='Mật khẩu hiện tại'
+                placeholder='Mật khẩu hiện tại'
+                required
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <PasswordField
+                control={form.control}
+                name='password'
+                label='Mật khẩu mới'
+                placeholder='Mật khẩu mới'
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <PasswordField
+                control={form.control}
+                name='confirmPassword'
+                label='Nhập lại mật khẩu mới'
+                placeholder='Nhập lại mật khẩu mới'
               />
             </Col>
           </Row>

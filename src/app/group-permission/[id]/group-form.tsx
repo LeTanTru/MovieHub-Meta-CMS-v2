@@ -66,7 +66,7 @@ export default function GroupForm() {
   const updateGroupMutation = useUpdateGroupMutation();
 
   const groupedPermissions = (permissions || []).reduce((acc, permission) => {
-    const group = permission.permissionGroup.name || 'Unknown';
+    const group = permission.groupPermission.name || 'Unknown';
     if (!acc[group]) {
       acc[group] = [];
     }
@@ -147,7 +147,7 @@ export default function GroupForm() {
         {(form) => (
           <>
             <Row>
-              <Col span={12}>
+              <Col>
                 <InputField
                   control={form.control}
                   name='name'
@@ -157,7 +157,7 @@ export default function GroupForm() {
                 />
               </Col>
               {isCreate && (
-                <Col span={12}>
+                <Col>
                   <SelectField
                     getLabel={(option) => option.label}
                     getValue={(option) => option.value}
@@ -172,7 +172,7 @@ export default function GroupForm() {
               )}
             </Row>
             <Row>
-              <Col>
+              <Col span={24}>
                 <TextAreaField
                   control={form.control}
                   name='description'
@@ -183,7 +183,7 @@ export default function GroupForm() {
               </Col>
             </Row>
             <Row>
-              <Col className='gap-y-4'>
+              <Col className='gap-y-4' span={24}>
                 {Object.keys(groupedPermissions).map((gp) => {
                   const permissions = groupedPermissions[gp];
                   return (

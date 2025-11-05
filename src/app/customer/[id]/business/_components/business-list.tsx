@@ -1,4 +1,5 @@
 'use client';
+
 import DbConfigModal from '@/app/customer/[id]/business/_components/db-config-modal';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
@@ -19,7 +20,12 @@ import {
   Column,
   SearchFormProps
 } from '@/types';
-import { formatDateUTC, renderImageUrl, renderListPageUrl } from '@/utils';
+import {
+  convertLocalToUTC,
+  convertUTCToLocal,
+  renderImageUrl,
+  renderListPageUrl
+} from '@/utils';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { AiOutlineApartment, AiOutlineFileImage } from 'react-icons/ai';
@@ -65,6 +71,20 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
           </HasPermission>
         )
       });
+      const changeQueryFilter = handlers.changeQueryFilter;
+      handlers.changeQueryFilter = (filter) => {
+        const newFilter = { ...filter };
+
+        if (newFilter.expireDateFrom)
+          newFilter.expireDateFrom = convertLocalToUTC(
+            newFilter.expireDateFrom
+          );
+
+        if (newFilter.expireDateTo)
+          newFilter.expireDateTo = convertLocalToUTC(newFilter.expireDateTo);
+
+        changeQueryFilter(newFilter);
+      };
     }
   });
 
@@ -108,7 +128,7 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
       render: (value) => {
         return (
           <span className='line-clamp-1' title={value}>
-            {formatDateUTC(value, TIME_DATE_FORMAT) || '-----'}
+            {value ? convertUTCToLocal(value) : '-----'}
           </span>
         );
       }
@@ -117,11 +137,13 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
       title: 'Ngày kết thúc',
       dataIndex: 'expireDate',
       width: 200,
-      render: (value) => (
-        <span className='line-clamp-1' title={value}>
-          {formatDateUTC(value, TIME_DATE_FORMAT) || '-----'}
-        </span>
-      )
+      render: (value) => {
+        return (
+          <span className='line-clamp-1' title={value}>
+            {value ? convertUTCToLocal(value) : '-----'}
+          </span>
+        );
+      }
     },
     {
       title: 'Ngày gia hạn',
@@ -129,7 +151,7 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
       width: 200,
       render: (value) => (
         <span className='line-clamp-1' title={value}>
-          {formatDateUTC(value, TIME_DATE_FORMAT) || '-----'}
+          {value ? convertUTCToLocal(value) : '-----'}
         </span>
       )
     },
@@ -141,6 +163,17 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
 
   const searchFields: SearchFormProps<BusinessSearchType>['searchFields'] = [
     { key: 'businessName', placeholder: 'Tên doanh nghiệp' },
+    {
+      key: 'expireDateFrom',
+      placeholder: 'Hết hạn từ',
+      type: FieldTypes.DATE
+    },
+    {
+      key: 'expireDateTo',
+      placeholder: 'Hết hạn đến',
+      type: FieldTypes.DATE,
+      dateFormat: TIME_DATE_FORMAT
+    },
     {
       key: 'status',
       placeholder: 'Trạng thái',
