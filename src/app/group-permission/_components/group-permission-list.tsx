@@ -1,4 +1,5 @@
 'use client';
+
 import { Button, Col, InputField, Row, ToolTip } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { HasPermission } from '@/components/has-permission';
@@ -17,9 +18,10 @@ import {
 } from '@/types/group-permission.type';
 import { applyFormErrors } from '@/utils';
 import { AxiosError } from 'axios';
-import { Edit2, PlusIcon, X } from 'lucide-react';
+import { PlusIcon, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { AiOutlineEdit } from 'react-icons/ai';
 
 export default function GroupPermissionList({
   queryKey
@@ -63,7 +65,7 @@ export default function GroupPermissionList({
                     className='border-none bg-transparent shadow-none hover:bg-transparent'
                     {...buttonProps}
                   >
-                    <Edit2 className='stroke-dodger-blue size-3.5' />
+                    <AiOutlineEdit className='text-dodger-blue size-4' />
                   </Button>
                 </span>
               </ToolTip>
@@ -167,7 +169,9 @@ export default function GroupPermissionList({
       >
         <BaseTable
           columns={columns}
-          dataSource={groupPermissionList}
+          dataSource={groupPermissionList?.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          )}
           pagination={pagination}
           loading={groupPermissionListLoading}
           changePagination={handlers.changePagination}

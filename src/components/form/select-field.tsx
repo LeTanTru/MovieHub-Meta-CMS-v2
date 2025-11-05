@@ -209,7 +209,7 @@ export default function SelectField<
                         })}
                       </div>
                     ) : (
-                      <span className='opacity-30'>{placeholder}</span>
+                      <span className='text-gray-300'>{placeholder}</span>
                     )
                   ) : selectedValues.length === 1 ? (
                     (() => {
@@ -223,11 +223,11 @@ export default function SelectField<
                           </span>
                         </div>
                       ) : (
-                        <span className='opacity-30'>{placeholder}</span>
+                        <span className='text-gray-300'>{placeholder}</span>
                       );
                     })()
                   ) : (
-                    <span className='opacity-30'>{placeholder}</span>
+                    <span className='text-gray-300'>{placeholder}</span>
                   )}
 
                   {selectedValues.length > 0 && allowClear ? (

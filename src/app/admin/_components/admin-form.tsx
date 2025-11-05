@@ -121,7 +121,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       >
         {(form) => (
           <>
-            <Row className='pr-0'>
+            <Row>
               <Col span={24}>
                 <UploadImageField
                   value={renderImageUrl(avatarPath)}

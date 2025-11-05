@@ -36,7 +36,8 @@ export default function ProfileForm() {
     avatarPath: '',
     phone: '',
     oldPassword: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   };
 
   const initialValues: ProfileBodyType = useMemo(
@@ -44,7 +45,8 @@ export default function ProfileForm() {
       email: profile?.email ?? '',
       fullName: profile?.fullName ?? '',
       avatarPath: profile?.avatarPath ?? '',
-      phone: profile?.phone ?? ''
+      phone: profile?.phone ?? '',
+      oldPassword: ''
     }),
     [profile?.avatarPath, profile?.email, profile?.fullName, profile?.phone]
   );
@@ -91,7 +93,7 @@ export default function ProfileForm() {
     >
       {(form) => (
         <>
-          <Row className='pr-0'>
+          <Row>
             <Col span={24}>
               <UploadImageField
                 value={renderImageUrl(avatarPath)}
@@ -112,7 +114,7 @@ export default function ProfileForm() {
               />
             </Col>
           </Row>
-          <Row className='pr-0'>
+          <Row>
             <Col span={24}>
               <InputField
                 control={form.control}
@@ -123,7 +125,7 @@ export default function ProfileForm() {
               />
             </Col>
           </Row>
-          <Row className='pr-0'>
+          <Row>
             <Col span={24}>
               <InputField
                 control={form.control}
@@ -134,7 +136,7 @@ export default function ProfileForm() {
               />
             </Col>
           </Row>
-          <Row className='pr-0'>
+          <Row>
             <Col span={24}>
               <InputField
                 control={form.control}
@@ -145,25 +147,34 @@ export default function ProfileForm() {
               />
             </Col>
           </Row>
-          <Row className='pr-0'>
+          <Row>
             <Col span={24}>
               <PasswordField
                 control={form.control}
                 name='oldPassword'
-                label='Mật khẩu cũ'
-                placeholder='Mật khẩu cũ'
+                label='Mật khẩu hiện tại'
+                placeholder='Mật khẩu hiện tại'
                 required
               />
             </Col>
           </Row>
-          <Row className='pr-0'>
+          <Row>
             <Col span={24}>
               <PasswordField
                 control={form.control}
                 name='password'
                 label='Mật khẩu mới'
                 placeholder='Mật khẩu mới'
-                required
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <PasswordField
+                control={form.control}
+                name='confirmPassword'
+                label='Nhập lại mật khẩu mới'
+                placeholder='Nhập lại mật khẩu mới'
               />
             </Col>
           </Row>

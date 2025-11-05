@@ -1,4 +1,5 @@
 'use client';
+
 import {
   Col,
   DateTimePickerField,
@@ -17,7 +18,6 @@ import {
   languageOptions,
   STATUS_ACTIVE,
   statusOptions,
-  DATE_TIME_FORMAT,
   customerBusinessErrorMaps
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
@@ -26,9 +26,8 @@ import { route } from '@/routes';
 import { businessSchema } from '@/schemaValidations';
 import { BusinessBodyType, BusinessResType } from '@/types';
 import {
-  formatDateUTC,
+  convertUTCToLocal,
   generatePath,
-  parseDateUTC,
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
@@ -88,10 +87,8 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
       address: data?.address ?? '',
       bannerPath: data?.bannerPath ?? '',
       city: data?.city ?? '',
-      expireDate: (
-        parseDateUTC(data?.expireDate ?? '') ?? new Date()
-      ).toISOString(),
-      extDate: (parseDateUTC(data?.extDate ?? '') ?? new Date()).toISOString(),
+      expireDate: convertUTCToLocal(data?.expireDate ?? '') ?? new Date(),
+      extDate: convertUTCToLocal(data?.extDate ?? '') ?? new Date(),
       hotline: data?.hotline ?? '',
       lang: data?.lang ?? '',
       logoPath: data?.logoPath ?? '',
@@ -120,8 +117,8 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
     await handleSubmit(
       {
         ...values,
-        expireDate: formatDateUTC(values.expireDate, DATE_TIME_FORMAT, false),
-        extDate: formatDateUTC(values.extDate, DATE_TIME_FORMAT, false),
+        expireDate: convertUTCToLocal(values.expireDate),
+        extDate: convertUTCToLocal(values.extDate),
         logoPath,
         bannerPath
       },

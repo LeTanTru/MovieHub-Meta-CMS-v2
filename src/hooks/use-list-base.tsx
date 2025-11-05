@@ -34,7 +34,7 @@ import {
   PaginationType,
   SearchFormProps
 } from '@/types';
-import { http, notify } from '@/utils';
+import { convertUTCToLocal, http, notify } from '@/utils';
 import { Separator } from '@radix-ui/react-separator';
 import {
   keepPreviousData,
@@ -78,6 +78,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   handleDeleteClick: (id: string) => void;
   invalidateQueries: () => void;
   renderReloadButton: () => React.ReactNode;
+  changeQueryFilter: (filter: Partial<S>) => void;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -406,6 +407,22 @@ export default function useListBase<
     );
   };
 
+  const changeQueryFilter = (filters: Partial<S>) => {
+    const preservedParams = Object.fromEntries(
+      Object.entries(searchParams).filter(([key]) =>
+        excludeFromQueryFilter.includes(key)
+      )
+    );
+
+    const filteredValues = Object.fromEntries(
+      Object.entries(filters).filter(
+        ([key]) => !notShowFromSearchParams.includes(key)
+      )
+    );
+
+    setQueryParams({ ...filteredValues, ...preservedParams } as Partial<S>);
+  };
+
   const renderSearchForm = ({
     searchFields,
     schema
@@ -417,45 +434,34 @@ export default function useListBase<
     const mergedValues = {
       ...queryFilter,
       ...Object.fromEntries(
-        Object.entries(searchParams)
-          .map(([key, value]) => {
-            const field = searchFields.find((f) => f.key === key);
-            if (!field) return [key, value];
+        Object.entries(searchParams).map(([key, value]) => {
+          const field = searchFields.find((f) => f.key === key);
+          if (!field) return [key, value];
 
-            switch (field.type) {
-              case FieldTypes.NUMBER:
-                return [key, value ? Number(value) : undefined];
-              case FieldTypes.SELECT || FieldTypes.AUTOCOMPLETE:
-                const option = field.options?.find(
-                  (opt: any) => String(opt.value) === String(value)
-                );
-                return [key, option ? option.value : value];
-              default:
-                return [key, value];
-            }
-          })
-          .map(([key, value]) => [
-            key,
-            !isNaN(value) ? Number(value) : value.trim()
-          ])
+          switch (field.type) {
+            case FieldTypes.NUMBER:
+              return [key, value ? Number(value) : undefined];
+            case FieldTypes.SELECT || FieldTypes.AUTOCOMPLETE:
+              const option = field.options?.find(
+                (opt: any) => String(opt.value) === String(value)
+              );
+              return [key, option ? option.value : value];
+            case FieldTypes.DATE:
+              return [key, convertUTCToLocal(value)];
+            default:
+              return [key, value];
+          }
+        })
+        // .map(([key, value]) => [
+        //   key,
+        //   !isNaN(value) ? Number(value) : value.trim()
+        // ])
       )
     };
 
     // Handle search
-    const handleSearchSubmit = (values: any) => {
-      const preservedParams = Object.fromEntries(
-        Object.entries(searchParams).filter(([key]) =>
-          excludeFromQueryFilter.includes(key)
-        )
-      );
-
-      const filteredValues = Object.fromEntries(
-        Object.entries(values).filter(
-          ([key]) => !notShowFromSearchParams.includes(key)
-        )
-      );
-
-      setQueryParams({ ...filteredValues, ...preservedParams } as Partial<S>);
+    const handleSearchSubmit = (values: Partial<S>) => {
+      handlers.changeQueryFilter(values);
     };
 
     // Handle reset
@@ -523,7 +529,8 @@ export default function useListBase<
       handleEditClick,
       handleDeleteClick,
       invalidateQueries,
-      renderReloadButton
+      renderReloadButton,
+      changeQueryFilter
     };
 
     override?.(handlers);

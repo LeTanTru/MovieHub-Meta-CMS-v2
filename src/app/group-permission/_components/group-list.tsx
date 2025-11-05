@@ -74,7 +74,7 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     >
       <BaseTable
         columns={columns}
-        dataSource={data}
+        dataSource={data?.sort((a, b) => a.kind - b.kind)}
         pagination={pagination}
         loading={loading}
         changePagination={handlers.changePagination}

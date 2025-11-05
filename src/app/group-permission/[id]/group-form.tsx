@@ -183,7 +183,7 @@ export default function GroupForm() {
               </Col>
             </Row>
             <Row>
-              <Col className='gap-y-4'>
+              <Col className='gap-y-4' span={24}>
                 {Object.keys(groupedPermissions).map((gp) => {
                   const permissions = groupedPermissions[gp];
                   return (
