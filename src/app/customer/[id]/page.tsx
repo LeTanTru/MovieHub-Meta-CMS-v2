@@ -3,7 +3,7 @@ import { queryKeys } from '@/constants';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Khách hàng'
+  title: 'Doanh nghiệp'
 };
 
 export default async function CustomerSavePage() {

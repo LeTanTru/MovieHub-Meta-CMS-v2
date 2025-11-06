@@ -10,7 +10,7 @@ import {
   SelectField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { DATE_TIME_FORMAT, DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
+import { DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
 import { ApiConfig, AutoCompleteOption, SearchFormProps } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
@@ -78,7 +78,6 @@ export default function SearchForm<S extends FieldValues>({
                 <Col
                   key={sf.key as string}
                   span={sf.colSpan || DEFAULT_COL_SPAN}
-                  className='px-0'
                 >
                   <SelectField
                     control={form.control}
@@ -102,7 +101,6 @@ export default function SearchForm<S extends FieldValues>({
                 <Col
                   key={sf.key as string}
                   span={sf.colSpan || DEFAULT_COL_SPAN}
-                  className='px-0'
                 >
                   <AutoCompleteField
                     apiConfig={sf.apiConfig as ApiConfig}
@@ -125,7 +123,6 @@ export default function SearchForm<S extends FieldValues>({
                 <Col
                   key={sf.key as string}
                   span={sf.colSpan || DEFAULT_COL_SPAN}
-                  className='px-0'
                 >
                   <DateTimePickerField
                     control={form.control}
@@ -140,7 +137,6 @@ export default function SearchForm<S extends FieldValues>({
                 <Col
                   key={sf.key as string}
                   span={sf.colSpan || DEFAULT_COL_SPAN}
-                  className='px-0'
                 >
                   <InputField
                     control={form.control}
@@ -185,7 +181,9 @@ export default function SearchForm<S extends FieldValues>({
       {(form) => (
         <>
           {searchFields.length < 4 ? (
-            <Row className='mb-0'>{renderField(searchFields, form)}</Row>
+            <Row className='mb-0 gap-x-2 *:p-0'>
+              {renderField(searchFields, form)}
+            </Row>
           ) : (
             <Row className='mb-0 flex flex-1 flex-nowrap justify-start gap-2'>
               {renderField(searchFields, form)}

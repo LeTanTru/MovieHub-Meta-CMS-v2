@@ -155,8 +155,9 @@ export default function useSaveBase<
             }
           } else {
             const code = res.code;
-            if (code && errorMaps && form)
+            if (code && errorMaps && form) {
               applyFormErrors(form, code, errorMaps);
+            }
           }
         },
         onError: (error) => {
@@ -174,7 +175,7 @@ export default function useSaveBase<
     form: UseFormReturn<T>,
     options?: { onCancel?: () => void }
   ) => (
-    <Row className='my-0 justify-end gap-2'>
+    <Row className='my-0 justify-end gap-x-4 *:px-0'>
       <Col span={4} className='w-30'>
         {!form.formState.isDirty ? (
           <Button

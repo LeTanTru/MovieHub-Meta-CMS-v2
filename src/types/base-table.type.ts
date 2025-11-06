@@ -4,7 +4,7 @@ import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 
 export type Column<T> = {
   title: string;
-  dataIndex?: string | string[];
+  dataIndex?: keyof T | string[] | 'status';
   render?: (
     value: any,
     record: T,

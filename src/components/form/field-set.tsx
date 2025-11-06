@@ -1,5 +1,7 @@
 'use client';
 
+import { cn } from '@/lib';
+
 interface FieldSetProps {
   title?: string;
   description?: string;
@@ -15,7 +17,10 @@ export default function FieldSet({
 }: FieldSetProps) {
   return (
     <fieldset
-      className={`rounded border border-gray-200 p-4 dark:border-gray-700 ${className}`}
+      className={cn(
+        'mb-4 rounded-md border border-gray-200 p-4 dark:border-gray-700',
+        className
+      )}
     >
       {title && (
         <legend className='px-2 text-base font-semibold text-gray-800 dark:text-gray-100'>
