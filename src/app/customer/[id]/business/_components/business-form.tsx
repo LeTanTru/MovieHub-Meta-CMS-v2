@@ -26,6 +26,7 @@ import { route } from '@/routes';
 import { businessSchema } from '@/schemaValidations';
 import { BusinessBodyType, BusinessResType } from '@/types';
 import {
+  convertLocalToUTC,
   convertUTCToLocal,
   generatePath,
   renderImageUrl,
@@ -117,8 +118,8 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
     await handleSubmit(
       {
         ...values,
-        expireDate: convertUTCToLocal(values.expireDate),
-        extDate: convertUTCToLocal(values.extDate),
+        expireDate: convertLocalToUTC(values.expireDate),
+        extDate: convertLocalToUTC(values.extDate),
         logoPath,
         bannerPath
       },

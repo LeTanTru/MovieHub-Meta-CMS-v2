@@ -1,3 +1,6 @@
+import { DATE_TIME_FORMAT } from '@/constants';
+import { parse } from 'date-fns';
+import { vi } from 'date-fns/locale';
 import z from 'zod';
 
 export const businessSearchSchema = z.object({
@@ -14,9 +17,15 @@ const futureDateCheck = (fieldName: string) =>
     .nonempty(`${fieldName} bắt buộc`)
     .refine(
       (value) => {
-        const date = new Date(value);
-        if (isNaN(date.getTime())) return false;
-        return date.getTime() > Date.now();
+        try {
+          const date = parse(value, DATE_TIME_FORMAT, new Date(), {
+            locale: vi
+          });
+          if (isNaN(date.getTime())) return false;
+          return date.getTime() > Date.now();
+        } catch {
+          return false;
+        }
       },
       {
         message: `${fieldName} phải nằm trong tương lai`
