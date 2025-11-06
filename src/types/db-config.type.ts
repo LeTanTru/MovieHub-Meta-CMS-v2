@@ -8,10 +8,8 @@ export type DbConfigResType = {
   id: string;
   name: string;
   url: string;
-  username: string;
-  password: string;
   driverClassName: string;
   initialize: boolean;
   maxConnection: number;
-  serverProviderDto: ServerProviderResType;
+  serverProvider: ServerProviderResType;
 };

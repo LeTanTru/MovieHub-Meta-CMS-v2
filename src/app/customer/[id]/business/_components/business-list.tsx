@@ -12,6 +12,7 @@ import {
   TIME_DATE_FORMAT
 } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
+import { useSnsConfigQuery } from '@/queries';
 import { route } from '@/routes';
 import { businessSearchSchema } from '@/schemaValidations';
 import {
@@ -23,17 +24,23 @@ import {
 import {
   convertLocalToUTC,
   convertUTCToLocal,
+  notify,
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import { AiOutlineApartment, AiOutlineFileImage } from 'react-icons/ai';
+import {
+  AiOutlineApartment,
+  AiOutlineFileImage,
+  AiOutlineMessage
+} from 'react-icons/ai';
 
 export default function BusinessList({ queryKey }: { queryKey: string }) {
   const { id: customerId } = useParams<{ id: string }>();
   const [selectedRow, setSelectedRow] = useState<BusinessResType | null>(null);
   const dbConfigModal = useDisclosure();
+  const [businessId, setBusinessId] = useState<string>('');
 
   const { data, loading, pagination, handlers, queryString } = useListBase<
     BusinessResType,
@@ -69,6 +76,28 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
               </span>
             </ToolTip>
           </HasPermission>
+        ),
+        configSns: (
+          record: BusinessResType,
+          buttonProps?: Record<string, any>
+        ) => (
+          <HasPermission
+            requiredPermissions={[
+              apiConfig.business.configSns.permissionCode as string
+            ]}
+          >
+            <ToolTip title={'Cấu hình sns'}>
+              <span>
+                <Button
+                  onClick={() => handleConfigSns(record.id)}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  {...buttonProps}
+                >
+                  <AiOutlineMessage className='text-dodger-blue size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          </HasPermission>
         )
       });
       const changeQueryFilter = handlers.changeQueryFilter;
@@ -87,6 +116,14 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
       };
     }
   });
+
+  const snsConfigQuery = useSnsConfigQuery(businessId);
+
+  const handleConfigSns = async (id: string) => {
+    setBusinessId(id);
+    await snsConfigQuery.refetch();
+    notify.success('Cấu hình sns thành công');
+  };
 
   const handleOpenDbConfigModal = (record: BusinessResType) => {
     setSelectedRow(record);
@@ -157,7 +194,7 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { edit: true, dbConfig: true, delete: true }
+      actions: { edit: true, configSns: true, dbConfig: true, delete: true }
     })
   ];
 
