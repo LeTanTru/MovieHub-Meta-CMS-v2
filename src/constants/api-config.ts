@@ -91,6 +91,12 @@ const apiConfig = defineApiConfig({
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'BUS_D'
+    },
+    configSns: {
+      baseUrl: `${AppConstants.apiUrl}/v1/business/config-sns/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'SNS_CONFIG'
     }
   },
   customer: {
@@ -286,6 +292,19 @@ const apiConfig = defineApiConfig({
       headers: multipartHeader,
       permissionCode: 'FILE_U',
       isUpload: true
+    }
+  },
+  sns: {
+    getClientToken: {
+      baseUrl: `${AppConstants.apiUrl}/v1/sns/get-client-token`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'GET_SNS_CONFIG'
+    },
+    sendSignal: {
+      baseUrl: `${AppConstants.apiUrl}/v1/sns/send-signal`,
+      method: 'POST',
+      headers: baseHeader
     }
   }
 });

@@ -80,27 +80,6 @@ export default function DbConfigModal({
     return { host: '', port: 3306, dbName: '' };
   };
 
-  const buildJdbcUrl = ({
-    host,
-    port,
-    dbName,
-    queryParams = {}
-  }: {
-    host: string;
-    port: number;
-    dbName: string;
-    queryParams?: Record<string, any>;
-  }) => {
-    const base = `jdbc:mysql://${host}:${port}/${dbName}?ssl-mode=REQUIRED&useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull`;
-    const queryString = Object.entries(queryParams)
-      .map(
-        ([key, value]) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-      )
-      .join('&');
-    return queryString ? `${base}&${queryString}` : base;
-  };
-
   const dbInfo = parseUrl(dbConfig?.url ?? '');
 
   const defaultValues: DbConfigBodyType = {
@@ -108,11 +87,7 @@ export default function DbConfigModal({
     driverClassName: '',
     initialize: false,
     maxConnection: 0,
-    password: '',
     serverProviderId: '',
-    url: '',
-    username: '',
-    dbName: '',
     host: '',
     port: 3306
   };
@@ -123,11 +98,7 @@ export default function DbConfigModal({
       driverClassName: dbConfig?.driverClassName ?? '',
       initialize: dbConfig?.initialize ?? false,
       maxConnection: dbConfig?.maxConnection ?? 0,
-      password: dbConfig?.password ?? '',
-      serverProviderId: dbConfig?.serverProviderDto?.id?.toString() ?? '',
-      url: dbConfig?.url ?? '',
-      username: dbConfig?.username ?? '',
-      dbName: dbInfo?.dbName,
+      serverProviderId: dbConfig?.serverProvider?.id?.toString() ?? '',
       host: dbInfo?.host,
       port: dbInfo?.port
     };
@@ -137,23 +108,8 @@ export default function DbConfigModal({
     values: DbConfigBodyType,
     form: UseFormReturn<DbConfigBodyType>
   ) => {
-    const payload = omit(
-      {
-        ...values,
-        url: buildJdbcUrl({
-          host: values.host,
-          port: values.port,
-          dbName: values.dbName
-        })
-      },
-      ['host', 'port', 'dbName']
-    );
     try {
-      const res = await handleSubmit(
-        { ...(payload as any) },
-        form,
-        dbConfigErrorMaps
-      );
+      const res = await handleSubmit({ ...values }, form, dbConfigErrorMaps);
       if (res.result) {
         queryClient.invalidateQueries({
           queryKey: [`${queryKeys.BUSINESS}-list`]
@@ -201,41 +157,19 @@ export default function DbConfigModal({
                     <Col>
                       <InputField
                         control={form.control}
-                        name='username'
-                        label='Tên đăng nhập'
-                        placeholder='Tên đăng nhập'
+                        name='host'
+                        label='Máy chủ'
+                        placeholder='Máy chủ'
                         required
                         disabled={isEditing}
                       />
                     </Col>
-                    <Col>
-                      <InputField
-                        control={form.control}
-                        name='password'
-                        label='Mật khẩu'
-                        placeholder='Mật khẩu'
-                        required
-                        disabled={isEditing}
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
                     <Col>
                       <InputField
                         control={form.control}
                         name='driverClassName'
                         label='Driver class name'
                         placeholder='Driver class name'
-                        required
-                        disabled={isEditing}
-                      />
-                    </Col>
-                    <Col>
-                      <InputField
-                        control={form.control}
-                        name='host'
-                        label='Máy chủ'
-                        placeholder='Máy chủ'
                         required
                         disabled={isEditing}
                       />
@@ -253,18 +187,6 @@ export default function DbConfigModal({
                       />
                     </Col>
                     <Col>
-                      <InputField
-                        control={form.control}
-                        name='dbName'
-                        label='Tên cơ sở dữ liệu'
-                        placeholder='Máy chủ'
-                        required
-                        disabled={isEditing}
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
                       <NumberField
                         control={form.control}
                         name='maxConnection'
@@ -273,6 +195,8 @@ export default function DbConfigModal({
                         required
                       />
                     </Col>
+                  </Row>
+                  <Row>
                     <Col>
                       <SelectField
                         control={form.control}

@@ -83,9 +83,8 @@ export default function GroupForm() {
     });
 
   const defaultValues: GroupBodyType = {
-    kind: 1,
     name: '',
-    permissionIds: [],
+    permissions: [],
     description: ''
   };
 
@@ -93,7 +92,7 @@ export default function GroupForm() {
     () => ({
       description: group?.description ?? '',
       name: group?.name ?? '',
-      permissionIds: group?.permissions.map((g) => g.id) ?? []
+      permissions: group?.permissions.map((g) => g.id.toString()) ?? []
     }),
     [group?.description, group?.name, group?.permissions]
   );
@@ -194,39 +193,45 @@ export default function GroupForm() {
                           checked={
                             permissions.length > 0 &&
                             permissions.every((p: PermissionResType) =>
-                              (form.watch('permissionIds') || []).includes(p.id)
+                              (form.watch('permissions') || []).includes(
+                                p.id.toString()
+                              )
                             )
                               ? true
-                              : (form.watch('permissionIds') || []).some((id) =>
+                              : (form.watch('permissions') || []).some((id) =>
                                     permissions
-                                      .map((p: PermissionResType) => p.id)
+                                      .map((p: PermissionResType) =>
+                                        p.id.toString()
+                                      )
                                       .includes(id)
                                   )
                                 ? 'indeterminate'
                                 : false
                           }
                           onCheckedChange={(checked) => {
-                            const selected = form.watch('permissionIds') || [];
+                            const selected = form.watch('permissions') || [];
                             if (checked === true) {
                               const newIds = Array.from(
                                 new Set([
                                   ...selected,
-                                  ...permissions.map(
-                                    (p: PermissionResType) => p.id
+                                  ...permissions.map((p: PermissionResType) =>
+                                    p.id.toString()
                                   )
                                 ])
                               );
-                              form.setValue('permissionIds', newIds, {
+                              form.setValue('permissions', newIds, {
                                 shouldDirty: true
                               });
                             } else {
                               const newIds = selected.filter(
                                 (id) =>
                                   !permissions
-                                    .map((p: PermissionResType) => p.id)
+                                    .map((p: PermissionResType) =>
+                                      p.id.toString()
+                                    )
                                     .includes(id)
                               );
-                              form.setValue('permissionIds', newIds, {
+                              form.setValue('permissions', newIds, {
                                 shouldDirty: true
                               });
                             }
@@ -249,25 +254,24 @@ export default function GroupForm() {
                         >
                           {permissions?.length > 0 ? (
                             permissions.map((permission: PermissionResType) => {
-                              const selected =
-                                form.watch('permissionIds') || [];
+                              const selected = form.watch('permissions') || [];
 
                               const handleToggle = (
                                 checked: boolean | 'indeterminate'
                               ) => {
                                 if (checked === true) {
                                   form.setValue(
-                                    'permissionIds',
-                                    [...selected, permission.id],
+                                    'permissions',
+                                    [...selected, permission.id.toString()],
                                     {
                                       shouldDirty: true
                                     }
                                   );
                                 } else {
                                   form.setValue(
-                                    'permissionIds',
+                                    'permissions',
                                     selected.filter(
-                                      (id) => id !== permission.id
+                                      (id) => id !== permission.id.toString()
                                     ),
                                     { shouldDirty: true }
                                   );
@@ -276,20 +280,22 @@ export default function GroupForm() {
 
                               return (
                                 <div
-                                  key={permission.id}
+                                  key={permission.id.toString()}
                                   className='flex items-center gap-x-2'
                                 >
                                   <Checkbox
-                                    checked={selected.includes(permission.id)}
+                                    checked={selected.includes(
+                                      permission.id.toString()
+                                    )}
                                     onCheckedChange={handleToggle}
-                                    id={permission.id}
+                                    id={permission.id.toString()}
                                     className={
                                       'data-[state=checked]:bg-dodger-blue data-[state=checked]:border-dodger-blue cursor-pointer transition-all duration-100 ease-linear data-[state=unchecked]:text-white'
                                     }
                                   />
                                   <label
                                     className='cursor-pointer select-none'
-                                    htmlFor={permission.id}
+                                    htmlFor={permission.id.toString()}
                                   >
                                     {permission.name}
                                   </label>

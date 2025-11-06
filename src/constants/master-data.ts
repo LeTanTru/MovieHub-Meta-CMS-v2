@@ -113,7 +113,8 @@ export const queryKeys = {
   GROUP_PERMISSION: 'group-permission',
   BUSINESS: 'business',
   DB_CONFIG: 'db_config',
-  SERVER_PROVIDER: 'server_provider'
+  SERVER_PROVIDER: 'server_provider',
+  SNS_CONFIG: 'sns_config'
 };
 
 export const languageOptions = [

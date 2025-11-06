@@ -181,11 +181,11 @@ export default function SearchForm<S extends FieldValues>({
       {(form) => (
         <>
           {searchFields.length < 4 ? (
-            <Row className='mb-0 gap-x-2 *:p-0'>
+            <Row className='mb-0 gap-2 *:p-0'>
               {renderField(searchFields, form)}
             </Row>
           ) : (
-            <Row className='mb-0 flex flex-1 flex-nowrap justify-start gap-2'>
+            <Row className='mb-0 flex flex-1 flex-nowrap justify-start gap-2 *:p-0'>
               {renderField(searchFields, form)}
               <div className='flex items-center gap-2'>
                 <Button type='submit' variant='primary'>

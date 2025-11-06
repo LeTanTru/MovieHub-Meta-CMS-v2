@@ -188,11 +188,7 @@ export const customerBusinessErrorMaps: ErrorMaps<BusinessBodyType> = {
   ]
 };
 
-export const dbConfigErrorMaps: ErrorMaps<DbConfigBodyType> = {
-  [ErrorCode.DB_CONFIG_USER_NAME_EXISTED]: [
-    ['username', { type: 'manual', message: 'Tên đăng nhập đã tồn tại' }]
-  ]
-};
+export const dbConfigErrorMaps: ErrorMaps<DbConfigBodyType> = {};
 
 export const serverProviderErrorMaps: ErrorMaps<ServerProviderBodyType> = {
   [ErrorCode.SERVER_PROVIDER_ERROR_URL_EXISTED]: [

@@ -6,3 +6,4 @@ export * from './group-permission.query';
 export * from './group.query';
 export * from './permission.query';
 export * from './server-provider.query';
+export * from './sns.query';

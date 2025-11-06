@@ -5,7 +5,7 @@ export const groupSchema = z.object({
   name: z.string().nonempty('Bắt buộc'),
   description: z.string().nonempty('Bắt buộc'),
   kind: z.number().optional(),
-  permissionIds: z.string().array()
+  permissions: z.string().array()
 });
 
 export const groupSearchSchema = z.object({
