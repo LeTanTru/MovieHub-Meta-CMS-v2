@@ -35,7 +35,7 @@ import { CircleLoading } from '@/components/loading';
 
 function getValueByPath<T extends Record<string, any>>(
   obj: T,
-  path?: string | string[]
+  path?: string | string[] | keyof T
 ): any {
   if (!obj || !path) return undefined;
 
@@ -43,12 +43,16 @@ function getValueByPath<T extends Record<string, any>>(
     return obj[path];
   }
 
-  return path.reduce((acc, key) => {
-    if (acc && typeof acc === 'object' && key in acc) {
-      return acc[key];
-    }
-    return undefined;
-  }, obj as any);
+  if (Array.isArray(path)) {
+    return path.reduce((acc, key) => {
+      if (acc && typeof acc === 'object' && key in acc) {
+        return acc[key];
+      }
+      return undefined;
+    }, obj as any);
+  }
+
+  return obj[path as keyof T];
 }
 
 function SortableRow<T extends Record<any, any>>({

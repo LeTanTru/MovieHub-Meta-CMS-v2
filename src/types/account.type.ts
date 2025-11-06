@@ -7,17 +7,10 @@ import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type Group = {
-  createdBy: string;
-  createdDate: string;
-  modifiedBy: string;
-  modifiedDate: string;
-  status: number;
   id: string;
   name: string;
-  description: string;
   kind: number;
-  isSystemRole: boolean;
-  permissions: Permission[];
+  subKind: number;
 };
 
 type GroupPermission = {
@@ -81,10 +74,12 @@ export type AccountAutoResType = {
   status: number;
   kind: number;
   username: string;
+  phone: string;
   email: string;
   fullName: string;
   group: Group;
   lastLogin: string;
+  avatarPath: string;
   isSuperAdmin: boolean;
 };
 

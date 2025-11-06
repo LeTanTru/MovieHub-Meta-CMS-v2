@@ -37,6 +37,7 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
       notShowFromSearchParams: ['kind']
     }
   });
+  console.log('🚀 ~ AdminList ~ data:', data);
 
   const columns: Column<AccountAutoResType>[] = [
     {

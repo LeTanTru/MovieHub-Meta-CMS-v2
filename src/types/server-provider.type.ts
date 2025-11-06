@@ -1,3 +1,6 @@
+import { serverProviderSchema } from '@/schemaValidations';
+import z from 'zod';
+
 export type ServerProviderResType = {
   id: string;
   name: string;
@@ -9,3 +12,5 @@ export type ServerProviderResType = {
   mySqlJdbcUrl: string;
   driverClassName: string;
 };
+
+export type ServerProviderBodyType = z.infer<typeof serverProviderSchema>;

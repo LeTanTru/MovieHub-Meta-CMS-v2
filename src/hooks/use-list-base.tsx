@@ -79,6 +79,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   invalidateQueries: () => void;
   renderReloadButton: () => React.ReactNode;
   changeQueryFilter: (filter: Partial<S>) => void;
+  handleDeleteError: (code: string) => void;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -236,7 +237,8 @@ export default function useListBase<
           // queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
           listQuery.refetch();
         } else {
-          notify.error(`Xoá ${objectName} thất bại`);
+          if (res.code) handlers.handleDeleteError(res.code);
+          else notify.error(`Xoá ${objectName} thất bại`);
         }
       },
       onError: (error: Error) => {
@@ -245,6 +247,8 @@ export default function useListBase<
       }
     });
   };
+
+  const handleDeleteError = (code: string) => {};
 
   const additionalColumns = () => ({});
 
@@ -530,7 +534,8 @@ export default function useListBase<
       handleDeleteClick,
       invalidateQueries,
       renderReloadButton,
-      changeQueryFilter
+      changeQueryFilter,
+      handleDeleteError
     };
 
     override?.(handlers);

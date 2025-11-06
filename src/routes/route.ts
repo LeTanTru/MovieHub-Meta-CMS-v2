@@ -67,6 +67,21 @@ const route = defineRoute({
       ]
     }
   },
+  serverProvider: {
+    getList: {
+      path: '/server-provider',
+      auth: true,
+      permissionCode: [apiConfig.serverProvider.autoComplete.permissionCode]
+    },
+    savePage: {
+      path: '/server-provider/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.serverProvider.create.permissionCode,
+        apiConfig.serverProvider.update.permissionCode
+      ]
+    }
+  },
   login: {
     path: '/login',
     auth: false

@@ -271,6 +271,12 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'SVP_U'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}/v1/server-provider/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'SVP_V'
     }
   },
   file: {

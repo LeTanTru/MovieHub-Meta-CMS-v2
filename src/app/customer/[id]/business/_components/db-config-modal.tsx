@@ -12,12 +12,18 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { Modal } from '@/components/modal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { apiConfig, dbConfigErrorMaps, queryKeys } from '@/constants';
+import {
+  apiConfig,
+  dbConfigErrorMaps,
+  queryKeys,
+  serverProviderErrorMaps
+} from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useServerProviderListQuery } from '@/queries';
 import { dbConfigSchema } from '@/schemaValidations';
 import { DbConfigBodyType, DbConfigResType, BusinessResType } from '@/types';
+import { notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { omit } from 'lodash';
 import { X } from 'lucide-react';
@@ -153,6 +159,15 @@ export default function DbConfigModal({
           queryKey: [`${queryKeys.BUSINESS}-list`]
         });
         onClose();
+      } else {
+        const errorCode = res.code;
+        if (errorCode) {
+          const error = serverProviderErrorMaps[errorCode];
+          if (error) {
+            const errMsg = error[0][1].message;
+            notify.error(errMsg);
+          }
+        }
       }
     } catch (error) {
       logger.error(error);

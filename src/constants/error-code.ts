@@ -5,7 +5,8 @@ import {
   DbConfigBodyType,
   ErrorMaps,
   GroupBodyType,
-  PermissionBodyType
+  PermissionBodyType,
+  ServerProviderBodyType
 } from '@/types';
 import { GroupPermissionBodyType } from '@/types/group-permission.type';
 
@@ -193,15 +194,25 @@ export const dbConfigErrorMaps: ErrorMaps<DbConfigBodyType> = {
   ]
 };
 
-/*
-  DB_CONFIG_ERROR_UNAUTHORIZED: 'ERROR-DB-CONFIG-000',
-  DB_CONFIG_ERROR_NOT_FOUND: 'ERROR-DB-CONFIG-001',
-  DB_CONFIG_ERROR_NOT_INITIALIZE: 'ERROR-DB-CONFIG-002',
-  DB_CONFIG_ERROR_CANNOT_CREATE_DB: 'ERROR-DB-CONFIG-003',
-  DB_CONFIG_ERROR_CANNOT_RESTORE_DB: 'ERROR-DB-CONFIG-004',
-  DB_CONFIG_ERROR_UPLOAD: 'ERROR-DB-RESTORE-005',
-  DB_CONFIG_UPGRADE_TENANT_ALREADY_IN_PROCESS: 'ERROR-DB-CONFIG-006',
-  DB_CONFIG_ERROR_DROP: 'ERROR-DB-CONFIG-007',
-  DB_CONFIG_SHOP_EXISTED: 'ERROR-DB-CONFIG-008',
-  DB_CONFIG_USER_NAME_EXISTED: 'ERROR-DB-CONFIG-009',
+export const serverProviderErrorMaps: ErrorMaps<ServerProviderBodyType> = {
+  [ErrorCode.SERVER_PROVIDER_ERROR_URL_EXISTED]: [
+    ['url', { type: 'manual', message: 'Url đã tồn tại' }]
+  ],
+  [ErrorCode.SERVER_PROVIDER_MAX_TENANT_REACHED]: [
+    [
+      'maxTenant',
+      {
+        type: 'manual',
+        message: 'Số lượng đã đạt tối đa, không thể dùng máy chủ này'
+      }
+    ]
+  ]
+};
+
+/* 
+  SERVER_PROVIDER_ERROR_UNAUTHORIZED: 'ERROR-SERVER-PROVIDER-000',
+  SERVER_PROVIDER_ERROR_NOT_FOUND: 'ERROR-SERVER-PROVIDER-001',
+  SERVER_PROVIDER_ERROR_URL_EXISTED: 'ERROR-SERVER-PROVIDER-002',
+  SERVER_PROVIDER_ERROR_NOT_ANY_VALID: 'ERROR-SERVER-PROVIDER-003',
+  SERVER_PROVIDER_MAX_TENANT_REACHED: 'ERROR-SERVER-PROVIDER-004',
 */

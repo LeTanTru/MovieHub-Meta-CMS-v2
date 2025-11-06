@@ -6,6 +6,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
   apiConfig,
+  ErrorCode,
   FieldTypes,
   STATUS_ACTIVE,
   STATUS_LOCK,
@@ -72,6 +73,11 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
           );
         }
       });
+      handlers.handleDeleteError = (code) => {
+        if (code === ErrorCode.CUSTOMER_ERROR_BUSINESS_EXISTED) {
+          notify.error('Khách hàng này có doanh nghiệp đang hoạt động');
+        }
+      };
     }
   });
 

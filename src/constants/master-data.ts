@@ -54,7 +54,7 @@ export const groupKinds = [
     color: '#10B981'
   },
   {
-    label: 'USER_VIP',
+    label: 'USER VIP',
     value: GROUP_KIND_USER_VIP,
     color: '#D946EF'
   }
