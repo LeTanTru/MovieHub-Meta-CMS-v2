@@ -46,7 +46,7 @@ type AutoCompleteFieldProps<
   control: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
   label?: string;
-  searchParams: (keyof TOption)[];
+  searchParams: (keyof TOption)[] | string[];
   initialParams?: Record<string, any>;
   placeholder?: string;
   description?: string;
@@ -411,6 +411,7 @@ export default function AutoCompleteField<
                             key={opt.value}
                             onSelect={() => toggleValue(opt.value)}
                             onMouseEnter={() => setHighlightedIndex(idx)}
+                            onMouseLeave={() => setHighlightedIndex(-1)}
                             title={opt.label}
                             className={cn(
                               'block cursor-pointer truncate rounded',

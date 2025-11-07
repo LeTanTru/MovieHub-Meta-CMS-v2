@@ -26,6 +26,20 @@ const menuConfig: MenuItem[] = [
     ]
   },
   {
+    key: 'business-management',
+    label: 'Quản lý doanh nghiệp',
+    icon: AiOutlineUser,
+    permissionCode: [apiConfig.business.getList.permissionCode],
+    children: [
+      {
+        key: 'business-list',
+        label: 'Doanh nghiệp',
+        path: route.business.getList.path,
+        permissionCode: [apiConfig.business.getList.permissionCode]
+      }
+    ]
+  },
+  {
     key: 'system-management',
     label: 'Quản lý hệ thống',
     icon: Settings,

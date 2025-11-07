@@ -82,6 +82,21 @@ const route = defineRoute({
       ]
     }
   },
+  business: {
+    getList: {
+      path: '/business',
+      auth: true,
+      permissionCode: [apiConfig.business.getList.permissionCode]
+    },
+    savePage: {
+      path: '/business/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.business.create.permissionCode,
+        apiConfig.business.update.permissionCode
+      ]
+    }
+  },
   login: {
     path: '/login',
     auth: false
