@@ -1,5 +1,3 @@
-import { apiConfig } from '@/constants';
-
 export const ensureArray = (value: any) => {
   if (value === null || value === undefined) {
     return [];
@@ -35,7 +33,7 @@ export const validatePermission = ({
   requiredKind?: number;
   excludeKind?: string[];
   userKind?: number;
-  path?: { name: string; type: string };
+  path?: string;
   separate?: boolean;
 }) => {
   if (ensureArray(excludeKind).length > 0) {
@@ -48,9 +46,10 @@ export const validatePermission = ({
   if (requiredPermissions.length === 0) return false;
 
   let permissionsSavePage = [];
+
   if (separate && requiredPermissions.length > 0) {
     permissionsSavePage.push(
-      path?.type === 'create' ? requiredPermissions[0] : requiredPermissions[1]
+      path === 'create' ? requiredPermissions[0] : requiredPermissions[1]
     );
   } else {
     permissionsSavePage = requiredPermissions;
@@ -60,11 +59,7 @@ export const validatePermission = ({
     removePrefix(pCode)
   );
 
-  return requiredPermissions.map((item) =>
-    removePrefixedUserPermissions.includes(item)
-  );
-
-  // return removePathParams(permissionsSavePage).every((item) =>
-  //   userPermissions?.includes(item?.replace(apiConfig, '/'))
-  // );
+  return permissionsSavePage
+    .map((item) => removePrefixedUserPermissions.includes(item))
+    .every((item) => item);
 };
