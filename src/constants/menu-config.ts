@@ -59,7 +59,7 @@ const menuConfig: MenuItem[] = [
         key: 'server-provider',
         label: 'Máy chủ',
         path: route.serverProvider.getList.path,
-        permissionCode: [apiConfig.group.getList.permissionCode]
+        permissionCode: [apiConfig.serverProvider.autoComplete.permissionCode]
       }
     ]
   }
