@@ -14,6 +14,7 @@ import { CircleLoading } from '@/components/loading';
 import {
   adminErrorMaps,
   apiConfig,
+  ErrorCode,
   GROUP_KIND_ADMIN,
   STATUS_ACTIVE,
   statusOptions
@@ -39,23 +40,30 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
   const uploadImageMutation = useUploadAvatarMutation();
   const { id } = useParams<{ id: string }>();
 
-  const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
-    useSaveBase<AccountResType, AccountBodyType>({
-      apiConfig: {
-        create: apiConfig.account.createAdmin,
-        update: apiConfig.account.updateAdmin,
-        getById: apiConfig.account.getById
+  const {
+    data,
+    loading,
+    isEditing,
+    queryString,
+    responseCode,
+    handleSubmit,
+    renderActions
+  } = useSaveBase<AccountResType, AccountBodyType>({
+    apiConfig: {
+      create: apiConfig.account.createAdmin,
+      update: apiConfig.account.updateAdmin,
+      getById: apiConfig.account.getById
+    },
+    options: {
+      queryKey,
+      objectName: 'nhân viên',
+      listPageUrl: route.admin.getList.path,
+      pathParams: {
+        id
       },
-      options: {
-        queryKey,
-        objectName: 'nhân viên',
-        listPageUrl: route.admin.getList.path,
-        pathParams: {
-          id
-        },
-        mode: id === 'create' ? 'create' : 'edit'
-      }
-    });
+      mode: id === 'create' ? 'create' : 'edit'
+    }
+  });
 
   const defaultValues: AccountBodyType = {
     username: '',
@@ -81,7 +89,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       confirmPassword: '',
       phone: data?.phone ?? ''
     };
-  }, [data, groupList]);
+  }, [data]);
 
   useEffect(() => {
     if (data?.avatarPath) setAvatarPath(data?.avatarPath);
@@ -111,6 +119,8 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
         },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} quản trị viên` }
       ]}
+      notFound={responseCode === ErrorCode.ACCOUNT_ERROR_NOT_FOUND}
+      notFoundContent='Không tìm thấy quản trị viên này'
     >
       <BaseForm
         onSubmit={onSubmit}

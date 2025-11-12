@@ -4,7 +4,12 @@ import { Col, FieldSet, InputField, NumberField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { apiConfig, serverProviderErrorMaps, STATUS_ACTIVE } from '@/constants';
+import {
+  apiConfig,
+  ErrorCode,
+  serverProviderErrorMaps,
+  STATUS_ACTIVE
+} from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { route } from '@/routes';
 import { serverProviderSchema } from '@/schemaValidations';
@@ -18,19 +23,26 @@ import { UseFormReturn } from 'react-hook-form';
 export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
 
-  const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
-    useSaveBase<ServerProviderResType, ServerProviderBodyType>({
-      apiConfig: apiConfig.serverProvider,
-      options: {
-        queryKey,
-        objectName: 'máy chủ',
-        listPageUrl: route.serverProvider.getList.path,
-        pathParams: {
-          id
-        },
-        mode: id === 'create' ? 'create' : 'edit'
-      }
-    });
+  const {
+    data,
+    loading,
+    isEditing,
+    queryString,
+    responseCode,
+    handleSubmit,
+    renderActions
+  } = useSaveBase<ServerProviderResType, ServerProviderBodyType>({
+    apiConfig: apiConfig.serverProvider,
+    options: {
+      queryKey,
+      objectName: 'máy chủ',
+      listPageUrl: route.serverProvider.getList.path,
+      pathParams: {
+        id
+      },
+      mode: id === 'create' ? 'create' : 'edit'
+    }
+  });
 
   const parseJdbcUrl = (url: string) => {
     const regex = /^jdbc:mysql:\/\/([^:]+):(\d+)$/;
@@ -106,6 +118,8 @@ export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
         },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} máy chủ` }
       ]}
+      notFound={responseCode === ErrorCode.SERVER_PROVIDER_ERROR_NOT_ANY_VALID}
+      notFoundContent='Không tìm thấy máy chủ này'
     >
       <BaseForm
         onSubmit={onSubmit}

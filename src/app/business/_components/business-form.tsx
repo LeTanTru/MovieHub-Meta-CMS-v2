@@ -19,7 +19,8 @@ import {
   languageOptions,
   STATUS_ACTIVE,
   statusOptions,
-  customerBusinessErrorMaps
+  customerBusinessErrorMaps,
+  ErrorCode
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { useUploadLogoMutation } from '@/queries';
@@ -44,19 +45,25 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
     id: string;
   }>();
 
-  const { data, loading, queryString, handleSubmit, renderActions } =
-    useSaveBase<BusinessResType, BusinessBodyType>({
-      apiConfig: apiConfig.business,
-      options: {
-        queryKey,
-        objectName: 'khách hàng',
-        listPageUrl: route.business.getList.path,
-        pathParams: {
-          id
-        },
-        mode: id === 'create' ? 'create' : 'edit'
-      }
-    });
+  const {
+    data,
+    loading,
+    queryString,
+    responseCode,
+    handleSubmit,
+    renderActions
+  } = useSaveBase<BusinessResType, BusinessBodyType>({
+    apiConfig: apiConfig.business,
+    options: {
+      queryKey,
+      objectName: 'khách hàng',
+      listPageUrl: route.business.getList.path,
+      pathParams: {
+        id
+      },
+      mode: id === 'create' ? 'create' : 'edit'
+    }
+  });
 
   const defaultValues: BusinessBodyType = {
     address: '',
@@ -132,6 +139,8 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
         },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} doanh nghiệp` }
       ]}
+      notFound={responseCode === ErrorCode.BUSINESS_ERROR_NOT_FOUND}
+      notFoundContent='Không tìm thấy doanh nghiệp này'
     >
       <BaseForm
         onSubmit={onSubmit}

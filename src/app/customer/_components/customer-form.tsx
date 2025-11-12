@@ -15,7 +15,8 @@ import {
   customerErrorMaps,
   apiConfig,
   STATUS_ACTIVE,
-  statusOptions
+  statusOptions,
+  ErrorCode
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { useUploadAvatarMutation } from '@/queries';
@@ -33,19 +34,26 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
   const uploadImageMutation = useUploadAvatarMutation();
   const { id } = useParams<{ id: string }>();
 
-  const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
-    useSaveBase<CustomerResType, CustomerBodyType>({
-      apiConfig: apiConfig.customer,
-      options: {
-        queryKey,
-        objectName: 'khách hàng',
-        listPageUrl: route.customer.getList.path,
-        pathParams: {
-          id
-        },
-        mode: id === 'create' ? 'create' : 'edit'
-      }
-    });
+  const {
+    data,
+    loading,
+    isEditing,
+    queryString,
+    responseCode,
+    handleSubmit,
+    renderActions
+  } = useSaveBase<CustomerResType, CustomerBodyType>({
+    apiConfig: apiConfig.customer,
+    options: {
+      queryKey,
+      objectName: 'khách hàng',
+      listPageUrl: route.customer.getList.path,
+      pathParams: {
+        id
+      },
+      mode: id === 'create' ? 'create' : 'edit'
+    }
+  });
 
   const defaultValues: CustomerBodyType = {
     username: '',
@@ -101,6 +109,8 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
         },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} khách hàng` }
       ]}
+      notFound={responseCode === ErrorCode.CUSTOMER_ERROR_NOT_FOUND}
+      notFoundContent='Không tìm thấy khách hàng này'
     >
       <BaseForm
         onSubmit={onSubmit}
