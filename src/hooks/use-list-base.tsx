@@ -248,7 +248,9 @@ export default function useListBase<
     });
   };
 
-  const handleDeleteError = (code: string) => {};
+  const handleDeleteError = (code: string) => {
+    if (code) notify.error('Có lỗi xảy ra');
+  };
 
   const additionalColumns = () => ({});
 
@@ -309,7 +311,7 @@ export default function useListBase<
                 </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={() => handleDeleteClick(record.id)}
-                  className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                  className='bg-dodger-blue hover:bg-dodger-blue/80 w-15 cursor-pointer transition-all duration-200 ease-linear'
                 >
                   Có
                 </AlertDialogAction>

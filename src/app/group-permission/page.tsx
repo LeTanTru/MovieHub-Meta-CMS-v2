@@ -2,9 +2,11 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PageWrapper } from '@/components/layout';
-import { GroupList } from '@/app/group-permission/_components';
-import PermissionList from '@/app/group-permission/_components/permission-list';
-import GroupPermissionList from '@/app/group-permission/_components/group-permission-list';
+import {
+  GroupList,
+  GroupPermissionList,
+  PermissionList
+} from '@/app/group-permission/_components';
 import { useState } from 'react';
 import { getData, setData } from '@/utils';
 import { queryKeys, storageKeys } from '@/constants';
