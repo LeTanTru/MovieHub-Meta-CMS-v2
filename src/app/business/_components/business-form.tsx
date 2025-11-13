@@ -230,7 +230,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                   name='customerId'
                   apiConfig={apiConfig.customer.getList}
                   mappingData={(item: CustomerResType) => ({
-                    label: item.account.fullName,
+                    label: item.fullName,
                     value: item.id.toString()
                   })}
                   searchParams={['fullName']}

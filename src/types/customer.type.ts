@@ -8,16 +8,23 @@ import z from 'zod';
 export type CustomerResType = {
   id: string;
   status: number;
-  account: {
+  kind: number;
+  username: string;
+  phone: string;
+  fullName: string;
+  email: string;
+  group: {
     id: string;
+    status: number;
+    modifiedDate: string;
+    createdDate: string;
+    name: string;
+    description: string;
     kind: number;
-    username: string;
-    phone: string;
-    email: string;
-    fullName: string;
-    avatarPath: string;
-    isSuperAdmin: boolean;
+    subKind: number;
+    isSystemRole: boolean;
   };
+  avatarPath: string;
   logoPath: string;
 };
 

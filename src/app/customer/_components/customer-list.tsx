@@ -107,7 +107,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
   const columns: Column<CustomerResType>[] = [
     {
       title: '#',
-      dataIndex: ['account', 'avatarPath'],
+      dataIndex: 'avatarPath',
       width: 80,
       align: 'center',
       render: (value) => (
@@ -123,7 +123,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
     },
     {
       title: 'Tên',
-      dataIndex: ['account', 'fullName'],
+      dataIndex: 'fullName',
       render: (value, record) => (
         <Link
           href={generatePath(route.customer.business.getList.path, {
@@ -137,7 +137,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
     },
     {
       title: 'Email',
-      dataIndex: ['account', 'email'],
+      dataIndex: 'email',
       width: 220,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
@@ -147,7 +147,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
     },
     {
       title: 'Số điện thoại',
-      dataIndex: ['account', 'phone'],
+      dataIndex: 'phone',
       width: 120,
       render: (value) => (
         <span className='line-clamp-1' title={value}>

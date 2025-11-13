@@ -246,7 +246,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                   getValue={(opt) => opt.value}
                   options={[
                     {
-                      label: customer?.account?.fullName ?? '',
+                      label: customer?.fullName ?? '',
                       value: customer?.id?.toString() ?? ''
                     }
                   ]}
