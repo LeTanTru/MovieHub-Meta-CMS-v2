@@ -61,9 +61,9 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
     {
       title: 'Email',
       dataIndex: 'email',
-      width: 250,
+      width: 220,
       render: (value) => (
-        <span className='line-clamp-1' title={value}>
+        <span className='line-clamp-1 block truncate' title={value}>
           {value ?? '----'}
         </span>
       )
