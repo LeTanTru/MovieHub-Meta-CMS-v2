@@ -138,10 +138,10 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
     {
       title: 'Email',
       dataIndex: ['account', 'email'],
-      width: 250,
+      width: 220,
       render: (value) => (
-        <span className='line-clamp-1' title={value}>
-          {value ?? '-----'}
+        <span className='line-clamp-1 block truncate' title={value}>
+          {value ?? '----'}
         </span>
       )
     },
