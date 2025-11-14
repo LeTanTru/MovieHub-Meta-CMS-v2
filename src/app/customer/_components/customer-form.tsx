@@ -69,21 +69,21 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
 
   const initialValues: CustomerBodyType = useMemo(() => {
     return {
-      username: data?.account?.username ?? '',
-      email: data?.account?.email ?? '',
-      fullName: data?.account?.fullName ?? '',
+      username: data?.username ?? '',
+      email: data?.email ?? '',
+      fullName: data?.fullName ?? '',
       password: '',
-      avatarPath: data?.account?.avatarPath ?? '',
+      avatarPath: data?.avatarPath ?? '',
       status: data?.status ?? STATUS_ACTIVE,
       confirmPassword: '',
       logoPath: data?.logoPath ?? '',
-      phone: data?.account?.phone ?? ''
+      phone: data?.phone ?? ''
     };
   }, [data]);
 
   useEffect(() => {
-    if (data?.account?.avatarPath) setAvatarPath(data?.account?.avatarPath);
-  }, [data?.account?.avatarPath]);
+    if (data?.avatarPath) setAvatarPath(data?.avatarPath);
+  }, [data?.avatarPath]);
 
   useEffect(() => {
     if (data?.logoPath) setLogoPath(data?.logoPath);
