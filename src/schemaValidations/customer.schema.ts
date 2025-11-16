@@ -12,7 +12,7 @@ export const customerSchema = (isEditing: boolean) =>
       avatarPath: z.string().optional().nullable(),
       email: z.string().nonempty('Bắt buộc'),
       fullName: z.string().nonempty('Bắt buộc'),
-      logoPath: z.string().nonempty('Bắt buộc'),
+      logoPath: z.string().optional().nullable(),
       username: z.string().nonempty('Bắt buộc'),
       phone: z
         .string()

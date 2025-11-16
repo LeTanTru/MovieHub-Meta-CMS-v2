@@ -164,12 +164,12 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                           variant='ghost'
                           onClick={() => handleSubItemClick(sub)}
                           className={cn(
-                            'mx-auto w-[calc(100%_-_8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
+                            'mx-auto w-[calc(100%-8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
                             {
                               'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
-                                sub.path && pathname.includes(sub.path),
+                                sub.path && pathname.startsWith(sub.path),
                               'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
-                                sub.path && !pathname.includes(sub.path)
+                                sub.path && !pathname.startsWith(sub.path)
                             }
                           )}
                         >

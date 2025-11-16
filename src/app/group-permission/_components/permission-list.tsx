@@ -186,7 +186,7 @@ export default function PermissionList() {
     <>
       <ListPageWrapper>
         {loading ? (
-          <CircleLoading className='mt-4 size-8! stroke-slate-500' />
+          <CircleLoading className='stroke-dodger-blue mt-4 size-8!' />
         ) : (
           <div className='flex flex-col gap-y-4 px-4 py-4 max-[1560px]:max-w-300'>
             {Object.keys(groupedPermissions).map((group) => {
