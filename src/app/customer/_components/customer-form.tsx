@@ -154,7 +154,6 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
                     return res.data?.filePath ?? '';
                   }}
                   label='Logo'
-                  required
                   aspect={16 / 9}
                 />
               </Col>

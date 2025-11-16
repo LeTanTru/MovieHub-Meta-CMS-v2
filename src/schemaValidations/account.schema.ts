@@ -13,15 +13,25 @@ export const updateProfileSchema = z
     password: z.string().optional().nullable(),
     confirmPassword: z.string().optional().nullable()
   })
-  .refine(
-    (data) => {
-      return data.password === data.confirmPassword;
-    },
-    {
-      path: ['confirmPassword'],
-      message: 'Mật khẩu xác nhận không khớp'
+  .superRefine((data, ctx) => {
+    if (data.password) {
+      if (!data.confirmPassword) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['confirmPassword'],
+          message: 'Bắt buộc'
+        });
+      }
+
+      if (data.confirmPassword && data.password !== data.confirmPassword) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['confirmPassword'],
+          message: 'Mật khẩu xác nhận không khớp'
+        });
+      }
     }
-  );
+  });
 
 export const accountSearchSchema = z.object({
   email: z.string().optional().nullable(),

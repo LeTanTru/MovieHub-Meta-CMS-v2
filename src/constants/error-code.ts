@@ -6,6 +6,7 @@ import {
   ErrorMaps,
   GroupBodyType,
   PermissionBodyType,
+  ProfileBodyType,
   ServerProviderBodyType
 } from '@/types';
 import { GroupPermissionBodyType } from '@/types/group-permission.type';
@@ -179,6 +180,9 @@ export const customerErrorMaps: ErrorMaps<CustomerBodyType> = {
         message: 'Mật khẩu mới không được trùng với mật khẩu cũ'
       }
     ]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD]: [
+    ['oldPassword', { type: 'manual', message: 'Mật khẩu không chính xác' }]
   ]
 };
 
@@ -205,10 +209,8 @@ export const serverProviderErrorMaps: ErrorMaps<ServerProviderBodyType> = {
   ]
 };
 
-/* 
-  SERVER_PROVIDER_ERROR_UNAUTHORIZED: 'ERROR-SERVER-PROVIDER-000',
-  SERVER_PROVIDER_ERROR_NOT_FOUND: 'ERROR-SERVER-PROVIDER-001',
-  SERVER_PROVIDER_ERROR_URL_EXISTED: 'ERROR-SERVER-PROVIDER-002',
-  SERVER_PROVIDER_ERROR_NOT_ANY_VALID: 'ERROR-SERVER-PROVIDER-003',
-  SERVER_PROVIDER_MAX_TENANT_REACHED: 'ERROR-SERVER-PROVIDER-004',
-*/
+export const profileErrorMaps: ErrorMaps<ProfileBodyType> = {
+  [ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD]: [
+    ['oldPassword', { type: 'manual', message: 'Mật khẩu không chính xác' }]
+  ]
+};
