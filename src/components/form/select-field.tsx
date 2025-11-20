@@ -240,7 +240,7 @@ export default function SelectField<
                           onMouseLeave={() => setHighlightedIndex(-1)}
                           onSelect={() => handleSelect(val)}
                           className={cn(
-                            'block cursor-pointer truncate rounded transition-all data-[state=active]:bg-transparent',
+                            'block cursor-pointer truncate rounded transition-all duration-200 ease-linear data-[state=active]:bg-transparent',
                             {
                               'bg-accent text-accent-foreground':
                                 highlightedIndex === idx,
@@ -260,7 +260,6 @@ export default function SelectField<
                               {getLabel(opt)}
                             </>
                           )}
-                          {getLabel(opt)}
                         </CommandItem>
                       );
                     })}

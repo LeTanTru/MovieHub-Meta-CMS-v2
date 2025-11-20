@@ -32,4 +32,8 @@ export type DragDropTableProps<T extends Record<any, any>> = {
   rowKey?: string;
   loading: boolean;
   onDragEnd?: (event: DragEndEvent) => void;
+  onSelectRow?: (record: T) => void;
+  onRow?: (record: T, index: number) => void;
+  rowClassName?: (record: T, index: number) => string;
+  rowStyle?: (record: T, index: number) => React.CSSProperties;
 };

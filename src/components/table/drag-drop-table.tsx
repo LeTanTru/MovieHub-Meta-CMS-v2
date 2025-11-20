@@ -59,20 +59,26 @@ function SortableRow<T extends Record<any, any>>({
   row,
   rowIndex,
   columns,
-  rowKey
+  rowKey,
+  onSelect,
+  rowClassName,
+  rowStyle
 }: {
   row: T;
   rowIndex: number;
   columns: BaseTableProps<T>['columns'];
   rowKey: string;
+  onSelect?: () => void;
+  rowClassName?: (row: T, index: number) => string;
+  rowStyle?: (row: T, index: number) => React.CSSProperties;
 }) {
   const {
     attributes,
     listeners,
-    setNodeRef,
     transform,
     transition,
-    isDragging
+    isDragging,
+    setNodeRef
   } = useSortable({ id: row[rowKey] });
 
   const style: React.CSSProperties = {
@@ -87,8 +93,15 @@ function SortableRow<T extends Record<any, any>>({
   return (
     <TableRow
       ref={setNodeRef}
-      style={style}
-      className='border-b-[0.2px] hover:bg-zinc-50'
+      className={cn(
+        'border-b-[0.2px] hover:bg-zinc-50',
+        rowClassName?.(row, rowIndex)
+      )}
+      onClick={onSelect}
+      style={{
+        ...style,
+        ...(rowStyle?.(row, rowIndex) || {})
+      }}
       {...attributes}
     >
       {columns.map((col, colIndex) => (
@@ -125,7 +138,10 @@ export default function DragDropTable<T extends Record<any, any>>({
   dataSource,
   rowKey = 'id',
   loading,
-  onDragEnd
+  onDragEnd,
+  onSelectRow,
+  rowClassName,
+  rowStyle
 }: DragDropTableProps<T>) {
   const [rows, setRows] = useState(() => dataSource || []);
   const tableRef = useRef<HTMLDivElement>(null);
@@ -195,6 +211,9 @@ export default function DragDropTable<T extends Record<any, any>>({
                         rowIndex={idx}
                         columns={columns}
                         rowKey={rowKey}
+                        onSelect={() => onSelectRow?.(row)}
+                        rowClassName={rowClassName}
+                        rowStyle={rowStyle}
                       />
                     ))}
                   </SortableContext>

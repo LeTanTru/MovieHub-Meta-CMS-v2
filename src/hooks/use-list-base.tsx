@@ -287,7 +287,10 @@ export default function useListBase<
         <ToolTip title={`Sửa ${objectName}`}>
           <span>
             <Button
-              onClick={() => handleEditClick(record.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEditClick(record.id);
+              }}
               className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
               {...buttonProps}
             >

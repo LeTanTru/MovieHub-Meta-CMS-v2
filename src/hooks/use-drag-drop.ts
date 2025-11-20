@@ -20,13 +20,15 @@ const useDragDrop = <T extends Record<string, any>>({
   objectName,
   data,
   apiConfig,
-  sortField = 'ordering'
+  sortField = 'ordering',
+  mappingData
 }: {
   key: string;
   objectName: string;
   data: T[];
   apiConfig: ApiConfig;
   sortField?: keyof T;
+  mappingData?: (record: T) => Record<string, any>;
 }) => {
   const queryClient = useQueryClient();
   const [isChanged, setIsChanged] = useState<boolean>(false);
@@ -66,14 +68,21 @@ const useDragDrop = <T extends Record<string, any>>({
   );
 
   const handleUpdate = useCallback(async () => {
-    let dataUpdate: Record<string, any> = [];
-    const sortList = sortedData;
-    sortList.map((item, index) => {
-      dataUpdate.push({
+    let dataUpdate: Record<string, any>[] = [];
+
+    sortedData.forEach((item, index) => {
+      let baseData = {
         id: item.id,
         [sortField]: index
-      });
+      };
+
+      if (typeof mappingData === 'function') {
+        baseData = { ...baseData, ...mappingData(item) };
+      }
+
+      dataUpdate.push(baseData);
     });
+
     await updateOrderingMutation.mutateAsync(dataUpdate, {
       onSuccess: () => {
         queryClient.invalidateQueries({
@@ -91,12 +100,13 @@ const useDragDrop = <T extends Record<string, any>>({
       }
     });
   }, [
-    key,
-    objectName,
-    sortField,
-    queryClient,
     sortedData,
-    updateOrderingMutation
+    updateOrderingMutation,
+    sortField,
+    mappingData,
+    queryClient,
+    key,
+    objectName
   ]);
 
   useEffect(() => {
