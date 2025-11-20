@@ -81,6 +81,22 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   renderReloadButton: () => React.ReactNode;
   changeQueryFilter: (filter: Partial<S>) => void;
   handleDeleteError: (code: string) => void;
+  hasPermission: ({
+    requiredPermissions,
+    requiredKind,
+    excludeKind,
+    userKind,
+    path,
+    separate
+  }: {
+    requiredPermissions: string[];
+    requiredKind?: number | undefined;
+    excludeKind?: string[] | undefined;
+    userKind?: number | undefined;
+    path?: string | undefined;
+    separate?: boolean | undefined;
+  }) => boolean;
+  setData: (data: T[]) => void;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -549,7 +565,9 @@ export default function useListBase<
       invalidateQueries,
       renderReloadButton,
       changeQueryFilter,
-      handleDeleteError
+      handleDeleteError,
+      hasPermission,
+      setData
     };
 
     override?.(handlers);
@@ -565,7 +583,6 @@ export default function useListBase<
     handlers,
     queryFilter,
     listQuery,
-    queryString,
-    setData
+    queryString
   };
 }
