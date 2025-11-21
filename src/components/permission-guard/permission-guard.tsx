@@ -1,10 +1,11 @@
 'use client';
 
-import { useAuth, useFirstActiveRoute, useNavigate } from '@/hooks';
-import { usePathname } from 'next/navigation';
+import { useAuth, useFirstActiveRoute } from '@/hooks';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   getAccessTokenFromLocalStorage,
   getData,
+  removeData,
   setData,
   validatePermission
 } from '@/utils';
@@ -26,8 +27,9 @@ export default function PermissionGuard({
     permissionCode: userPermissions,
     isAuthenticated
   } = useAuth();
-  const { setLoading } = useAuthStore();
-  const navigate = useNavigate(false);
+  const { isLoggedOut, setLoading } = useAuthStore();
+  // const navigate = useNavigate(false);
+  const router = useRouter();
   const accessToken = getAccessTokenFromLocalStorage();
   const [ready, setReady] = useState(false);
   const pathname = usePathname();
@@ -69,10 +71,12 @@ export default function PermissionGuard({
 
   // navigate to login if not login
   useEffect(() => {
-    if (!accessToken && !isAuthenticated) {
+    if (!accessToken && !isAuthenticated && !isLoggedOut) {
       if (pathname !== route.login.path) {
-        setData(storageKeys.PATH_NO_LOGIN, pathname);
-        navigate(route.login.path);
+        if (pathname !== route.home.path) {
+          setData(storageKeys.PATH_NO_LOGIN, pathname);
+        }
+        router.replace(route.login.path);
       }
       return;
     }
@@ -80,15 +84,23 @@ export default function PermissionGuard({
     if (isAuthenticated) {
       if (pathname === route.home.path || pathname === route.login.path) {
         if (pathname !== firstActiveRoute) {
-          navigate(
+          router.replace(
             getData(storageKeys.PATH_NO_LOGIN) ||
               firstActiveRoute ||
               route.profile.savePage.path
           );
+          removeData(storageKeys.PATH_NO_LOGIN);
         }
       }
     }
-  }, [accessToken, isAuthenticated, pathname, navigate, firstActiveRoute]);
+  }, [
+    accessToken,
+    isAuthenticated,
+    pathname,
+    router,
+    firstActiveRoute,
+    isLoggedOut
+  ]);
 
   // if logged in, set loading to false
   useEffect(() => {
