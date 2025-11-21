@@ -39,8 +39,9 @@ export default function AvatarField({
 }: AvatarFieldProps) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
     if (!disablePreview && src) {
+      e.stopPropagation();
       setIsModalOpen(true);
     }
   };
@@ -106,6 +107,7 @@ export default function AvatarField({
                       'rounded object-cover',
                       imagePreviewClassName
                     )}
+                    unoptimized
                   />
                 ) : (
                   <Image
@@ -113,6 +115,7 @@ export default function AvatarField({
                     alt='Avatar preview'
                     width={zoomSize}
                     height={zoomSize}
+                    unoptimized
                     className={cn('rounded object-cover', previewClassName)}
                   />
                 ))}
