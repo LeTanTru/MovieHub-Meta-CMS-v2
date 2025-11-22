@@ -53,12 +53,12 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
   ];
 
   const searchFields: SearchFormProps<GroupSearchType>['searchFields'] = [
-    { key: 'name', placeholder: 'Tên quyền' },
+    { key: 'name', placeholder: 'Tên vai trò' },
     {
       key: 'kind',
       type: FieldTypes.SELECT,
       options: groupKinds,
-      placeholder: 'Nhóm',
+      placeholder: 'Vai trò',
       submitOnChanged: true
     }
   ];
