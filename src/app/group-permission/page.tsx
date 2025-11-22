@@ -35,7 +35,7 @@ export default function GroupPermissionPage() {
   if (!isMounted) return null;
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Quyền' }]}>
+    <PageWrapper breadcrumbs={[{ label: 'Vai trò' }]}>
       <div className='rounded-lg bg-white'>
         <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
           <TabsList className='relative h-auto w-full justify-start gap-0.5 bg-transparent p-4 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-zinc-100'>

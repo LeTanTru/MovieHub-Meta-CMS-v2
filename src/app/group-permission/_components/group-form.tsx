@@ -109,7 +109,7 @@ export default function GroupForm() {
         onSuccess: (res) => {
           if (res.result) {
             notify.success(
-              `${isCreate ? 'Thêm mới' : 'Cập nhật'} nhóm quyền thành công`
+              `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò thành công`
             );
             queryClient.invalidateQueries({ queryKey: ['group', id] });
             navigate(route.group.getList.path);
@@ -134,8 +134,8 @@ export default function GroupForm() {
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Nhóm quyền', href: route.group.getList.path },
-        { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền` }
+        { label: 'Vai trò', href: route.group.getList.path },
+        { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò` }
       ]}
       notFound={groupQuery.data?.code === ErrorCode.GROUP_ERROR_NOT_FOUND}
       notFoundContent='Không tìm thấy vai trò này'
