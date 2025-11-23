@@ -3,7 +3,6 @@ export * from './cookies-server.util';
 export * from './date.util';
 export * from './form-error.util';
 export * from './http.util';
-export * from './image.util';
 export * from './jwt.util';
 export * from './menu-config.util';
 export * from './notify.util';

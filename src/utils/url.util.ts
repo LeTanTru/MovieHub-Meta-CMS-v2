@@ -1,3 +1,5 @@
+import { AppConstants } from '@/constants';
+
 export function renderListPageUrl(path: string, queryString: string) {
   if (queryString) {
     return `${path}?${queryString}`;
@@ -16,3 +18,8 @@ export function generatePath(
     return encodeURIComponent(params[key]);
   });
 }
+
+export const renderImageUrl = (url: string | undefined | null) => {
+  if (!url) return '';
+  return url.startsWith('https') ? url : `${AppConstants.contentRootUrl}${url}`;
+};

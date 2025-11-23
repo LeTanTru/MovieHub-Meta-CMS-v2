@@ -60,7 +60,13 @@ export default function AvatarField({
         {src ? (
           <AspectRatio ratio={aspect} className='h-full w-full'>
             {autosize ? (
-              <Image src={src} alt='Avatar' fill className='object-cover' />
+              <Image
+                src={src}
+                alt='Avatar'
+                fill
+                className='object-cover'
+                unoptimized
+              />
             ) : (
               <Image
                 src={src}
@@ -68,6 +74,7 @@ export default function AvatarField({
                 width={size * aspect}
                 height={size}
                 className='h-full w-full object-cover'
+                unoptimized
               />
             )}
           </AspectRatio>
