@@ -215,74 +215,82 @@ export default function PermissionList() {
                       permissions.map(
                         (permission: PermissionResType, index: number) => {
                           return (
-                            <div
-                              className='flex items-center justify-between'
-                              key={permission.id}
-                            >
-                              {permission.name}
-                              <div className='flex items-center justify-center gap-x-4'>
-                                <ToolTip title={`Sửa ${permission.name}`}>
-                                  <Button
-                                    className='h-5 border-none bg-transparent p-0! shadow-none hover:bg-transparent'
-                                    onClick={() => handleEdit(permission)}
-                                  >
-                                    <AiOutlineEdit className='text-dodger-blue size-4' />
-                                  </Button>
-                                </ToolTip>
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <span>
-                                      <ToolTip title={`Xóa ${permission.name}`}>
-                                        <Button className='h-5 border-none bg-transparent p-0! shadow-none hover:bg-transparent'>
-                                          <AiOutlineDelete className='text-destructive size-3.5' />
-                                        </Button>
-                                      </ToolTip>
-                                    </span>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-lg p-4'>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
-                                        <Info className='size-8 fill-orange-500 stroke-white' />
-                                        Bạn có chắc chắn muốn xóa quyền này
-                                        không ?
-                                      </AlertDialogTitle>
-                                      <AlertDialogDescription></AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel asChild>
-                                        <Button
-                                          variant='outline'
-                                          className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
+                            <div key={permission.id}>
+                              <div className='flex items-center justify-between'>
+                                <span className='font-medium'>
+                                  {permission.name}
+                                </span>
+                                <div className='flex items-center justify-center gap-x-4'>
+                                  <ToolTip title={`Sửa ${permission.name}`}>
+                                    <Button
+                                      className='h-5 border-none bg-transparent p-0! shadow-none hover:bg-transparent'
+                                      onClick={() => handleEdit(permission)}
+                                    >
+                                      <AiOutlineEdit className='text-dodger-blue size-4' />
+                                    </Button>
+                                  </ToolTip>
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <span>
+                                        <ToolTip
+                                          title={`Xóa ${permission.name}`}
                                         >
-                                          Không
+                                          <Button className='h-5 border-none bg-transparent p-0! shadow-none hover:bg-transparent'>
+                                            <AiOutlineDelete className='text-destructive size-3.5' />
+                                          </Button>
+                                        </ToolTip>
+                                      </span>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-lg p-4'>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
+                                          <Info className='size-8 fill-orange-500 stroke-white' />
+                                          Bạn có chắc chắn muốn xóa quyền này
+                                          không ?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription></AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel asChild>
+                                          <Button
+                                            variant='outline'
+                                            className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
+                                          >
+                                            Không
+                                          </Button>
+                                        </AlertDialogCancel>
+                                        <Button
+                                          variant={'primary'}
+                                          onClick={() =>
+                                            handleDelete(permission)
+                                          }
+                                        >
+                                          Có
                                         </Button>
-                                      </AlertDialogCancel>
-                                      <Button
-                                        variant={'primary'}
-                                        onClick={() => handleDelete(permission)}
-                                      >
-                                        Có
-                                      </Button>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                                <MediaQuery maxWidth={1560}>
-                                  {(index + 1) % 3 !== 0 && (
-                                    <Separator
-                                      orientation='vertical'
-                                      className='ml-2 h-4! bg-gray-200'
-                                    />
-                                  )}
-                                </MediaQuery>
-                                <MediaQuery minWidth={1560}>
-                                  {(index + 1) % 4 !== 0 && (
-                                    <Separator
-                                      orientation='vertical'
-                                      className='ml-2 h-4! bg-gray-200'
-                                    />
-                                  )}
-                                </MediaQuery>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                  <MediaQuery maxWidth={1560}>
+                                    {(index + 1) % 3 !== 0 && (
+                                      <Separator
+                                        orientation='vertical'
+                                        className='ml-2 h-4! bg-gray-200'
+                                      />
+                                    )}
+                                  </MediaQuery>
+                                  <MediaQuery minWidth={1560}>
+                                    {(index + 1) % 4 !== 0 && (
+                                      <Separator
+                                        orientation='vertical'
+                                        className='ml-2 h-4! bg-gray-200'
+                                      />
+                                    )}
+                                  </MediaQuery>
+                                </div>
                               </div>
+                              <span className='text-xs'>
+                                ({permission.permissionCode})
+                              </span>
                             </div>
                           );
                         }
