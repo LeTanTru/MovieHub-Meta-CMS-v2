@@ -32,10 +32,16 @@ export default function GroupPermissionPage() {
     { value: 'permission', label: 'Quyền', component: <PermissionList /> }
   ];
 
+  const groupMaps: Record<string, string> = {
+    'group-list': 'Vai trò',
+    'group-permission-list': 'Nhóm quyền',
+    permission: 'Quyền'
+  };
+
   if (!isMounted) return null;
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Vai trò' }]}>
+    <PageWrapper breadcrumbs={[{ label: groupMaps[activeTab] }]}>
       <div className='rounded-lg bg-white'>
         <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
           <TabsList className='relative h-auto w-full justify-start gap-0.5 bg-transparent p-4 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-zinc-100'>
