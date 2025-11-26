@@ -8,6 +8,7 @@ export type GroupPermissionResType = {
   createdDate: Date;
   modifiedDate: Date;
   status: number;
+  ordering: number;
 };
 
 export type GroupPermissionAutoResType = {

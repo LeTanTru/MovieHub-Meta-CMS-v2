@@ -219,6 +219,12 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'GR_PER_U'
+    },
+    updateOrdering: {
+      baseUrl: `${AppConstants.apiUrl}/v1/group-permission/update-ordering`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'GR_PER_U'
     }
   },
   permission: {

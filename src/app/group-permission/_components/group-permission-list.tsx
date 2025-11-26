@@ -4,11 +4,16 @@ import { Button, Col, InputField, Row, ToolTip } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper } from '@/components/layout';
+import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
-import { BaseTable } from '@/components/table';
+import { DragDropTable } from '@/components/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { apiConfig, groupPermissionErrorMaps } from '@/constants';
-import { useDisclosure, useListBase, useSaveBase } from '@/hooks';
+import {
+  apiConfig,
+  groupPermissionErrorMaps,
+  MAX_PAGE_SIZE
+} from '@/constants';
+import { useDisclosure, useDragDrop, useListBase, useSaveBase } from '@/hooks';
 import { groupPermissionSchema } from '@/schemaValidations';
 import { Column } from '@/types';
 import {
@@ -18,7 +23,7 @@ import {
 } from '@/types/group-permission.type';
 import { applyFormErrors } from '@/utils';
 import { AxiosError } from 'axios';
-import { PlusIcon, X } from 'lucide-react';
+import { PlusIcon, Save, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { AiOutlineEdit } from 'react-icons/ai';
@@ -38,7 +43,6 @@ export default function GroupPermissionList({
     data: groupPermissionList,
     loading: groupPermissionListLoading,
     handlers,
-    pagination,
     listQuery
   } = useListBase<GroupPermissionResType, GroupPermissionSearchType>({
     apiConfig: apiConfig.groupPermission,
@@ -73,8 +77,12 @@ export default function GroupPermissionList({
           );
         }
       });
+      handlers.additionalParams = () => ({
+        size: MAX_PAGE_SIZE
+      });
     }
   });
+
   const {
     data: groupPermission,
     handleSubmit,
@@ -89,6 +97,21 @@ export default function GroupPermissionList({
       },
       mode: selectedRow === null ? 'create' : 'edit'
     }
+  });
+
+  const {
+    sortColumn,
+    loading: loadingUpdateOrdering,
+    sortedData,
+    isChanged,
+    onDragEnd,
+    handleUpdate
+  } = useDragDrop<GroupPermissionResType>({
+    key: `${queryKey}-list`,
+    objectName: 'nhóm quyền',
+    data: groupPermissionList,
+    apiConfig: apiConfig.groupPermission.updateOrdering,
+    sortField: 'ordering'
   });
 
   const handleAdd = () => {
@@ -112,6 +135,7 @@ export default function GroupPermissionList({
   }, [groupPermission]);
 
   const columns: Column<GroupPermissionResType>[] = [
+    ...(sortedData.length > 1 ? [sortColumn] : []),
     {
       title: 'Tên',
       dataIndex: 'name'
@@ -167,15 +191,35 @@ export default function GroupPermissionList({
         }
         reloadButton={handlers.renderReloadButton()}
       >
-        <BaseTable
+        <DragDropTable
           columns={columns}
-          dataSource={groupPermissionList?.sort((a, b) =>
-            a.name.localeCompare(b.name)
-          )}
-          pagination={pagination}
-          loading={groupPermissionListLoading}
-          changePagination={handlers.changePagination}
+          dataSource={sortedData}
+          loading={groupPermissionListLoading || loadingUpdateOrdering}
+          onDragEnd={onDragEnd}
         />
+        {sortedData.length > 1 && (
+          <div className='mr-4 flex justify-end py-4'>
+            <Button
+              onClick={handleUpdate}
+              disabled={
+                !isChanged ||
+                groupPermissionListLoading ||
+                loadingUpdateOrdering
+              }
+              className='w-40'
+              variant={'primary'}
+            >
+              {groupPermissionListLoading || loadingUpdateOrdering ? (
+                <CircleLoading />
+              ) : (
+                <>
+                  <Save />
+                  Cập nhật
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </ListPageWrapper>
       <Modal open={opened} onClose={handleClose}>
         <Card className='w-175 bg-white'>
@@ -208,11 +252,11 @@ export default function GroupPermissionList({
                       />
                     </Col>
                   </Row>
-                  <div className='mt-4'>
+                  <>
                     {renderActions(form, {
                       onCancel: handleClose
                     })}
-                  </div>
+                  </>
                 </>
               )}
             </BaseForm>
