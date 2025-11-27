@@ -39,7 +39,9 @@ export default function BooleanField({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn('flex space-x-2', className)}>
+        <FormItem
+          className={cn('flex h-full items-center space-x-2', className)}
+        >
           {label && (
             <FormLabel
               htmlFor={id}

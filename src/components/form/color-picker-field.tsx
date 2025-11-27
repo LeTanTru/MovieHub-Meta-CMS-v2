@@ -41,7 +41,7 @@ export default function ColorPickerField({
           <FormItem className={className}>
             {label && (
               <FormLabel
-                className={cn('relative ml-1 gap-1.5', labelClassName)}
+                className={cn('relative ml-2 gap-1.5', labelClassName)}
               >
                 {label}
                 {required && <span className='text-destructive'>*</span>}

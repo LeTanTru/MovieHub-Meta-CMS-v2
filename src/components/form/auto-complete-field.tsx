@@ -201,9 +201,9 @@ export default function AutoCompleteField<
         };
 
         const clearValue = () => {
-          field.onChange(null);
+          field.onChange('');
           setSelectedOption(null);
-          onValueChange?.(null);
+          onValueChange?.('');
           setOpen(false);
         };
 
