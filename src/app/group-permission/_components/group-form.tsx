@@ -324,7 +324,7 @@ export default function GroupForm() {
               </Col>
             </Row>
             <Row className='my-0 justify-end'>
-              <Col span={4}>
+              <Col className='w-40!'>
                 <Button
                   onClick={() => navigate(route.group.getList.path)}
                   type='button'
@@ -335,7 +335,7 @@ export default function GroupForm() {
                   Hủy
                 </Button>
               </Col>
-              <Col span={4}>
+              <Col className='w-40!'>
                 <Button
                   disabled={
                     !form.formState.isDirty ||
