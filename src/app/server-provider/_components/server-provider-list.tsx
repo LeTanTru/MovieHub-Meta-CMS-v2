@@ -39,7 +39,7 @@ export default function ServerProviderList({ queryKey }: { queryKey: string }) {
     })
   ];
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Khách hàng' }]}>
+    <PageWrapper breadcrumbs={[{ label: 'Máy chủ' }]}>
       <ListPageWrapper
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}
