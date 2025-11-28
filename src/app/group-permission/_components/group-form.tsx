@@ -60,7 +60,9 @@ export default function GroupForm() {
   });
 
   const group = groupQuery.data?.data;
-  const groupPermissions = groupPermissionListQuery.data?.data.content || [];
+  const groupPermissions = useMemo(() => {
+    return groupPermissionListQuery.data?.data?.content || [];
+  }, [groupPermissionListQuery.data?.data?.content]);
   const permissions = permissionListQuery.data?.data.content;
 
   const createGroupMutation = useCreateGroupMutation();
@@ -82,6 +84,10 @@ export default function GroupForm() {
         groupedPermissions[groupName] = [];
       }
     });
+
+  const sortedGroupPermissions = useMemo(() => {
+    return [...groupPermissions].sort((a, b) => a.ordering - b.ordering);
+  }, [groupPermissions]);
 
   const defaultValues: GroupBodyType = {
     name: '',
@@ -186,13 +192,14 @@ export default function GroupForm() {
             </Row>
             <Row>
               <Col className='gap-y-4' span={24}>
-                {Object.keys(groupedPermissions).map((gp) => {
-                  const permissions = groupedPermissions[gp];
+                {sortedGroupPermissions.map((groupPermission) => {
+                  const group = groupPermission.name;
+                  const permissions = groupedPermissions[group];
                   return (
-                    <Card key={gp} className='text-sm'>
+                    <Card key={group} className='text-sm'>
                       <CardHeader className='flex flex-row items-center gap-x-2 border-b px-4 py-2'>
                         <Checkbox
-                          id={`select-all-${gp}`}
+                          id={`select-all-${group}`}
                           checked={
                             permissions.length > 0 &&
                             permissions.every((p: PermissionResType) =>
@@ -243,9 +250,9 @@ export default function GroupForm() {
                         />
                         <label
                           className='cursor-pointer select-none'
-                          htmlFor={`select-all-${gp}`}
+                          htmlFor={`select-all-${group}`}
                         >
-                          {gp}
+                          {group}
                         </label>
                       </CardHeader>
                       <CardContent className='p-4'>
