@@ -4,7 +4,6 @@ import { Button, Col, InputField, Row, ToolTip } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper } from '@/components/layout';
-import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
 import { DragDropTable } from '@/components/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,7 +22,7 @@ import {
 } from '@/types/group-permission.type';
 import { applyFormErrors } from '@/utils';
 import { AxiosError } from 'axios';
-import { PlusIcon, Save, X } from 'lucide-react';
+import { PlusIcon, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { AiOutlineEdit } from 'react-icons/ai';
@@ -103,15 +102,14 @@ export default function GroupPermissionList({
     sortColumn,
     loading: loadingUpdateOrdering,
     sortedData,
-    isChanged,
-    onDragEnd,
-    handleUpdate
+    onDragEnd
   } = useDragDrop<GroupPermissionResType>({
     key: `${queryKey}-list`,
     objectName: 'nhóm quyền',
     data: groupPermissionList,
     apiConfig: apiConfig.groupPermission.updateOrdering,
-    sortField: 'ordering'
+    sortField: 'ordering',
+    updateOnDragEnd: true
   });
 
   const handleAdd = () => {
@@ -197,29 +195,6 @@ export default function GroupPermissionList({
           loading={groupPermissionListLoading || loadingUpdateOrdering}
           onDragEnd={onDragEnd}
         />
-        {sortedData.length > 1 && (
-          <div className='mr-4 flex justify-end py-4'>
-            <Button
-              onClick={handleUpdate}
-              disabled={
-                !isChanged ||
-                groupPermissionListLoading ||
-                loadingUpdateOrdering
-              }
-              className='w-40'
-              variant={'primary'}
-            >
-              {groupPermissionListLoading || loadingUpdateOrdering ? (
-                <CircleLoading />
-              ) : (
-                <>
-                  <Save />
-                  Cập nhật
-                </>
-              )}
-            </Button>
-          </div>
-        )}
       </ListPageWrapper>
       <Modal open={opened} onClose={handleClose}>
         <Card className='w-175 bg-white'>

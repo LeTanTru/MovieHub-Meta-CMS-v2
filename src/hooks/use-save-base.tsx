@@ -182,7 +182,7 @@ export default function useSaveBase<
     options?: { onCancel?: () => void }
   ) => (
     <Row className='my-0 justify-end gap-x-4 *:px-0'>
-      <Col span={3}>
+      <Col className='w-40!'>
         {!form.formState.isDirty ? (
           <Button
             type='button'
@@ -245,7 +245,7 @@ export default function useSaveBase<
           </AlertDialog>
         )}
       </Col>
-      <Col span={3}>
+      <Col className='w-40!'>
         <Button
           disabled={!form.formState.isDirty || mutation.isPending}
           type='submit'

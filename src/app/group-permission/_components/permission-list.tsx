@@ -46,7 +46,7 @@ import { permissionSchema } from '@/schemaValidations';
 import { PermissionBodyType, PermissionResType } from '@/types';
 import { applyFormErrors, notify } from '@/utils';
 import { omit } from 'lodash';
-import { Info, Plus, Save, X } from 'lucide-react';
+import { ArrowLeftFromLine, Info, Plus, Save, X } from 'lucide-react';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -74,7 +74,9 @@ export default function PermissionList() {
   const updatePermissionMutation = useUpdatePermissionMutation();
   const deletePermissionMutation = useDeletePermissionMutation();
 
-  const groupPermissions = groupPermissionListQuery.data?.data?.content || [];
+  const groupPermissions = useMemo(() => {
+    return groupPermissionListQuery.data?.data?.content || [];
+  }, [groupPermissionListQuery.data?.data?.content]);
   const permissions = permissionListQuery.data?.data.content || [];
 
   const loading =
@@ -85,7 +87,7 @@ export default function PermissionList() {
     if (!acc[group]) {
       acc[group] = [];
     }
-    acc[group].push(permission);
+    acc[group].push({ ...permission });
     return acc;
   }, {} as any);
 
@@ -96,6 +98,10 @@ export default function PermissionList() {
         groupedPermissions[groupName] = [];
       }
     });
+
+  const sortedGroupPermissions = useMemo(() => {
+    return [...groupPermissions].sort((a, b) => a.ordering - b.ordering);
+  }, [groupPermissions]);
 
   const defaultValues: PermissionBodyType = {
     name: '',
@@ -189,7 +195,8 @@ export default function PermissionList() {
           <CircleLoading className='stroke-dodger-blue mt-4 size-8!' />
         ) : (
           <div className='flex flex-col gap-y-4 px-4 py-4 max-[1560px]:max-w-300'>
-            {Object.keys(groupedPermissions).map((group) => {
+            {sortedGroupPermissions.map((groupPermission) => {
+              const group = groupPermission.name;
               const permissions = groupedPermissions[group];
               return (
                 <div
@@ -403,17 +410,18 @@ export default function PermissionList() {
                     </Col>
                   </Row>
                   <Row className='mb-0 justify-end'>
-                    <Col span={5}>
+                    <Col className='w-40!'>
                       <Button
                         onClick={handleClose}
                         type='button'
                         variant={'ghost'}
                         className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
                       >
+                        <ArrowLeftFromLine />
                         Hủy
                       </Button>
                     </Col>
-                    <Col span={5}>
+                    <Col className='w-40!'>
                       <Button
                         disabled={
                           !form.formState.isDirty ||
