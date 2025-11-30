@@ -225,6 +225,12 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'GR_PER_U'
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/group-permission/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'GR_PER_U'
     }
   },
   permission: {

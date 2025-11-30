@@ -146,12 +146,16 @@ export default function GroupPermissionList({
     })
   ];
 
-  const defaultValues: GroupPermissionBodyType = { name: '' };
+  const defaultValues: GroupPermissionBodyType = {
+    name: '',
+    ordering: groupPermissionList.length
+  };
   const initialValues: GroupPermissionBodyType = useMemo(
     () => ({
-      name: selectedRow?.name || ''
+      name: selectedRow?.name || '',
+      ordering: groupPermissionList.length
     }),
-    [selectedRow?.name]
+    [groupPermissionList.length, selectedRow?.name]
   );
 
   const onSubmit = async (
