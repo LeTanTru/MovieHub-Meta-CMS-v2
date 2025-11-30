@@ -12,6 +12,7 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
+import { NoData } from '@/components/no-data';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -258,7 +259,7 @@ export default function GroupForm() {
                       <CardContent className='p-4'>
                         <div
                           className={cn('grid gap-4', {
-                            'grid-cols-4 max-[1560px]:grid-cols-3':
+                            'grid-cols-5 max-[1560px]:grid-cols-4 max-[1366px]:grid-cols-3':
                               permissions?.length > 0
                           })}
                         >
@@ -313,15 +314,19 @@ export default function GroupForm() {
                               );
                             })
                           ) : (
-                            <div className='flex w-full flex-col items-center justify-center gap-y-2'>
-                              <Image
-                                src={emptyData.src}
-                                alt='Empty'
-                                width={150}
-                                height={80}
-                              />
-                              <p>Không có dữ liệu</p>
-                            </div>
+                            <NoData
+                              content='Không có dữ liệu'
+                              className='min-h-[30vh] [&_img]:w-40'
+                            />
+                            // <div className='flex w-full flex-col items-center justify-center gap-y-2'>
+                            //   <Image
+                            //     src={emptyData.src}
+                            //     alt='Empty'
+                            //     width={150}
+                            //     height={80}
+                            //   />
+                            //   <p>Không có dữ liệu</p>
+                            // </div>
                           )}
                         </div>
                       </CardContent>

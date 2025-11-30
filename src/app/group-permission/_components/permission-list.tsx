@@ -15,6 +15,7 @@ import { BaseForm } from '@/components/form/base-form';
 import { ListPageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
+import { NoData } from '@/components/no-data';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -25,7 +26,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import {
   DEFAULT_TABLE_PAGE_START,
@@ -46,7 +46,7 @@ import { permissionSchema } from '@/schemaValidations';
 import { PermissionBodyType, PermissionResType } from '@/types';
 import { applyFormErrors, notify } from '@/utils';
 import { omit } from 'lodash';
-import { ArrowLeftFromLine, Info, Plus, Save, X } from 'lucide-react';
+import { ArrowLeftFromLine, Info, Plus, Save } from 'lucide-react';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -303,15 +303,19 @@ export default function PermissionList() {
                         }
                       )
                     ) : (
-                      <div className='flex w-full flex-col items-center justify-center gap-y-2'>
-                        <Image
-                          src={emptyData.src}
-                          alt='Empty'
-                          width={150}
-                          height={80}
-                        />
-                        <p>Không có dữ liệu</p>
-                      </div>
+                      <NoData
+                        content='Không có dữ liệu'
+                        className='min-h-[30vh] [&_img]:w-40'
+                      />
+                      // <div className='flex w-full flex-col items-center justify-center gap-y-2'>
+                      //   <Image
+                      //     src={emptyData.src}
+                      //     alt='Empty'
+                      //     width={150}
+                      //     height={80}
+                      //   />
+                      //   <p>Không có dữ liệu</p>
+                      // </div>
                     )}
                   </div>
                 </div>
@@ -320,135 +324,128 @@ export default function PermissionList() {
           </div>
         )}
       </ListPageWrapper>
-      <Modal open={opened} onClose={handleClose}>
-        <Card className='w-175 bg-white'>
-          <CardHeader className='flex flex-row items-center justify-between pb-1'>
-            <CardTitle>{`${!isEditing ? 'Thêm' : 'Cập nhật'} quyền`}</CardTitle>
-            <X
-              onClick={handleClose}
-              className='cursor-pointer transition-all duration-200 ease-linear hover:opacity-80'
-            />
-          </CardHeader>
-          <CardContent>
-            <BaseForm
-              defaultValues={defaultValues}
-              initialValues={initialValues}
-              onSubmit={onSubmit}
-              schema={permissionSchema}
-              className='w-full p-0'
-            >
-              {(form) => (
-                <>
-                  <Row>
-                    <Col>
-                      <SelectField
-                        name='groupPermissionId'
-                        control={form.control}
-                        options={
-                          groupPermissions.map((gp) => ({
-                            label: gp.name,
-                            value: gp.id.toString()
-                          })) || []
-                        }
-                        getLabel={(opt) => opt.label}
-                        getValue={(opt) => opt.value.toString()}
-                        label='Nhóm quyền'
-                        required
-                        disabled
-                        placeholder='Chọn nhóm quyền'
-                      />
-                    </Col>
-                    <Col>
-                      <InputField
-                        control={form.control}
-                        name='name'
-                        label='Tên quyền'
-                        placeholder='Nhập tên quyền...'
-                        required
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <InputField
-                        control={form.control}
-                        name='permissionCode'
-                        label='Mã quyền'
-                        placeholder='Mã quyền...'
-                        required
-                      />
-                    </Col>
-                    <Col>
-                      <InputField
-                        control={form.control}
-                        name='action'
-                        label='Hành động'
-                        placeholder='Hành động...'
-                        required
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <BooleanField
-                        control={form.control}
-                        name='showMenu'
-                        label='Hiển thị trên menu'
-                        required
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={24}>
-                      <TextAreaField
-                        control={form.control}
-                        name='description'
-                        label='Mô tả'
-                        placeholder='Nhập mô tả'
-                        required
-                      />
-                    </Col>
-                  </Row>
-                  <Row className='mb-0 justify-end'>
-                    <Col className='w-40!'>
-                      <Button
-                        onClick={handleClose}
-                        type='button'
-                        variant={'ghost'}
-                        className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
-                      >
-                        <ArrowLeftFromLine />
-                        Hủy
-                      </Button>
-                    </Col>
-                    <Col className='w-40!'>
-                      <Button
-                        disabled={
-                          !form.formState.isDirty ||
-                          createPermissionMutation.isPending ||
-                          updatePermissionMutation.isPending
-                        }
-                        type='submit'
-                        variant={'primary'}
-                        className='w-full'
-                      >
-                        {createPermissionMutation.isPending ||
-                        updatePermissionMutation.isPending ? (
-                          <CircleLoading />
-                        ) : (
-                          <>
-                            <Save />
-                            {!isEditing ? 'Thêm' : 'Cập nhật'}
-                          </>
-                        )}
-                      </Button>
-                    </Col>
-                  </Row>
-                </>
-              )}
-            </BaseForm>
-          </CardContent>
-        </Card>
+      <Modal
+        title={`${!isEditing ? 'Thêm' : 'Cập nhật'} quyền`}
+        open={opened}
+        onClose={handleClose}
+      >
+        <BaseForm
+          defaultValues={defaultValues}
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          schema={permissionSchema}
+          className='w-175 p-0'
+        >
+          {(form) => (
+            <>
+              <Row>
+                <Col>
+                  <SelectField
+                    name='groupPermissionId'
+                    control={form.control}
+                    options={
+                      groupPermissions.map((gp) => ({
+                        label: gp.name,
+                        value: gp.id.toString()
+                      })) || []
+                    }
+                    getLabel={(opt) => opt.label}
+                    getValue={(opt) => opt.value.toString()}
+                    label='Nhóm quyền'
+                    required
+                    disabled
+                    placeholder='Chọn nhóm quyền'
+                  />
+                </Col>
+                <Col>
+                  <InputField
+                    control={form.control}
+                    name='name'
+                    label='Tên quyền'
+                    placeholder='Nhập tên quyền...'
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <InputField
+                    control={form.control}
+                    name='permissionCode'
+                    label='Mã quyền'
+                    placeholder='Mã quyền...'
+                    required
+                  />
+                </Col>
+                <Col>
+                  <InputField
+                    control={form.control}
+                    name='action'
+                    label='Hành động'
+                    placeholder='Hành động...'
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <BooleanField
+                    control={form.control}
+                    name='showMenu'
+                    label='Hiển thị trên menu'
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24}>
+                  <TextAreaField
+                    control={form.control}
+                    name='description'
+                    label='Mô tả'
+                    placeholder='Nhập mô tả'
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row className='mb-0 justify-end'>
+                <Col className='w-40!'>
+                  <Button
+                    onClick={handleClose}
+                    type='button'
+                    variant={'ghost'}
+                    className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
+                  >
+                    <ArrowLeftFromLine />
+                    Hủy
+                  </Button>
+                </Col>
+                <Col className='w-40!'>
+                  <Button
+                    disabled={
+                      !form.formState.isDirty ||
+                      createPermissionMutation.isPending ||
+                      updatePermissionMutation.isPending
+                    }
+                    type='submit'
+                    variant={'primary'}
+                    className='w-full'
+                  >
+                    {createPermissionMutation.isPending ||
+                    updatePermissionMutation.isPending ? (
+                      <CircleLoading />
+                    ) : (
+                      <>
+                        <Save />
+                        {!isEditing ? 'Thêm' : 'Cập nhật'}
+                      </>
+                    )}
+                  </Button>
+                </Col>
+              </Row>
+            </>
+          )}
+        </BaseForm>
       </Modal>
     </>
   );

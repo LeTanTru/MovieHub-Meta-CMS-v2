@@ -6,7 +6,6 @@ import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper } from '@/components/layout';
 import { Modal } from '@/components/modal';
 import { DragDropTable } from '@/components/table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   apiConfig,
   groupPermissionErrorMaps,
@@ -22,7 +21,7 @@ import {
 } from '@/types/group-permission.type';
 import { applyFormErrors } from '@/utils';
 import { AxiosError } from 'axios';
-import { PlusIcon, X } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { AiOutlineEdit } from 'react-icons/ai';
@@ -200,47 +199,40 @@ export default function GroupPermissionList({
           onDragEnd={onDragEnd}
         />
       </ListPageWrapper>
-      <Modal open={opened} onClose={handleClose}>
-        <Card className='w-175 bg-white'>
-          <CardHeader className='flex flex-row items-center justify-between pb-1'>
-            <CardTitle>{`${!isEditing ? 'Thêm' : 'Cập nhật'} nhóm quyền`}</CardTitle>
-            <X
-              onClick={handleClose}
-              className='cursor-pointer transition-all duration-200 ease-linear hover:opacity-80'
-            />
-          </CardHeader>
-          <CardContent>
-            <BaseForm
-              defaultValues={defaultValues}
-              initialValues={initialValues}
-              onSubmit={onSubmit}
-              schema={groupPermissionSchema}
-              className='w-full p-0'
-            >
-              {(form) => (
-                <>
-                  <Row className='my-0'>
-                    <Col>
-                      <InputField
-                        control={form.control}
-                        name='name'
-                        label='Tên nhóm quyền'
-                        placeholder='Nhập tên nhóm quyền...'
-                        required
-                        labelClassName='font-normal'
-                      />
-                    </Col>
-                  </Row>
-                  <>
-                    {renderActions(form, {
-                      onCancel: handleClose
-                    })}
-                  </>
-                </>
-              )}
-            </BaseForm>
-          </CardContent>
-        </Card>
+      <Modal
+        title={`${!isEditing ? 'Thêm' : 'Cập nhật'} nhóm quyền`}
+        open={opened}
+        onClose={handleClose}
+      >
+        <BaseForm
+          defaultValues={defaultValues}
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          schema={groupPermissionSchema}
+          className='w-175 p-0'
+        >
+          {(form) => (
+            <>
+              <Row className='my-0 mb-4'>
+                <Col>
+                  <InputField
+                    control={form.control}
+                    name='name'
+                    label='Tên nhóm quyền'
+                    placeholder='Nhập tên nhóm quyền...'
+                    required
+                    labelClassName='font-normal'
+                  />
+                </Col>
+              </Row>
+              <>
+                {renderActions(form, {
+                  onCancel: handleClose
+                })}
+              </>
+            </>
+          )}
+        </BaseForm>
       </Modal>
     </>
   );
