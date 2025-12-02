@@ -1,6 +1,5 @@
 'use client';
 
-import { emptyData } from '@/assets';
 import {
   Button,
   Col,
@@ -39,7 +38,6 @@ import { applyFormErrors, notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { omit } from 'lodash';
 import { ArrowLeftFromLine, Save } from 'lucide-react';
-import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
