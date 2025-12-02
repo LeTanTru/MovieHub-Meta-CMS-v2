@@ -7,6 +7,7 @@ import {
   Col,
   DateTimePickerField,
   InputField,
+  MultiSelectField,
   Row,
   SelectField
 } from '@/components/form';
@@ -32,6 +33,7 @@ function buildDefaultValues<S extends FieldValues>(
           acc[field.key as string] = 0;
           break;
         case FieldTypes.SELECT:
+        case FieldTypes.MULTI_SELECT:
         case FieldTypes.AUTOCOMPLETE:
           acc[field.key as string] = null;
           break;
@@ -83,9 +85,12 @@ export default function SearchForm<S extends FieldValues>({
           })}
         >
           <Row
-            className={cn('mb-0 *:my-0 *:p-0 min-[1560px]:grid-cols-5', {
-              'grid grid-cols-4 gap-y-2': searchFields.length > 4
-            })}
+            className={cn(
+              'mb-0 gap-x-2 *:my-0 *:p-0 min-[1560px]:grid-cols-5',
+              {
+                'grid grid-cols-4 gap-y-2': searchFields.length > 4
+              }
+            )}
           >
             {searchFields.map((sf) => {
               switch (sf.type) {
@@ -99,6 +104,32 @@ export default function SearchForm<S extends FieldValues>({
                       })}
                     >
                       <SelectField
+                        control={form.control}
+                        name={sf.key as string}
+                        placeholder={sf.placeholder}
+                        options={sf.options ?? []}
+                        getLabel={(option) => option.label}
+                        getValue={(option) => option.value}
+                        onValueChange={(val) => {
+                          if (sf.submitOnChanged) {
+                            form.setValue(sf.key as string, val);
+                            form.handleSubmit(onSubmit)();
+                          }
+                        }}
+                      />
+                    </Col>
+                  );
+                }
+                case FieldTypes.MULTI_SELECT: {
+                  return (
+                    <Col
+                      key={sf.key as string}
+                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                      className={cn({
+                        'w-full!': searchFields.length > 4
+                      })}
+                    >
+                      <MultiSelectField
                         control={form.control}
                         name={sf.key as string}
                         placeholder={sf.placeholder}
