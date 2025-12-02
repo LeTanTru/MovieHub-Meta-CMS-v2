@@ -1,6 +1,5 @@
 'use client';
 
-import { emptyData } from '@/assets';
 import {
   BooleanField,
   Button,
@@ -47,7 +46,6 @@ import { PermissionBodyType, PermissionResType } from '@/types';
 import { applyFormErrors, notify } from '@/utils';
 import { omit } from 'lodash';
 import { ArrowLeftFromLine, Info, Plus, Save } from 'lucide-react';
-import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
