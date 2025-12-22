@@ -10,7 +10,8 @@ const configSchema = z.object({
   NEXT_PUBLIC_API_MEDIA_URL: z.string().optional(),
   NEXT_PUBLIC_GRANT_TYPE: z.string().optional(),
   NEXT_PUBLIC_APP_USERNAME: z.string().optional(),
-  NEXT_PUBLIC_APP_PASSWORD: z.string().optional()
+  NEXT_PUBLIC_APP_PASSWORD: z.string().optional(),
+  NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN: z.string()
 });
 
 const configProject = configSchema.safeParse({
@@ -22,7 +23,9 @@ const configProject = configSchema.safeParse({
   NEXT_PUBLIC_API_MEDIA_URL: process.env.NEXT_PUBLIC_API_MEDIA_URL,
   NEXT_PUBLIC_GRANT_TYPE: process.env.NEXT_PUBLIC_GRANT_TYPE,
   NEXT_PUBLIC_APP_USERNAME: process.env.NEXT_PUBLIC_APP_USERNAME,
-  NEXT_PUBLIC_APP_PASSWORD: process.env.NEXT_PUBLIC_APP_PASSWORD
+  NEXT_PUBLIC_APP_PASSWORD: process.env.NEXT_PUBLIC_APP_PASSWORD,
+  NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN:
+    process.env.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
 });
 
 if (!configProject.success) {

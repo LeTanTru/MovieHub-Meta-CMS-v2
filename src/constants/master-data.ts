@@ -116,7 +116,10 @@ export const queryKeys = {
   BUSINESS: 'business',
   DB_CONFIG: 'db_config',
   SERVER_PROVIDER: 'server_provider',
-  SNS_CONFIG: 'sns_config'
+  SNS_CONFIG: 'sns_config',
+  LOGIN: 'login',
+  LOGOUT: 'logout',
+  REFRESH_TOKEN: 'refresh_token'
 };
 
 export const languageOptions = [

@@ -31,3 +31,8 @@ export type AuthStoreType = {
   setIsLoggedOut: (isLogout: boolean) => void;
   setSocket: (socket: Socket) => void;
 };
+
+export type RefreshTokenBodyType = {
+  refresh_token: string;
+  grant_type: string;
+};
