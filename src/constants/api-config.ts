@@ -12,6 +12,16 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/api/token`,
       method: 'POST',
       headers: baseHeader
+    },
+    logout: {
+      baseUrl: `${AppConstants.apiUrl}/v1/auth/logout`,
+      method: 'POST',
+      headers: baseHeader
+    },
+    refreshToken: {
+      baseUrl: `${AppConstants.apiUrl}/api/token`,
+      method: 'POST',
+      headers: baseHeader
     }
   },
   account: {

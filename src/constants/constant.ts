@@ -42,3 +42,7 @@ export const DATE_TIME_FORMAT_UTC = 'HH:mm:ss MM/dd/yyyy';
 export const DATE_DAY_TIME_FORMAT_UTC = 'EEEE HH:mm:ss MM/dd/yyyy';
 
 export const INITIAL_AUTO_COMPLETE_SIZE = 10;
+
+export const TAB_GROUP = 'group-list';
+export const TAB_GROUP_PERMISSION = 'group-permission-list';
+export const TAB_PERMISSION = 'permission-list';
