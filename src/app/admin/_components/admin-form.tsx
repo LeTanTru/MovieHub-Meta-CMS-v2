@@ -127,7 +127,6 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={accountSchema(isEditing)}
         initialValues={initialValues}
-        className='w-200'
       >
         {(form) => (
           <>

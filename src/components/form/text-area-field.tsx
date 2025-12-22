@@ -1,6 +1,14 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  ForwardedRef,
+  useImperativeHandle
+} from 'react';
 import {
   FormControl,
   FormField,
@@ -15,9 +23,10 @@ import { cn } from '@/lib/utils';
 type TextAreaFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
-  label?: string;
+  label?: string | React.ReactNode;
   placeholder?: string;
   className?: string;
+  labelClassName?: string;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -25,38 +34,49 @@ type TextAreaFieldProps<T extends FieldValues> = {
   maxLength?: number;
   rows?: number;
   maxRows?: number;
-};
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-export default function TextAreaField<T extends FieldValues>({
-  control,
-  name,
-  label,
-  placeholder = '',
-  className,
-  required = false,
-  disabled = false,
-  readOnly = false,
-  floatLabel = false,
-  maxLength,
-  rows = 8,
-  maxRows = 15
-}: TextAreaFieldProps<T>) {
+const TextAreaField = <T extends FieldValues>(
+  {
+    control,
+    name,
+    label,
+    placeholder = '',
+    className,
+    labelClassName,
+    required = false,
+    disabled = false,
+    readOnly = false,
+    floatLabel = false,
+    maxLength,
+    rows = 8,
+    maxRows = 15,
+    ...rest
+  }: TextAreaFieldProps<T>,
+  ref: ForwardedRef<HTMLTextAreaElement>
+) => {
   const id = useId();
+  const internalRef = useRef<HTMLTextAreaElement | null>(null);
   const [charCount, setCharCount] = useState(0);
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // expose internal ref ra ngoài
+  useImperativeHandle(ref, () => internalRef.current!);
+
   const resizeTextarea = () => {
-    if (!textareaRef.current) return;
-    textareaRef.current.style.height = 'auto';
-    const scrollHeight = textareaRef.current.scrollHeight;
+    if (!internalRef.current) return;
+    internalRef.current.style.height = 'auto';
+    const scrollHeight = internalRef.current.scrollHeight;
     const lineHeight = parseInt(
-      window.getComputedStyle(textareaRef.current).lineHeight || '20'
+      window.getComputedStyle(internalRef.current).lineHeight || '20'
     );
     const maxHeight = maxRows ? maxRows * lineHeight : Infinity;
-    textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+    internalRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
   };
+
   useEffect(() => {
     resizeTextarea();
   }, [charCount]);
+
   return (
     <FormField
       control={control}
@@ -67,10 +87,14 @@ export default function TextAreaField<T extends FieldValues>({
             {label && (
               <FormLabel
                 htmlFor={id}
-                className={cn('mb-2 ml-2 gap-0', {
-                  'origin-start text-muted-foreground/70 group-focus-within:text-foreground has-[+textarea:not(:placeholder-shown)]:text-foreground has-aria-invalid:border-destructive/60 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive bg-background absolute top-0 block translate-y-2 cursor-text rounded px-1 text-sm transition-all group-focus-within:pointer-events-none group-focus-within:-translate-y-1/2 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium has-[+textarea:not(:placeholder-shown)]:pointer-events-none has-[+textarea:not(:placeholder-shown)]:-translate-y-1/2 has-[+textarea:not(:placeholder-shown)]:cursor-default has-[+textarea:not(:placeholder-shown)]:text-xs has-[+textarea:not(:placeholder-shown)]:font-medium':
-                    floatLabel
-                })}
+                className={cn(
+                  'mb-2 ml-2 gap-0',
+                  {
+                    'origin-start text-muted-foreground/70 group-focus-within:text-foreground has-[+textarea:not(:placeholder-shown)]:text-foreground has-aria-invalid:border-destructive/60 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive bg-background absolute top-0 block translate-y-2 cursor-text rounded px-1 text-sm transition-all group-focus-within:pointer-events-none group-focus-within:-translate-y-1/2 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium has-[+textarea:not(:placeholder-shown)]:pointer-events-none has-[+textarea:not(:placeholder-shown)]:-translate-y-1/2 has-[+textarea:not(:placeholder-shown)]:cursor-default has-[+textarea:not(:placeholder-shown)]:text-xs has-[+textarea:not(:placeholder-shown)]:font-medium':
+                      floatLabel
+                  },
+                  labelClassName
+                )}
               >
                 {label}
                 {required && <span className='text-destructive ml-1'>*</span>}
@@ -87,7 +111,7 @@ export default function TextAreaField<T extends FieldValues>({
                 rows={rows ?? 4}
                 className={cn(
                   floatLabel && 'bg-background pt-6',
-                  'focus-visible:ring-dodger-blue min-h-40 shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
+                  'focus-visible:ring-dodger-blue min-h-40 shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
                   {
                     'focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-red-500!':
                       !!fieldState.error
@@ -95,11 +119,13 @@ export default function TextAreaField<T extends FieldValues>({
                   className
                 )}
                 {...field}
-                ref={textareaRef}
+                {...rest}
+                ref={internalRef}
                 onChange={(e) => {
                   field.onChange(e);
                   setCharCount(e.target.value.length);
                   resizeTextarea();
+                  rest.onChange?.(e);
                 }}
               />
             </FormControl>
@@ -119,4 +145,10 @@ export default function TextAreaField<T extends FieldValues>({
       )}
     />
   );
-}
+};
+
+export default forwardRef(TextAreaField) as <T extends FieldValues>(
+  props: TextAreaFieldProps<T> & {
+    ref?: React.ForwardedRef<HTMLTextAreaElement>;
+  }
+) => React.ReactElement;

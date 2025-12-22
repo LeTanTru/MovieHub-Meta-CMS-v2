@@ -24,7 +24,7 @@ import {
 } from '@/types';
 import { generatePath, notify, renderImageUrl } from '@/utils';
 import Link from 'next/link';
-import { AiOutlineCheck, AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
 export default function CustomerList({ queryKey }: { queryKey: string }) {
   const { data, loading, pagination, handlers, listQuery } = useListBase<
@@ -111,14 +111,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
-          disablePreview={!value}
-          src={renderImageUrl(value)}
-          icon={<AiOutlineUser className='size-7 text-slate-800' />}
-          previewClassName='rounded'
-          zoomSize={350}
-        />
+        <AvatarField disablePreview={!value} src={renderImageUrl(value)} />
       )
     },
     {

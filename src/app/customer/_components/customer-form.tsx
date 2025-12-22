@@ -117,7 +117,6 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={customerSchema(isEditing)}
         initialValues={initialValues}
-        className='w-200'
       >
         {(form) => (
           <>

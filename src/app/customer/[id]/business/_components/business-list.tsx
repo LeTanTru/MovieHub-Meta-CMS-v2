@@ -1,7 +1,7 @@
 'use client';
 
 import DbConfigModal from '@/app/customer/[id]/business/_components/db-config-modal';
-import { AvatarField, Button, ToolTip } from '@/components/form';
+import { Button, ImageField, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
@@ -30,11 +30,7 @@ import {
 } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import {
-  AiOutlineApartment,
-  AiOutlineFileImage,
-  AiOutlineMessage
-} from 'react-icons/ai';
+import { AiOutlineApartment, AiOutlineMessage } from 'react-icons/ai';
 
 export default function BusinessList({ queryKey }: { queryKey: string }) {
   const { id: customerId } = useParams<{ id: string }>();
@@ -142,15 +138,7 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
-          disablePreview={!value}
-          src={renderImageUrl(value)}
-          icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
-          previewClassName='rounded'
-          zoomSize={350}
-          className='rounded'
-        />
+        <ImageField disablePreview={!value} src={renderImageUrl(value)} />
       )
     },
     {

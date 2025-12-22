@@ -126,7 +126,6 @@ export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={serverProviderSchema}
         initialValues={initialValues}
-        className='w-200'
       >
         {(form) => (
           <>
