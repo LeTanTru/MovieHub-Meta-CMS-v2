@@ -4,7 +4,7 @@ import { Form } from '@/components/ui/form';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { Ref, useEffect } from 'react';
 import { DefaultValues, useForm, UseFormReturn } from 'react-hook-form';
 
 type AsyncDefaultValues<T> = (payload?: unknown) => Promise<T>;
@@ -16,9 +16,10 @@ type BaseFormProps<T extends Record<string, any>> = {
   children?: (methods: UseFormReturn<T>) => React.ReactNode;
   className?: string;
   initialValues?: T;
-  mode?: 'onBlur' | 'onChange' | 'onSubmit' | 'onTouched' | 'all' | undefined;
-  onChange?: () => void;
+  mode?: 'onBlur' | 'onChange' | 'onSubmit' | 'onTouched' | 'all';
   id?: string;
+  onChange?: () => void;
+  ref?: Ref<HTMLFormElement> | undefined;
 };
 
 export default function BaseForm<T extends Record<string, any>>({
@@ -30,7 +31,8 @@ export default function BaseForm<T extends Record<string, any>>({
   initialValues,
   mode = 'onChange',
   onChange,
-  id
+  id,
+  ref
 }: BaseFormProps<T>) {
   const form = useForm<T>({
     resolver: zodResolver(schema),
@@ -52,6 +54,7 @@ export default function BaseForm<T extends Record<string, any>>({
   return (
     <Form {...form}>
       <form
+        ref={ref}
         id={id}
         className={cn('relative rounded-lg bg-white p-4', className)}
         onSubmit={form.handleSubmit((values) => onSubmit(values, form))}

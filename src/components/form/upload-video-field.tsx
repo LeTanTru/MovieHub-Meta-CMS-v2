@@ -103,7 +103,7 @@ export default function UploadVideoField<T extends FieldValues>({
         <FormLabel
           className={cn(
             'ml-2 flex items-center gap-1',
-            error && 'text-destructive',
+            error && !uploading && 'text-destructive',
             className
           )}
         >
@@ -129,7 +129,7 @@ export default function UploadVideoField<T extends FieldValues>({
         <input {...getInputProps()} className='hidden' />
 
         <VideoIcon
-          className={cn('', {
+          className={cn('text-gray-300', {
             'text-destructive': !!error && !uploading
           })}
         />
@@ -142,7 +142,7 @@ export default function UploadVideoField<T extends FieldValues>({
               <span>Đã tải video</span>
             ) : (
               <span
-                className={cn('font-medium', {
+                className={cn('text-gray-300', {
                   'text-destructive': !!error && !uploading
                 })}
               >

@@ -27,7 +27,11 @@ import { Button } from '@/components/form';
 import { ApiConfig, ApiResponseList } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { http } from '@/utils';
-import { DEFAULT_TABLE_PAGE_START, MAX_PAGE_SIZE } from '@/constants';
+import {
+  DEFAULT_TABLE_PAGE_START,
+  INITIAL_AUTO_COMPLETE_SIZE,
+  MAX_PAGE_SIZE
+} from '@/constants';
 import debounce from 'lodash/debounce';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
@@ -60,6 +64,7 @@ type AutoCompleteFieldProps<
   labelClassName?: string;
   disabled?: boolean;
   apiConfig: ApiConfig;
+  fetchAll?: boolean;
   onValueChange?: (value: string | number | null) => void;
   mappingData: (option: TOption) => AutoCompleteOption | null;
   renderOption?: (option: AutoCompleteOption<TOption>) => React.ReactNode;
@@ -84,6 +89,7 @@ export default function AutoCompleteField<
   labelClassName,
   disabled = false,
   apiConfig,
+  fetchAll = false,
   onValueChange,
   mappingData,
   renderOption
@@ -114,9 +120,12 @@ export default function AutoCompleteField<
   const query = useQuery({
     queryKey: [name, debouncedSearch, initialParams],
     queryFn: () => {
+      const isSearching = debouncedSearch.trim() !== '';
+
       const params: Record<string, any> = {
         page: DEFAULT_TABLE_PAGE_START,
-        size: MAX_PAGE_SIZE,
+        size:
+          isSearching || fetchAll ? MAX_PAGE_SIZE : INITIAL_AUTO_COMPLETE_SIZE,
         ...initialParams
       };
       if (debouncedSearch) {
@@ -126,7 +135,7 @@ export default function AutoCompleteField<
       }
       return http.get<ApiResponseList<TOption>>(apiConfig, { params });
     },
-    enabled: false
+    enabled: true
   });
 
   const loading = query.isLoading || query.isFetching;
@@ -147,7 +156,12 @@ export default function AutoCompleteField<
     .filter((item) => item !== null);
 
   useEffect(() => {
-    if (!fieldValue || initialFetched.current) return;
+    if (
+      !fieldValue ||
+      initialFetched.current ||
+      selectedOption?.value === fieldValue
+    )
+      return;
 
     const getInitialOptions = async () => {
       const res = await http.get<ApiResponseList<TOption>>(apiConfig, {

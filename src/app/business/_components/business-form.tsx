@@ -147,7 +147,6 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={businessSchema}
         initialValues={initialValues}
-        className='w-200'
       >
         {(form) => (
           <>

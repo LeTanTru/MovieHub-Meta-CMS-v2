@@ -12,7 +12,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const isClient = () => typeof window !== 'undefined';
 
-const TIME_OUT = 10000;
+// const TIME_OUT = 10000;
 
 export const sendRequest = async <T>(
   apiConfig: ApiConfig,
@@ -78,7 +78,7 @@ export const sendRequest = async <T>(
       method,
       headers: baseHeader,
       params,
-      timeout: TIME_OUT,
+      // timeout: TIME_OUT,
       ...options
     };
 
@@ -89,8 +89,16 @@ export const sendRequest = async <T>(
         const value = body[key];
 
         if (value instanceof Blob) {
-          const ext = value.type.split('/')[1] || 'jpg';
-          formData.append(key, value, `upload.${ext}`);
+          let filename = 'upload';
+
+          if (value instanceof File && value.name) {
+            filename = value.name;
+          } else {
+            const ext = value.type.split('/').pop() || 'bin';
+            filename = `upload.${ext}`;
+          }
+
+          formData.append(key, value, filename);
         } else {
           formData.append(key, value);
         }
@@ -123,6 +131,9 @@ const http = {
     return sendRequest<T>(apiConfig, payload);
   },
   put<T>(apiConfig: ApiConfig, payload?: Payload) {
+    return sendRequest<T>(apiConfig, payload);
+  },
+  patch<T>(apiConfig: ApiConfig, payload?: Payload) {
     return sendRequest<T>(apiConfig, payload);
   },
   delete<T>(apiConfig: ApiConfig, payload?: Payload) {

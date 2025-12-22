@@ -15,6 +15,7 @@ import { cn } from '@/lib';
 import { useFileUpload } from '@/hooks';
 import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
+import { ApiResponse } from '@/types';
 
 type UploadFileFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -29,6 +30,8 @@ type UploadFileFieldProps<T extends FieldValues> = {
     file: File,
     onProgress: (progress: number) => void
   ) => Promise<string>;
+
+  deleteImageFn?: (url: string) => Promise<ApiResponse<any>>;
 };
 
 export default function UploadFileField<T extends FieldValues>({
@@ -39,7 +42,8 @@ export default function UploadFileField<T extends FieldValues>({
   className,
   accept,
   onChange,
-  uploadFileFn
+  uploadFileFn,
+  deleteImageFn
 }: UploadFileFieldProps<T>) {
   const {
     field: { value, onChange: fieldOnChange },
@@ -91,8 +95,17 @@ export default function UploadFileField<T extends FieldValues>({
     }
   };
 
-  const handleRemove = (e: React.MouseEvent) => {
+  const handleRemove = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
+    try {
+      if (deleteImageFn && value) {
+        await deleteImageFn(value);
+      }
+    } catch (err) {
+      logger.error('Error while deleting file:', err);
+    }
+
     fieldOnChange('');
     onChange?.('');
     clearFiles();
@@ -119,7 +132,7 @@ export default function UploadFileField<T extends FieldValues>({
           'bg-muted/30 hover:bg-accent/50 relative mb-0 flex cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear',
           isDragging && 'border-primary bg-primary/10',
           {
-            'borde border-solid border-red-500': !!error && !uploading
+            'border border-solid border-red-500': !!error && !uploading
           }
         )}
         onClick={openFileDialog}
