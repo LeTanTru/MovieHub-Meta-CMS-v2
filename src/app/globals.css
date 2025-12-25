@@ -40,9 +40,9 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar-item-active: #1677ff;
-  --color-sidebar: #001529;
-  --color-sidebar-active-menu: #000c17;
+  --color-sidebar-item-active: rgb(32, 42, 73);
+  --color-sidebar: #181b24;
+  --color-sidebar-active-menu: rgb(12, 19, 26);
   --color-dodger-blue: #1678ff;
   --color-page-wrapper: #f0f2f5;
   --color-base-table: #fff;
@@ -53,6 +53,7 @@
 body {
   font-family: var(--font-sans);
   background-color: var(--background);
+  overflow: auto;
 }
 
 :root {

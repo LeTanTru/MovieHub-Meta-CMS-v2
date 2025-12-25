@@ -1,11 +1,12 @@
 'use client';
 
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, CircleUserRound } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -15,19 +16,25 @@ import {
   SidebarMenuItem,
   useSidebar
 } from '@/components/ui/sidebar';
-import { logoWithText } from '@/assets';
+import { logo, logoWithText } from '@/assets';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib';
-import { Button } from '@/components/form';
+import { AvatarField, Button } from '@/components/form';
 import './sidebar.css';
 import { MenuItem } from '@/types';
 import { useSidebarStore } from '@/store';
-import { useNavigate, useQueryParams, useValidatePermission } from '@/hooks';
+import {
+  useAuth,
+  useNavigate,
+  useQueryParams,
+  useValidatePermission
+} from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 import menuConfig from '@/constants/menu-config';
 import { createPortal } from 'react-dom';
+import { renderImageUrl } from '@/utils';
 
 function CollapsibleMenuItem({ item }: { item: MenuItem }) {
   const navigate = useNavigate();
@@ -167,9 +174,9 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                             'mx-auto w-[calc(100%-8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
                             {
                               'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
-                                sub.path && pathname.startsWith(sub.path),
+                                sub.path && pathname.includes(sub.path),
                               'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
-                                sub.path && !pathname.startsWith(sub.path)
+                                sub.path && !pathname.includes(sub.path)
                             }
                           )}
                         >
@@ -256,39 +263,41 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
   );
 }
 
-const renderMenu = (items: MenuItem[]) => (
-  <SidebarMenu>
-    {items.map((item) =>
-      item.children ? (
-        <CollapsibleMenuItem key={item.key} item={item} />
-      ) : (
-        <SidebarMenuItem key={item.key}>
-          <SidebarMenuButton
-            className='rounded-none focus-visible:ring-0!'
-            asChild
-          >
-            {item.path ? (
-              <Link href={item.path}>
-                {item.icon && <item.icon />}
-                <span>{item.label}</span>
-              </Link>
-            ) : (
-              <Button
-                variant='ghost'
-                className='bg-background hover:bg-background! justify-start pl-12'
-              >
-                {item.icon && <item.icon />}
-                <span>{item.label}</span>
-              </Button>
-            )}
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      )
-    )}
-  </SidebarMenu>
-);
+const renderMenu = (items: MenuItem[]) => {
+  return (
+    <SidebarMenu>
+      {items.map((item) =>
+        item.children && item.children.length > 0 ? (
+          <CollapsibleMenuItem key={item.key} item={item} />
+        ) : // <SidebarMenuItem key={item.key}>
+        //   <SidebarMenuButton
+        //     className='rounded-none focus-visible:ring-0!'
+        //     asChild
+        //   >
+        //     {item.path ? (
+        //       <Link href={item.path}>
+        //         {item.icon && <item.icon />}
+        //         <span>{item.label}</span>
+        //       </Link>
+        //     ) : (
+        //       <Button
+        //         variant='ghost'
+        //         className='bg-background hover:bg-background! justify-start pl-12'
+        //       >
+        //         {item.icon && <item.icon />}
+        //         <span>{item.label}</span>
+        //       </Button>
+        //     )}
+        //   </SidebarMenuButton>
+        // </SidebarMenuItem>
+        null
+      )}
+    </SidebarMenu>
+  );
+};
 
 const AppSidebar = () => {
+  const { profile } = useAuth();
   const { hasPermission } = useValidatePermission();
   const [clientMenu, setClientMenu] = useState<MenuItem[]>([]);
   const openLastMenu = useSidebarStore((s) => s.openLastMenu);
@@ -330,7 +339,7 @@ const AppSidebar = () => {
   if (!clientMenu)
     return (
       <Sidebar
-        className='[&_[data-sidebar="sidebar"]]:bg-sidebar group-data-[side=left]:border-none'
+        className='**:data-[sidebar="sidebar"]:bg-sidebar group-data-[side=left]:border-none'
         collapsible='icon'
       >
         <SidebarHeader className='min-h-25 px-0 py-4'>
@@ -349,7 +358,7 @@ const AppSidebar = () => {
     );
   return (
     <Sidebar
-      className='[&_[data-sidebar="sidebar"]]:bg-sidebar group-data-[side=left]:border-none'
+      className='**:data-[sidebar="sidebar"]:bg-sidebar group-data-[side=left]:border-none'
       collapsible='icon'
     >
       <SidebarHeader
@@ -364,13 +373,24 @@ const AppSidebar = () => {
                 href='/'
                 className='block! w-full! transition-all duration-200 ease-linear group-data-[collapsible=icon]:size-full! group-data-[collapsible=icon]:p-0! hover:bg-transparent!'
               >
-                <Image
-                  src={logoWithText}
-                  alt='logo'
-                  width={250}
-                  height={50}
-                  className='mx-auto w-4/5 object-cover'
-                />
+                {state === 'expanded' ? (
+                  <Image
+                    src={logoWithText}
+                    alt='logo'
+                    width={250}
+                    height={50}
+                    className='mx-auto w-4/5 object-cover'
+                    unoptimized
+                  />
+                ) : (
+                  <Image
+                    src={logo}
+                    alt='logo'
+                    width={50}
+                    height={50}
+                    className='mx-auto w-4/5 object-cover'
+                  />
+                )}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -382,6 +402,35 @@ const AppSidebar = () => {
           <SidebarGroupContent>{renderMenu(clientMenu)}</SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter
+        className={cn('mb-4 flex flex-row items-center justify-center', {
+          'pl-8': state === 'expanded'
+        })}
+      >
+        <SidebarMenu className='size-10'>
+          <SidebarMenuItem>
+            <AvatarField
+              src={renderImageUrl(profile?.avatarPath)}
+              disablePreview
+              size={40}
+              icon={
+                <CircleUserRound className='size-8 fill-transparent stroke-gray-600 stroke-2' />
+              }
+            />
+          </SidebarMenuItem>
+        </SidebarMenu>
+        {state === 'expanded' && (
+          <SidebarMenu className='flex-1'>
+            <SidebarMenuItem className='mx-auto line-clamp-1 block w-full justify-start truncate rounded-lg font-normal text-white transition-all duration-200 ease-linear'>
+              {profile?.fullName}
+            </SidebarMenuItem>
+            <SidebarMenuItem className='mx-auto line-clamp-1 block w-full justify-start truncate rounded-lg text-xs font-normal text-gray-400 transition-all duration-200 ease-linear'>
+              {profile?.email}
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
+      </SidebarFooter>
     </Sidebar>
   );
 };
