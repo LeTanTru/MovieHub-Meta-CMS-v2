@@ -204,7 +204,7 @@ export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
                   />
                 </Col>
               </Row>
-              <Row>
+              <Row className='mb-0'>
                 <Col>
                   <InputField
                     control={form.control}
