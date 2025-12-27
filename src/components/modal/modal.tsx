@@ -16,6 +16,7 @@ export interface ModalProps extends Omit<HTMLMotionProps<'div'>, 'title'> {
   closeOnBackdropClick?: boolean;
   title?: string | ReactNode;
   showClose?: boolean;
+  width?: number;
   variants?: {
     initial: Record<string, any>;
     animate: Record<string, any>;
@@ -41,6 +42,7 @@ export default function Modal({
     animate: { y: 0, opacity: 1, scale: 1 },
     exit: { y: -100, opacity: 0, scale: 0.95 }
   },
+  width,
   ...rest
 }: ModalProps) {
   const isMounted = useIsMounted();
@@ -52,7 +54,7 @@ export default function Modal({
         <motion.div
           onClick={(e) => e.stopPropagation()}
           className={cn(
-            'fixed inset-0 top-0 z-20 flex items-center justify-center',
+            'fixed inset-0 z-20 flex items-center justify-center',
             className
           )}
           initial={{ opacity: 0 }}
@@ -71,12 +73,13 @@ export default function Modal({
           )}
 
           <motion.div
-            className='content relative rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
+            className='content relative h-[80vh] rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
             initial={variants.initial}
             animate={variants.animate}
             exit={variants.exit}
             transition={{ duration: 0.15, ease: 'linear' }}
             onClick={(e) => e.stopPropagation()}
+            style={{ width: width ?? 'auto' }}
           >
             {(title || showClose) && (
               <div className='flex items-center justify-between border-b border-gray-200 px-4'>
@@ -96,7 +99,7 @@ export default function Modal({
               </div>
             )}
 
-            <div className='p-4'>{children}</div>
+            <>{children}</>
           </motion.div>
         </motion.div>
       )}

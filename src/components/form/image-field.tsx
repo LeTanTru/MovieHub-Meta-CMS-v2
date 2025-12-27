@@ -31,7 +31,7 @@ export default function ImageField({
   width,
   height,
   aspect = 1,
-  previewAspect = 1,
+  previewAspect = 16 / 9,
   previewSize = 500,
   disablePreview = false,
   className,
@@ -127,9 +127,10 @@ export default function ImageField({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => {
+            onClick={(e) => {
               setScale(1);
               setIsOpen(false);
+              e.stopPropagation();
             }}
           >
             <motion.div
