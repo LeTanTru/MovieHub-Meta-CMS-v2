@@ -163,8 +163,8 @@ export default function MultiSelectField<
                     {
                       'cursor-not-allowed border-gray-300 bg-gray-200/80 text-gray-500':
                         disabled,
-                      'border-dodger-blue ring-dodger-blue ring-[1px]': open,
-                      'border-red-500 ring-red-500': fieldState.invalid
+                      'ring-dodger-blue border-transparent ring-2': open,
+                      'border-red-500 ring-red-500': !!fieldState.error
                     }
                   )}
                 >

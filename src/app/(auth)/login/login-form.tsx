@@ -50,8 +50,8 @@ export default function LoginForm() {
     >
       {(form) => (
         <>
-          <Row className='mb-2'>
-            <Col span={24} className='items-center justify-center'>
+          <Row className='mb-2 w-full'>
+            <Col span={24} className='items-center justify-center px-0'>
               <div className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'>
                 <Image
                   src={logoWithText.src}
@@ -62,7 +62,7 @@ export default function LoginForm() {
               </div>
             </Col>
           </Row>
-          <Row className='flex-col gap-5 *:px-0'>
+          <Row className='w-full flex-col gap-5 *:px-0'>
             <Col span={24}>
               <InputField
                 name='username'
@@ -83,7 +83,7 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row className='mb-0'>
+          <Row className='mb-0 w-full'>
             <Col className='my-0' span={24}>
               <Button
                 disabled={!form.formState.isDirty || loginMutation.isPending}

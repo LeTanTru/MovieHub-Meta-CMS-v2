@@ -22,6 +22,7 @@ type Props = {
   className?: string;
   labelClassName?: string;
   disabled?: boolean;
+  onChange?: (value: string) => void;
 };
 
 export default function TimePickerField({
@@ -33,7 +34,8 @@ export default function TimePickerField({
   placeholder,
   className,
   labelClassName,
-  disabled = false
+  disabled = false,
+  onChange
 }: Props) {
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
@@ -58,15 +60,15 @@ export default function TimePickerField({
           minute = Math.floor((field.value % 3600) / 60);
           second = field.value % 60;
 
-          const hh = pad(Math.floor(field.value / 3600));
-          const mm = pad(Math.floor((field.value % 3600) / 60));
-          const ss = pad(field.value % 60);
+          // const hh = pad(Math.floor(field.value / 3600));
+          // const mm = pad(Math.floor((field.value % 3600) / 60));
+          // const ss = pad(field.value % 60);
 
-          const formatted = `${hh}:${mm}:${ss}`;
+          // const formatted = `${hh}:${mm}:${ss}`;
 
-          if (String(field.value) !== formatted) {
-            setTimeout(() => field.onChange(formatted), 0);
-          }
+          // if (String(field.value) !== formatted) {
+          //   setTimeout(() => field.onChange(formatted), 0);
+          // }
         } else if (typeof field.value === 'string') {
           const parts = field.value.split(':').map((v) => parseInt(v));
           hour = isNaN(parts[0]) ? 0 : parts[0];
@@ -88,6 +90,7 @@ export default function TimePickerField({
           else if (timeFormat === 'HH:mm') result = `${pad(hh)}:${pad(mm)}`;
           else if (timeFormat === 'mm:ss') result = `${pad(mm)}:${pad(ss)}`;
           field.onChange(result);
+          onChange?.(result);
           // field.onChange(hh * 3600 + mm * 60 + ss);
         };
 
@@ -131,7 +134,8 @@ export default function TimePickerField({
                     <span
                       suppressHydrationWarning
                       className={cn({
-                        'text-gray-300': !field.value,
+                        'text-gray-300':
+                          field.value === null || field.value === undefined,
                         'text-destructive': !!fieldState.error
                       })}
                     >

@@ -1,14 +1,15 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
 import { useIsMounted } from '@/hooks';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/form';
+import { Activity } from '@/components/activity';
 
-export interface ModalProps extends Omit<HTMLMotionProps<'div'>, 'title'> {
+export type ModalProps = Omit<HTMLMotionProps<'div'>, 'title'> & {
   children: ReactNode;
   open: boolean;
   onClose?: () => void;
@@ -22,7 +23,7 @@ export interface ModalProps extends Omit<HTMLMotionProps<'div'>, 'title'> {
     animate: Record<string, any>;
     exit: Record<string, any>;
   };
-}
+};
 
 export default function Modal({
   children,
@@ -46,62 +47,116 @@ export default function Modal({
   ...rest
 }: ModalProps) {
   const isMounted = useIsMounted();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showScrollArrow, setShowScrollArrow] = useState(false);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (scrollRef.current) {
+        const { scrollHeight, clientHeight, scrollTop } = scrollRef.current;
+        const hasOverflow = scrollHeight > clientHeight;
+        const isAtBottom = scrollHeight - scrollTop <= clientHeight + 10;
+        setShowScrollArrow(hasOverflow && !isAtBottom);
+      }
+    };
+
+    checkOverflow();
+    const scrollElement = scrollRef.current;
+    scrollElement?.addEventListener('scroll', checkOverflow);
+    window.addEventListener('resize', checkOverflow);
+
+    return () => {
+      scrollElement?.removeEventListener('scroll', checkOverflow);
+      window.removeEventListener('resize', checkOverflow);
+    };
+  }, [open, children]);
+
+  const handleScrollDown = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ top: 200, behavior: 'smooth' });
+    }
+  };
+
   if (!isMounted) return;
 
   return createPortal(
     <AnimatePresence>
       {open && (
-        <motion.div
-          onClick={(e) => e.stopPropagation()}
-          className={cn(
-            'fixed inset-0 z-20 flex items-center justify-center',
-            className
-          )}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          {...rest}
-        >
-          {backdrop && (
+        <>
+          <Activity visible={backdrop}>
             <motion.div
-              className='backdrop absolute inset-0 bg-black/50'
+              className='fixed inset-0 z-20 bg-black/50'
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={closeOnBackdropClick ? onClose : undefined}
             />
-          )}
+          </Activity>
 
           <motion.div
-            className='content relative h-[80vh] rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
-            initial={variants.initial}
-            animate={variants.animate}
-            exit={variants.exit}
-            transition={{ duration: 0.15, ease: 'linear' }}
             onClick={(e) => e.stopPropagation()}
-            style={{ width: width ?? 'auto' }}
+            className={cn(
+              'fixed inset-0 z-20 flex items-center justify-center overflow-auto p-4',
+              className
+            )}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            {...rest}
           >
-            {(title || showClose) && (
-              <div className='flex items-center justify-between border-b border-gray-200 px-4'>
-                <div className='text-base font-semibold text-gray-800'>
-                  {title}
+            <motion.div
+              className='content relative my-auto h-[80vh] w-full rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
+              initial={variants.initial}
+              animate={variants.animate}
+              exit={variants.exit}
+              transition={{ duration: 0.15, ease: 'linear' }}
+              onClick={(e) => e.stopPropagation()}
+              style={{ maxWidth: width ?? 'auto' }}
+            >
+              <Activity visible={!!title || !!showClose}>
+                <div className='flex items-center justify-between border-b border-gray-200 px-4'>
+                  <div className='text-base font-semibold text-gray-800'>
+                    {title}
+                  </div>
+
+                  <Activity visible={showClose}>
+                    <Button
+                      className='p-0! text-gray-500 transition hover:text-black'
+                      onClick={onClose}
+                      variant={'ghost'}
+                    >
+                      <X className='size-5' />
+                    </Button>
+                  </Activity>
+                </div>
+              </Activity>
+
+              <div className='relative h-full'>
+                <div
+                  ref={scrollRef}
+                  className='scrollbar-none h-full overflow-auto rounded-br-lg rounded-bl-lg'
+                >
+                  {children}
                 </div>
 
-                {showClose && (
-                  <Button
-                    className='p-0! text-gray-500 transition hover:text-black'
-                    onClick={onClose}
-                    variant={'ghost'}
-                  >
-                    <X className='size-5' />
-                  </Button>
-                )}
+                <AnimatePresence>
+                  <Activity visible={showScrollArrow}>
+                    <motion.button
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      onClick={handleScrollDown}
+                      className='absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce rounded-full bg-white p-2 shadow-[0px_0px_10px_2px] shadow-gray-300 transition hover:bg-gray-50'
+                      aria-label='Scroll down'
+                    >
+                      <ChevronDown className='size-5 text-slate-800' />
+                    </motion.button>
+                  </Activity>
+                </AnimatePresence>
               </div>
-            )}
-
-            <>{children}</>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </>
       )}
     </AnimatePresence>,
     document.body

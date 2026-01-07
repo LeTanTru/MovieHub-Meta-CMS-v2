@@ -1,5 +1,6 @@
 'use client';
 
+import { Activity } from '@/components/activity';
 import {
   Col,
   InputField,
@@ -237,11 +238,11 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <>{renderActions(form)}</>
-            {loading && (
+            <Activity visible={loading}>
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
               </div>
-            )}
+            </Activity>
           </>
         )}
       </BaseForm>

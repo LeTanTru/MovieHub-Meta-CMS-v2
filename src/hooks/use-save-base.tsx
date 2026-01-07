@@ -1,7 +1,6 @@
 'use client';
 
 import { Button, Col, Row } from '@/components/form';
-import { CircleLoading } from '@/components/loading';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,11 +19,12 @@ import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
-import { useEffect } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type HandlerType<T> = {
-  additionParams: () => { [key: string]: any };
+  // additionParams: () => { [key: string]: any };
+  handleSubmitSuccess: () => void;
+  handleSubmitError: (code: string) => void;
 };
 
 type UseSaveBaseProps<R, T> = {
@@ -37,9 +37,9 @@ type UseSaveBaseProps<R, T> = {
     objectName: string;
     listPageUrl?: string;
     queryKey: string;
-    enabled?: boolean;
     pathParams: { [key: string]: any };
     mode: 'create' | 'edit';
+    showNotify?: boolean;
   };
   override?: (handlers: HandlerType<T>) => HandlerType<T> | void;
 };
@@ -53,9 +53,9 @@ export default function useSaveBase<
     queryKey = '',
     objectName = '',
     listPageUrl = '',
-    enabled = true,
     pathParams,
-    mode
+    mode,
+    showNotify = true
   },
   override
 }: UseSaveBaseProps<R, T>) {
@@ -72,14 +72,10 @@ export default function useSaveBase<
             pathParams
           })
         : Promise.resolve({ data: undefined } as any),
-    enabled: false
+    enabled: !isCreate
   });
 
   const data: R = itemQuery.data?.data;
-
-  useEffect(() => {
-    if (!isCreate && enabled) itemQuery.refetch();
-  }, [enabled, mode]);
 
   const createMutation = useMutation({
     mutationKey: [`create-${queryKey}`],
@@ -89,21 +85,6 @@ export default function useSaveBase<
             body
           })
         : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
-    // onSuccess: (res) => {
-    //   if (res.result) {
-    //     notify.success(`Thêm mới ${objectName} thành công`);
-    //     queryClient.invalidateQueries({
-    //       queryKey: [queryKey, detailId]
-    //     });
-    //   } else {
-    //     logger.error(`Error while creating ${objectName}:`, res);
-    //     // notify.error(`Thêm mới ${objectName} thất bại`);
-    //   }
-    // },
-    // onError: (error) => {
-    //   logger.error(`Error while creating ${queryKey}:`, error);
-    //   // notify.error(`Có lỗi xảy ra khi thêm mới ${objectName}`);
-    // }
   });
 
   const updateMutation = useMutation({
@@ -114,21 +95,6 @@ export default function useSaveBase<
             body
           })
         : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
-    // onSuccess: (res) => {
-    //   if (res.result) {
-    //     queryClient.invalidateQueries({
-    //       queryKey: [queryKey, detailId]
-    //     });
-    //     notify.success(`Cập nhật ${objectName} thành công`);
-    //   } else {
-    //     logger.error(`Error while creating ${objectName}:`, res);
-    //     // notify.error(`Cập nhật ${objectName} thất bại`);
-    //   }
-    // },
-    // onError: (error) => {
-    //   logger.error(`Error while updating ${queryKey}:`, error);
-    //   // notify.error(`Có lỗi xảy ra khi cập nhật ${objectName}`);
-    // }
   });
 
   const getBackPath = () => {
@@ -153,16 +119,20 @@ export default function useSaveBase<
             queryClient.invalidateQueries({
               queryKey: [queryKey, pathParams.id]
             });
-            notify.success(
-              `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`
-            );
+            if (showNotify)
+              notify.success(
+                `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`
+              );
             if (listPageUrl) {
               navigate(getBackPath());
             }
+            handlers.handleSubmitSuccess();
           } else {
             const code = res.code;
-            if (code && errorMaps && form) {
+            if (code && errorMaps?.[code] && form) {
               applyFormErrors(form, code, errorMaps);
+            } else {
+              handlers.handleSubmitError(code);
             }
           }
         },
@@ -181,7 +151,7 @@ export default function useSaveBase<
     form: UseFormReturn<T>,
     options?: { onCancel?: () => void }
   ) => (
-    <Row className='my-0 justify-end gap-x-4 *:px-0'>
+    <Row className='mx-0 my-0 justify-end gap-x-4 *:px-0'>
       <Col className='w-40!'>
         {!form.formState.isDirty ? (
           <Button
@@ -215,7 +185,7 @@ export default function useSaveBase<
               <AlertDialogHeader>
                 <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
                   <Info className='size-8 fill-orange-500 stroke-white' />
-                  Bạn có chắc chắn muốn quay lại không ?
+                  Bạn có chắc chắn muốn hủy không ?
                 </AlertDialogTitle>
                 <AlertDialogDescription></AlertDialogDescription>
               </AlertDialogHeader>
@@ -232,11 +202,10 @@ export default function useSaveBase<
                   onClick={() => {
                     if (listPageUrl) {
                       navigate(listPageUrl);
-                    } else {
-                      options?.onCancel?.();
                     }
+                    options?.onCancel?.();
                   }}
-                  className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                  className='bg-dodger-blue hover:bg-dodger-blue/80 w-20! cursor-pointer transition-all duration-200 ease-linear'
                 >
                   Có
                 </AlertDialogAction>
@@ -250,28 +219,44 @@ export default function useSaveBase<
           disabled={!form.formState.isDirty || mutation.isPending}
           type='submit'
           variant={'primary'}
+          loading={mutation.isPending}
         >
-          {mutation.isPending ? (
-            <CircleLoading />
-          ) : (
-            <>
-              <Save />
-              {isCreate ? 'Thêm' : 'Cập nhật'}
-            </>
-          )}
+          <Save />
+          {isCreate ? 'Thêm' : 'Cập nhật'}
         </Button>
       </Col>
     </Row>
   );
 
+  const handleSubmitSuccess = () => {};
+
+  const handleSubmitError = (code: string) => {};
+
+  const extendableHandlers = (): HandlerType<T> => {
+    let handlers: HandlerType<T> = {
+      handleSubmitSuccess,
+      handleSubmitError
+    };
+
+    const overridden = override?.(handlers);
+    if (overridden) {
+      handlers = overridden;
+    }
+
+    return handlers;
+  };
+
+  const handlers = extendableHandlers();
+
   return {
     data,
+    handlers,
     itemQuery,
+    queryString,
     isEditing: !isCreate,
     loading: itemQuery.isLoading || itemQuery.isFetching,
-    queryString,
+    responseCode: itemQuery.data?.code,
     handleSubmit,
-    renderActions,
-    responseCode: itemQuery.data?.code
+    renderActions
   };
 }
