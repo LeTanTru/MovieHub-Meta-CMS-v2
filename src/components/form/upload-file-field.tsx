@@ -144,7 +144,7 @@ export default function UploadFileField<T extends FieldValues>({
         <input {...getInputProps()} className='hidden' />
 
         <FileIcon
-          className={cn('text-gray-300', {
+          className={cn('stroke-1 text-gray-300', {
             'text-destructive': !!error && !uploading
           })}
         />

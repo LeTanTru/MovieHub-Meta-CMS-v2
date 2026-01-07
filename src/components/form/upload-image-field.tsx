@@ -181,7 +181,8 @@ export default function UploadImageField<T extends FieldValues>({
     }
   };
 
-  const handleRemove = async () => {
+  const handleRemove = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       if (deleteImageFn && value) {
         await deleteImageFn(value);
@@ -255,10 +256,12 @@ export default function UploadImageField<T extends FieldValues>({
               <UploadIcon
                 strokeWidth={1}
                 style={{
-                  width: size / 3,
-                  height: size / 3
+                  width: (size * Math.min(aspect, 1)) / 3,
+                  height: (size * Math.min(aspect, 1)) / 3
                 }}
-                className='opacity-60'
+                className={cn('opacity-60', {
+                  'text-red-500': !!error
+                })}
               />
             )}
           </Button>

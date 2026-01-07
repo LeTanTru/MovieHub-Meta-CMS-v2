@@ -31,7 +31,7 @@ export default function ImageField({
   width,
   height,
   aspect = 1,
-  previewAspect = 1,
+  previewAspect = 16 / 9,
   previewSize = 500,
   disablePreview = false,
   className,
@@ -54,17 +54,20 @@ export default function ImageField({
     setIsOpen(true);
   };
 
-  const handleWheel = (e: WheelEvent) => {
-    if (!zoomOnScroll) return;
+  const handleWheel = React.useCallback(
+    (e: WheelEvent) => {
+      if (!zoomOnScroll) return;
 
-    e.preventDefault();
+      e.preventDefault();
 
-    setScale((prev) => {
-      let next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
-      next = Math.max(1, Math.min(3, next));
-      return next;
-    });
-  };
+      setScale((prev) => {
+        let next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
+        next = Math.max(1, Math.min(3, next));
+        return next;
+      });
+    },
+    [zoomOnScroll]
+  );
 
   React.useEffect(() => {
     if (!isOpen || !previewRef.current) return;
@@ -73,7 +76,7 @@ export default function ImageField({
     node.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => node.removeEventListener('wheel', handleWheel);
-  }, [isOpen]);
+  }, [handleWheel, isOpen]);
 
   return (
     <>
@@ -81,14 +84,19 @@ export default function ImageField({
         {...props}
         onClick={props?.onClick ?? openPreview}
         className={cn(
-          'relative cursor-pointer rounded border bg-gray-100 shadow-sm select-none',
+          'relative rounded border bg-gray-100 shadow-sm select-none',
+          { 'cursor-pointer': !!src },
           className
         )}
         style={{ width, height }}
       >
         {src ? (
           aspect ? (
-            <AspectRatio ratio={aspect} className='h-full w-full'>
+            <AspectRatio
+              style={{ width, height }}
+              ratio={aspect}
+              className='h-full w-full'
+            >
               <Image
                 src={src}
                 alt={alt}
@@ -127,9 +135,10 @@ export default function ImageField({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => {
+            onClick={(e) => {
               setScale(1);
               setIsOpen(false);
+              e.stopPropagation();
             }}
           >
             <motion.div

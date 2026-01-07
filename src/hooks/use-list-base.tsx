@@ -40,7 +40,7 @@ import { Separator } from '@radix-ui/react-separator';
 import {
   keepPreviousData,
   useMutation,
-  useQuery,
+  useInfiniteQuery,
   useQueryClient
 } from '@tanstack/react-query';
 import { Info, PlusIcon, RefreshCcw } from 'lucide-react';
@@ -76,7 +76,10 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   }) => Column<T>;
   setQueryParam: (key: keyof S, value: S[keyof S] | null) => void;
   handleEditClick: (id: string) => void;
-  handleDeleteClick: (id: string) => void;
+  handleDeleteClick: (
+    id: string,
+    options?: { onSuccess?: () => void; onError?: (code: string) => void }
+  ) => void;
   invalidateQueries: () => void;
   renderReloadButton: () => React.ReactNode;
   changeQueryFilter: (filter: Partial<S>) => void;
@@ -97,6 +100,9 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
     separate?: boolean | undefined;
   }) => boolean;
   setData: (data: T[]) => void;
+  loadMore: () => void;
+  handleScrollLoadMore: (e: React.UIEvent<HTMLElement>) => void;
+  mappingData: (respose: ApiResponseList<T>) => ApiResponseList<T>;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -117,6 +123,8 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
     enabled?: boolean;
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
+    showNotify?: boolean;
+    useInfiniteScroll?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
@@ -132,7 +140,9 @@ export default function useListBase<
     defaultFilters = {} as Partial<S>,
     enabled = true,
     excludeFromQueryFilter = [],
-    notShowFromSearchParams = []
+    notShowFromSearchParams = [],
+    showNotify = true,
+    useInfiniteScroll = false
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
@@ -192,17 +202,49 @@ export default function useListBase<
 
   const additionalParams = () => ({});
 
-  // query
-  const listQuery = useQuery({
-    queryKey: [`${queryKey}-list`, queryFilter],
-    queryFn: () =>
+  // Infinite Query for infinite scroll
+  const infiniteQuery = useInfiniteQuery({
+    queryKey: [`${queryKey}-infinite`, queryFilter],
+    queryFn: ({ pageParam = 0 }) =>
       http.get<ApiResponseList<T>>(apiConfig.getList, {
-        params: { ...queryFilter, ...handlers.additionalParams() },
+        params: {
+          ...queryFilter,
+          page: pageParam,
+          size: pageSize,
+          ...handlers.additionalParams()
+        },
         pathParams: { ...handlers.additionalPathParams() }
       }),
-    placeholderData: keepPreviousData,
-    enabled
+    getNextPageParam: (lastPage, allPages) => {
+      const currentPage = allPages.length - 1;
+      const totalPages = lastPage.data.totalPages ?? 0;
+      return currentPage < totalPages - 1 ? currentPage + 1 : undefined;
+    },
+    initialPageParam: 0,
+    enabled: enabled && useInfiniteScroll,
+    placeholderData: keepPreviousData
   });
+
+  // Regular query for pagination
+  const listQuery = useInfiniteQuery({
+    queryKey: [`${queryKey}-list`, queryFilter],
+    queryFn: ({ pageParam = 0 }) =>
+      http.get<ApiResponseList<T>>(apiConfig.getList, {
+        params: {
+          ...queryFilter,
+          page: pageParam,
+          size: pageSize,
+          ...handlers.additionalParams()
+        },
+        pathParams: { ...handlers.additionalPathParams() }
+      }),
+    getNextPageParam: () => undefined,
+    initialPageParam: queryFilter.page || 0,
+    enabled: enabled && !useInfiniteScroll,
+    placeholderData: keepPreviousData
+  });
+
+  const activeQuery = useInfiniteScroll ? infiniteQuery : listQuery;
 
   const deleteMutation = useMutation({
     mutationKey: [`delete-${queryKey}`],
@@ -214,19 +256,31 @@ export default function useListBase<
       })
   });
 
+  // Update data from query results
   useEffect(() => {
-    setData(listQuery.data?.data.content || []);
-  }, [listQuery.data?.data.content]);
+    if (useInfiniteScroll) {
+      const allData =
+        infiniteQuery.data?.pages.flatMap((page) => page.data.content || []) ||
+        [];
+      setData(allData);
+    } else {
+      const firstPage = listQuery.data?.pages[0];
+      setData(firstPage?.data.content || []);
+    }
+  }, [useInfiniteScroll, infiniteQuery.data, listQuery.data]);
 
   // Pagination
   const current = searchParams['page'];
   useEffect(() => {
-    setPagination((p) => ({
-      ...p,
-      current: current ? Number(current) : DEFAULT_TABLE_PAGE_START + 1,
-      total: listQuery.data?.data.totalPages ?? 0
-    }));
-  }, [current, listQuery.data]);
+    if (!useInfiniteScroll) {
+      const firstPage = listQuery.data?.pages[0];
+      setPagination((p) => ({
+        ...p,
+        current: current ? Number(current) : DEFAULT_TABLE_PAGE_START + 1,
+        total: firstPage?.data.totalPages ?? 0
+      }));
+    }
+  }, [current, listQuery.data, useInfiniteScroll]);
 
   const changePagination = (page: number) => {
     setPagination({ ...pagination, current: page });
@@ -246,17 +300,24 @@ export default function useListBase<
     navigate(path);
   };
 
-  const handleDeleteClick = async (id: string) => {
+  const handleDeleteClick = async (
+    id: string,
+    options?: { onSuccess?: () => void; onError?: (code: string) => void }
+  ) => {
     await deleteMutation.mutateAsync(id, {
       onSuccess: (res) => {
         if (res.result) {
-          notify.success(`Xoá ${objectName} thành công`);
-          close();
-          // queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
-          listQuery.refetch();
+          if (showNotify) notify.success(`Xoá ${objectName} thành công`);
+          queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
+          queryClient.invalidateQueries({
+            queryKey: [`${queryKey}-infinite`]
+          });
+          options?.onSuccess?.();
         } else {
-          if (res.code) handlers.handleDeleteError(res.code);
-          else notify.error(`Xoá ${objectName} thất bại`);
+          if (res.code) {
+            if (options?.onError) options?.onError(res.code);
+            else handlers.handleDeleteError(res.code);
+          } else notify.error(`Xoá ${objectName} thất bại`);
         }
       },
       onError: (error: Error) => {
@@ -284,7 +345,7 @@ export default function useListBase<
         return null;
 
       return (
-        <ToolTip title={`Sửa ${objectName}`} sideOffset={0}>
+        <ToolTip title={`Cập nhật ${objectName}`} sideOffset={0}>
           <span>
             <Button
               onClick={(e) => {
@@ -482,21 +543,23 @@ export default function useListBase<
           switch (field.type) {
             case FieldTypes.NUMBER:
               return [key, value ? Number(value) : undefined];
-            case FieldTypes.SELECT || FieldTypes.AUTOCOMPLETE:
+            case FieldTypes.SELECT:
+            case FieldTypes.AUTOCOMPLETE: {
               const option = field.options?.find(
                 (opt: any) => String(opt.value) === String(value)
               );
               return [key, option ? option.value : value];
+            }
+            case FieldTypes.MULTI_SELECT:
+              return [key, value?.split(',')];
             case FieldTypes.DATE:
               return [key, convertUTCToLocal(value)];
+            case FieldTypes.BOOLEAN:
+              return [key, Boolean(value)];
             default:
               return [key, value];
           }
         })
-        // .map(([key, value]) => [
-        //   key,
-        //   !isNaN(value) ? Number(value) : value.trim()
-        // ])
       )
     };
 
@@ -527,7 +590,10 @@ export default function useListBase<
         )
       );
 
-      setQueryParams({ ...(filteredValues as Partial<S>), ...preservedParams });
+      setQueryParams({
+        ...(filteredValues as Partial<S>),
+        ...preservedParams
+      });
     };
 
     return (
@@ -541,20 +607,71 @@ export default function useListBase<
     );
   };
 
-  const invalidateQueries = () =>
+  const invalidateQueries = () => {
     queryClient.invalidateQueries({
       queryKey: [`${queryKey}-list`, queryFilter]
     });
+    queryClient.invalidateQueries({
+      queryKey: [`${queryKey}-infinite`, queryFilter]
+    });
+  };
 
   const renderReloadButton = () => (
     <Button
-      disabled={listQuery.isFetching}
-      onClick={() => listQuery.refetch()}
+      disabled={activeQuery.isFetching}
+      onClick={() => activeQuery.refetch()}
       variant={'primary'}
     >
       <RefreshCcw />
     </Button>
   );
+
+  // Load more using useInfiniteQuery
+  const loadMore = () => {
+    if (
+      useInfiniteScroll &&
+      infiniteQuery.hasNextPage &&
+      !infiniteQuery.isFetchingNextPage
+    ) {
+      infiniteQuery.fetchNextPage();
+    }
+  };
+
+  const handleScrollLoadMore = (e: React.UIEvent<HTMLElement>) => {
+    const target = e.currentTarget;
+
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 100) {
+      loadMore();
+    }
+  };
+
+  // Get total elements and total pages from active query
+  const totalElements = useMemo(() => {
+    if (useInfiniteScroll) {
+      return infiniteQuery.data?.pages[0]?.data.totalElements ?? 0;
+    }
+    return listQuery.data?.pages[0]?.data.totalElements ?? 0;
+  }, [useInfiniteScroll, infiniteQuery.data, listQuery.data]);
+
+  const totalPages = useMemo(() => {
+    if (useInfiniteScroll) {
+      return infiniteQuery.data?.pages[0]?.data.totalPages ?? 0;
+    }
+    return listQuery.data?.pages[0]?.data.totalPages ?? 0;
+  }, [useInfiniteScroll, infiniteQuery.data, listQuery.data]);
+
+  const totalLeft = useMemo(() => {
+    const currentPageList = infiniteQuery.data?.pageParams;
+    if (currentPageList?.length) {
+      const currentPage = currentPageList[currentPageList.length - 1] as number;
+      return totalElements - (currentPage + 1) * pageSize;
+    }
+    return 0;
+  }, [infiniteQuery.data?.pageParams, pageSize, totalElements]);
+
+  const mappingData = (response: ApiResponseList<T>) => {
+    return response;
+  };
 
   const extendableHandlers = (): HandlerType<T, S> => {
     const handlers: HandlerType<T, S> = {
@@ -574,7 +691,10 @@ export default function useListBase<
       changeQueryFilter,
       handleDeleteError,
       hasPermission,
-      setData
+      setData,
+      loadMore,
+      handleScrollLoadMore,
+      mappingData
     };
 
     override?.(handlers);
@@ -586,10 +706,19 @@ export default function useListBase<
   return {
     data,
     pagination,
-    loading: listQuery.isLoading || deleteMutation.isPending,
+    loading: useInfiniteScroll
+      ? activeQuery.isLoading
+      : activeQuery.isLoading || deleteMutation.isPending,
     handlers,
     queryFilter,
-    listQuery,
-    queryString
+    listQuery: activeQuery,
+    queryString,
+    isFetchingMore: useInfiniteScroll
+      ? infiniteQuery.isFetchingNextPage
+      : false,
+    hasMore: useInfiniteScroll ? infiniteQuery.hasNextPage : false,
+    totalPages,
+    totalElements,
+    totalLeft
   };
 }

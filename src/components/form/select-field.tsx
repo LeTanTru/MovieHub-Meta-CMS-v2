@@ -153,11 +153,11 @@ export default function SelectField<
                   aria-label='Select'
                   disabled={disabled}
                   className={cn(
-                    'focus-visible:border-dodger-blue w-full justify-between border px-3! py-0 text-black shadow-none focus:ring-0 focus-visible:border-2',
+                    'focus-visible:border-dodger-blue w-full justify-between border px-3! py-0 text-black shadow-none',
                     {
-                      'border-dodger-blue ring-dodger-blue ring-[1px]': open,
+                      'ring-dodger-blue border-transparent ring-2': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
-                      'border-red-500 ring-red-500': fieldState.invalid,
+                      'border-red-500 ring-red-500': !!fieldState.error,
                       'cursor-not-allowed border-gray-300 bg-gray-200/50 text-gray-400':
                         disabled
                     }
