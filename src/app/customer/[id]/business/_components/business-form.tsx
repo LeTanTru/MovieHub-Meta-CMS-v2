@@ -22,8 +22,12 @@ import {
   customerBusinessErrorMaps,
   ErrorCode
 } from '@/constants';
-import { useSaveBase } from '@/hooks';
-import { useCustomerQuery, useUploadLogoMutation } from '@/queries';
+import { useFileUploadManager, useSaveBase } from '@/hooks';
+import {
+  useCustomerQuery,
+  useDeleteFileMutation,
+  useUploadLogoMutation
+} from '@/queries';
 import { route } from '@/routes';
 import { businessSchema } from '@/schemaValidations';
 import { BusinessBodyType, BusinessResType } from '@/types';
@@ -35,23 +39,25 @@ import {
   renderListPageUrl
 } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function BusinessForm({ queryKey }: { queryKey: string }) {
-  const [logoPath, setLogoPath] = useState<string>('');
-  const [bannerPath, setBannerPath] = useState<string>('');
-  const uploadLogoMutation = useUploadLogoMutation();
   const { id: customerId, businessId } = useParams<{
     id: string;
     businessId: string;
   }>();
+
   const customerQuery = useCustomerQuery(customerId);
   const customer = customerQuery.data?.data;
+
+  const uploadLogoMutation = useUploadLogoMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const {
     data,
     loading,
+    isEditing,
     queryString,
     responseCode,
     handleSubmit,
@@ -90,6 +96,20 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
     status: STATUS_ACTIVE
   };
 
+  const logoImageManager = useFileUploadManager({
+    initialUrl: data?.logoPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
+  });
+
+  const bannerImageManager = useFileUploadManager({
+    initialUrl: data?.bannerPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
+  });
+
   const initialValues: BusinessBodyType = useMemo(() => {
     return {
       customerId,
@@ -111,25 +131,25 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
     };
   }, [data, customerId]);
 
-  useEffect(() => {
-    if (data?.bannerPath) setBannerPath(data?.bannerPath);
-  }, [data?.bannerPath]);
-
-  useEffect(() => {
-    if (data?.logoPath) setLogoPath(data?.logoPath);
-  }, [data?.logoPath]);
+  const handleCancel = async () => {
+    await logoImageManager.handleCancel();
+    await bannerImageManager.handleCancel();
+  };
 
   const onSubmit = async (
     values: BusinessBodyType,
     form: UseFormReturn<BusinessBodyType>
   ) => {
+    await logoImageManager.handleSubmit();
+    await bannerImageManager.handleSubmit();
+
     await handleSubmit(
       {
         ...values,
         expireDate: convertLocalToUTC(values.expireDate),
         extDate: convertLocalToUTC(values.extDate),
-        logoPath,
-        bannerPath
+        logoPath: logoImageManager.currentUrl,
+        bannerPath: bannerImageManager.currentUrl
       },
       form,
       customerBusinessErrorMaps
@@ -168,13 +188,11 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
             <Row>
               <Col>
                 <UploadImageField
-                  value={renderImageUrl(logoPath)}
+                  value={renderImageUrl(logoImageManager.currentUrl)}
                   loading={uploadLogoMutation.isPending}
                   control={form.control}
                   name='logoPath'
-                  onChange={(url) => {
-                    setLogoPath(url);
-                  }}
+                  onChange={logoImageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadLogoMutation.mutateAsync({
@@ -184,17 +202,16 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                   }}
                   required
                   label='Logo'
+                  deleteImageFn={logoImageManager.handleDeleteOnClick}
                 />
               </Col>
               <Col>
                 <UploadImageField
-                  value={renderImageUrl(bannerPath)}
+                  value={renderImageUrl(bannerImageManager.currentUrl)}
                   loading={uploadLogoMutation.isPending}
                   control={form.control}
                   name='bannerPath'
-                  onChange={(url) => {
-                    setBannerPath(url);
-                  }}
+                  onChange={bannerImageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadLogoMutation.mutateAsync({
@@ -205,6 +222,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                   label='Banner'
                   required
                   aspect={16 / 9}
+                  deleteImageFn={bannerImageManager.handleDeleteOnClick}
                 />
               </Col>
             </Row>
@@ -355,7 +373,11 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                 />
               </Col>
             </Row>
-            <>{renderActions(form)}</>
+            <>
+              {renderActions(form, {
+                onCancel: handleCancel
+              })}
+            </>
             <Activity visible={loading}>
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

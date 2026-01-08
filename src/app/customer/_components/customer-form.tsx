@@ -4,12 +4,12 @@ import { Activity } from '@/components/activity';
 import {
   Col,
   InputField,
+  PasswordField,
   Row,
   SelectField,
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import PasswordField from '@/components/form/password-field';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
@@ -19,21 +19,21 @@ import {
   statusOptions,
   ErrorCode
 } from '@/constants';
-import { useSaveBase } from '@/hooks';
-import { useUploadAvatarMutation } from '@/queries';
+import { useFileUploadManager, useSaveBase } from '@/hooks';
+import { useDeleteFileMutation, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
 import { customerSchema } from '@/schemaValidations';
 import { CustomerBodyType, CustomerResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function CustomerForm({ queryKey }: { queryKey: string }) {
-  const [avatarPath, setAvatarPath] = useState<string>('');
-  const [logoPath, setLogoPath] = useState<string>('');
-  const uploadImageMutation = useUploadAvatarMutation();
   const { id } = useParams<{ id: string }>();
+
+  const uploadImageMutation = useUploadAvatarMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -68,6 +68,20 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
     phone: ''
   };
 
+  const avatarImageManager = useFileUploadManager({
+    initialUrl: data?.avatarPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
+  });
+
+  const logoImageManager = useFileUploadManager({
+    initialUrl: data?.avatarPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
+  });
+
   const initialValues: CustomerBodyType = useMemo(() => {
     return {
       username: data?.username ?? '',
@@ -82,20 +96,24 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  useEffect(() => {
-    if (data?.avatarPath) setAvatarPath(data?.avatarPath);
-  }, [data?.avatarPath]);
-
-  useEffect(() => {
-    if (data?.logoPath) setLogoPath(data?.logoPath);
-  }, [data?.logoPath]);
+  const handleCancel = async () => {
+    await avatarImageManager.handleCancel();
+    await logoImageManager.handleCancel();
+  };
 
   const onSubmit = async (
     values: CustomerBodyType,
     form: UseFormReturn<CustomerBodyType>
   ) => {
+    await avatarImageManager.handleSubmit();
+    await logoImageManager.handleSubmit();
+
     await handleSubmit(
-      { ...values, avatarPath: avatarPath },
+      {
+        ...values,
+        avatarPath: avatarImageManager.currentUrl,
+        logoPath: logoImageManager.currentUrl
+      },
       form,
       customerErrorMaps
     );
@@ -124,30 +142,27 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
             <Row>
               <Col>
                 <UploadImageField
-                  value={renderImageUrl(avatarPath)}
+                  value={renderImageUrl(avatarImageManager.currentUrl)}
                   loading={uploadImageMutation.isPending}
                   control={form.control}
                   name='avatarPath'
-                  onChange={(url) => {
-                    setAvatarPath(url);
-                  }}
+                  onChange={avatarImageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
                   label='Ảnh đại diện'
+                  deleteImageFn={avatarImageManager.handleDeleteOnClick}
                 />
               </Col>
               <Col>
                 <UploadImageField
-                  value={renderImageUrl(logoPath)}
+                  value={renderImageUrl(logoImageManager.currentUrl)}
                   loading={uploadImageMutation.isPending}
                   control={form.control}
                   name='logoPath'
-                  onChange={(url) => {
-                    setLogoPath(url);
-                  }}
+                  onChange={logoImageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
@@ -155,6 +170,7 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
                   }}
                   label='Logo'
                   aspect={16 / 9}
+                  deleteImageFn={logoImageManager.handleDeleteOnClick}
                 />
               </Col>
             </Row>
@@ -279,7 +295,11 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
             )}
-            <>{renderActions(form)}</>
+            <>
+              {renderActions(form, {
+                onCancel: handleCancel
+              })}
+            </>
             <Activity visible={loading}>
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

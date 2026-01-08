@@ -1,6 +1,6 @@
 'use client';
 
-import DbConfigModal from '@/app/customer/[id]/business/_components/db-config-modal';
+import DbConfigModal from '@/app/business/_components/db-config-modal';
 import { Button, ImageField, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
@@ -26,8 +26,9 @@ import {
   notify,
   renderImageUrl
 } from '@/utils';
+import { Bell } from 'lucide-react';
 import { useState } from 'react';
-import { AiOutlineApartment, AiOutlineMessage } from 'react-icons/ai';
+import { AiOutlineApartment } from 'react-icons/ai';
 
 export default function BusinessList({ queryKey }: { queryKey: string }) {
   const [selectedRow, setSelectedRow] = useState<BusinessResType | null>(null);
@@ -83,7 +84,7 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <AiOutlineMessage className='text-dodger-blue size-4' />
+                  <Bell className='text-dodger-blue size-4' />
                 </Button>
               </span>
             </ToolTip>

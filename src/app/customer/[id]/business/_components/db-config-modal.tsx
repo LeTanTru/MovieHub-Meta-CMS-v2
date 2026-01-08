@@ -3,7 +3,6 @@
 import {
   BooleanField,
   Col,
-  FieldSet,
   InputField,
   NumberField,
   Row,
@@ -11,7 +10,6 @@ import {
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { Modal } from '@/components/modal';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   apiConfig,
   dbConfigErrorMaps,
@@ -25,8 +23,6 @@ import { dbConfigSchema } from '@/schemaValidations';
 import { DbConfigBodyType, DbConfigResType, BusinessResType } from '@/types';
 import { notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { omit } from 'lodash';
-import { X } from 'lucide-react';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -60,7 +56,6 @@ export default function DbConfigModal({
     options: {
       objectName: 'cấu hình cơ sở dữ liệu',
       queryKey: queryKeys.DB_CONFIG,
-      enabled: open,
       pathParams: {
         businessId: data?.id
       },
@@ -131,102 +126,91 @@ export default function DbConfigModal({
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Card className='w-200 bg-white'>
-        <CardHeader className='flex flex-row items-center justify-between p-4'>
-          <CardTitle className='mb-0 font-normal'>{`Cấu hình cơ sở dữ liệu`}</CardTitle>
-          <X
-            onClick={onClose}
-            className='cursor-pointer transition-all duration-200 ease-linear hover:opacity-80'
-          />
-        </CardHeader>
-        <CardContent className='p-4 pt-0'>
-          <FieldSet
-            title={`${!isEditing ? 'Thêm' : 'Cập nhật'} cấu hình cơ sở dữ liệu`}
-          >
-            <BaseForm
-              schema={dbConfigSchema}
-              defaultValues={defaultValues}
-              initialValues={initialValues}
-              onSubmit={onSubmit}
-              className='w-full p-0'
-            >
-              {(form) => (
-                <>
-                  <Row>
-                    <Col>
-                      <InputField
-                        control={form.control}
-                        name='host'
-                        label='Máy chủ'
-                        placeholder='Máy chủ'
-                        required
-                        disabled={isEditing}
-                      />
-                    </Col>
-                    <Col>
-                      <InputField
-                        control={form.control}
-                        name='driverClassName'
-                        label='Driver class name'
-                        placeholder='Driver class name'
-                        required
-                        disabled={isEditing}
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <InputField
-                        control={form.control}
-                        name='port'
-                        label='Cổng'
-                        placeholder='Cổng'
-                        required
-                        disabled={isEditing}
-                      />
-                    </Col>
-                    <Col>
-                      <NumberField
-                        control={form.control}
-                        name='maxConnection'
-                        label='Số kết nối tối đa'
-                        placeholder='Số kết nối tối đa'
-                        required
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <SelectField
-                        control={form.control}
-                        name='serverProviderId'
-                        label='Nhà cung cấp máy chủ'
-                        placeholder='Nhà cung cấp máy chủ'
-                        required
-                        disabled={isEditing}
-                        options={serverProviderList}
-                        getLabel={(opt) => opt.label}
-                        getValue={(opt) => opt.value}
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <BooleanField
-                        control={form.control}
-                        name='initialize'
-                        label='Khởi tạo'
-                      />
-                    </Col>
-                  </Row>
-                  <>{renderActions(form, { onCancel: onClose })}</>
-                </>
-              )}
-            </BaseForm>
-          </FieldSet>
-        </CardContent>
-      </Card>
+    <Modal
+      open={open}
+      onClose={onClose}
+      width={800}
+      title={`${!isEditing ? 'Thêm' : 'Cập nhật'} cấu hình cơ sở dữ liệu`}
+    >
+      <BaseForm
+        schema={dbConfigSchema}
+        defaultValues={defaultValues}
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+      >
+        {(form) => (
+          <>
+            <Row>
+              <Col>
+                <InputField
+                  control={form.control}
+                  name='host'
+                  label='Máy chủ'
+                  placeholder='Máy chủ'
+                  required
+                  disabled={isEditing}
+                />
+              </Col>
+              <Col>
+                <InputField
+                  control={form.control}
+                  name='driverClassName'
+                  label='Driver class name'
+                  placeholder='Driver class name'
+                  required
+                  disabled={isEditing}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <InputField
+                  control={form.control}
+                  name='port'
+                  label='Cổng'
+                  placeholder='Cổng'
+                  required
+                  disabled={isEditing}
+                />
+              </Col>
+              <Col>
+                <NumberField
+                  control={form.control}
+                  name='maxConnection'
+                  label='Số kết nối tối đa'
+                  placeholder='Số kết nối tối đa'
+                  required
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <SelectField
+                  control={form.control}
+                  name='serverProviderId'
+                  label='Nhà cung cấp máy chủ'
+                  placeholder='Nhà cung cấp máy chủ'
+                  required
+                  disabled={isEditing}
+                  options={serverProviderList}
+                  getLabel={(opt) => opt.label}
+                  getValue={(opt) => opt.value}
+                />
+              </Col>
+            </Row>
+            <Row className='mb-0'>
+              <Col>
+                <BooleanField
+                  control={form.control}
+                  name='initialize'
+                  label='Khởi tạo'
+                />
+              </Col>
+            </Row>
+            <>{renderActions(form, { onCancel: onClose })}</>
+          </>
+        )}
+      </BaseForm>
     </Modal>
   );
 }

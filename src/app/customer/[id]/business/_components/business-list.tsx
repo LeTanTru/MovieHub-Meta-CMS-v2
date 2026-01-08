@@ -28,9 +28,10 @@ import {
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
+import { Bell } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import { AiOutlineApartment, AiOutlineMessage } from 'react-icons/ai';
+import { AiOutlineApartment } from 'react-icons/ai';
 
 export default function BusinessList({ queryKey }: { queryKey: string }) {
   const { id: customerId } = useParams<{ id: string }>();
@@ -89,7 +90,7 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <AiOutlineMessage className='text-dodger-blue size-4' />
+                  <Bell className='text-dodger-blue size-4' />
                 </Button>
               </span>
             </ToolTip>

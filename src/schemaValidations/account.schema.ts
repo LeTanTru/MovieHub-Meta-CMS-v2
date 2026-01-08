@@ -9,6 +9,7 @@ export const updateProfileSchema = z
       .string()
       .regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ')
       .optional(),
+
     oldPassword: z.string().nonempty('Bắt buộc'),
     password: z.string().optional().nullable(),
     confirmPassword: z.string().optional().nullable()

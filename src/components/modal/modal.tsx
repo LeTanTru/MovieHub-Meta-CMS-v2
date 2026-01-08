@@ -105,7 +105,7 @@ export default function Modal({
             {...rest}
           >
             <motion.div
-              className='content relative my-auto h-[80vh] w-full rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
+              className='content relative my-auto max-h-[80vh] w-full rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
               initial={variants.initial}
               animate={variants.animate}
               exit={variants.exit}
