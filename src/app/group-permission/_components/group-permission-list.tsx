@@ -64,7 +64,7 @@ export default function GroupPermissionList({
                 <span>
                   <Button
                     onClick={() => handleEditClick(record)}
-                    className='border-none bg-transparent shadow-none hover:bg-transparent'
+                    className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                     {...buttonProps}
                   >
                     <AiOutlineEdit className='text-dodger-blue size-4' />
@@ -203,18 +203,19 @@ export default function GroupPermissionList({
         title={`${!isEditing ? 'Thêm' : 'Cập nhật'} nhóm quyền`}
         open={opened}
         onClose={handleClose}
+        width={700}
+        className='[&_.content]:bottom-[25%] [&_.content]:h-fit'
       >
         <BaseForm
           defaultValues={defaultValues}
           initialValues={initialValues}
           onSubmit={onSubmit}
           schema={groupPermissionSchema}
-          className='w-175 p-0'
         >
           {(form) => (
             <>
               <Row className='my-0 mb-4'>
-                <Col>
+                <Col span={24}>
                   <InputField
                     control={form.control}
                     name='name'

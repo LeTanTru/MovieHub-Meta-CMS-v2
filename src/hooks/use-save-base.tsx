@@ -205,7 +205,7 @@ export default function useSaveBase<
                     }
                     options?.onCancel?.();
                   }}
-                  className='bg-dodger-blue hover:bg-dodger-blue/80 w-20! cursor-pointer transition-all duration-200 ease-linear'
+                  className='bg-dodger-blue hover:bg-dodger-blue/80 w-15 cursor-pointer transition-all duration-200 ease-linear'
                 >
                   Có
                 </AlertDialogAction>
