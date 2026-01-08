@@ -27,7 +27,11 @@ import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { businessSchema } from '@/schemaValidations';
-import { BusinessBodyType, BusinessResType, CustomerResType } from '@/types';
+import {
+  BusinessBodyType,
+  BusinessResType,
+  CustomerAutoCompleteType
+} from '@/types';
 import {
   convertLocalToUTC,
   convertUTCToLocal,
@@ -241,14 +245,15 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
                 <AutoCompleteField
                   control={form.control}
                   name='customerId'
-                  apiConfig={apiConfig.customer.getList}
-                  mappingData={(item: CustomerResType) => ({
+                  apiConfig={apiConfig.customer.autoComplete}
+                  mappingData={(item: CustomerAutoCompleteType) => ({
                     label: item.fullName,
                     value: item.id.toString()
                   })}
                   searchParams={['fullName']}
                   label='Khách hàng'
                   placeholder='Khách hàng'
+                  initialOptionParamName='requiredId'
                 />
               </Col>
             </Row>

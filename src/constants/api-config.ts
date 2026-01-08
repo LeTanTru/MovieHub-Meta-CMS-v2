@@ -110,6 +110,11 @@ const apiConfig = defineApiConfig({
     }
   },
   customer: {
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/customer/auto-complete`,
+      method: 'GET',
+      headers: baseHeader
+    },
     changeStatus: {
       baseUrl: `${AppConstants.apiUrl}/v1/customer/change-status`,
       method: 'PUT',

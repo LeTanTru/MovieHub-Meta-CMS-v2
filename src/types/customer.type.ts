@@ -5,6 +5,13 @@ import {
 import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
+export type CustomerAutoCompleteType = {
+  id: string;
+  kind: number;
+  username: string;
+  fullName: string;
+};
+
 export type CustomerResType = {
   id: string;
   status: number;
