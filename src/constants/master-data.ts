@@ -110,16 +110,17 @@ export const genderOptions: OptionType[] = [
 
 export const queryKeys = {
   ACCOUNT: 'account',
-  GROUP: 'group',
-  CUSTOMER: 'customer',
-  GROUP_PERMISSION: 'group-permission',
   BUSINESS: 'business',
+  CUSTOMER: 'customer',
   DB_CONFIG: 'db_config',
-  SERVER_PROVIDER: 'server_provider',
-  SNS_CONFIG: 'sns_config',
+  FILE: 'file',
+  GROUP_PERMISSION: 'group-permission',
+  GROUP: 'group',
   LOGIN: 'login',
   LOGOUT: 'logout',
-  REFRESH_TOKEN: 'refresh_token'
+  REFRESH_TOKEN: 'refresh_token',
+  SERVER_PROVIDER: 'server_provider',
+  SNS_CONFIG: 'sns_config'
 };
 
 export const languageOptions = [

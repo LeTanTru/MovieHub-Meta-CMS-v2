@@ -1,7 +1,7 @@
 'use client';
 
 import { logoWithText } from '@/assets';
-import { Button, Col, InputField, Row } from '@/components/form';
+import { Button, Col, InputField, PasswordField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { storageKeys } from '@/constants';
 import { logger } from '@/logger';
@@ -10,7 +10,6 @@ import { loginSchema } from '@/schemaValidations';
 import { LoginBodyType } from '@/types/auth.type';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
-import PasswordField from '@/components/form/password-field';
 import { CircleLoading } from '@/components/loading';
 import { useAuthStore } from '@/store';
 import envConfig from '@/config';

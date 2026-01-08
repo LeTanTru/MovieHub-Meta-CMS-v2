@@ -4,12 +4,12 @@ import { Activity } from '@/components/activity';
 import {
   Col,
   InputField,
+  PasswordField,
   Row,
   SelectField,
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import PasswordField from '@/components/form/password-field';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
@@ -20,26 +20,32 @@ import {
   STATUS_ACTIVE,
   statusOptions
 } from '@/constants';
-import { useSaveBase } from '@/hooks';
-import { useGroupListQuery, useUploadAvatarMutation } from '@/queries';
+import { useFileUploadManager, useSaveBase } from '@/hooks';
+import {
+  useDeleteFileMutation,
+  useGroupListQuery,
+  useUploadAvatarMutation
+} from '@/queries';
 import { route } from '@/routes';
 import { accountSchema } from '@/schemaValidations';
 import { AccountBodyType, AccountResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function AdminForm({ queryKey }: { queryKey: string }) {
-  const [avatarPath, setAvatarPath] = useState<string>('');
+  const { id } = useParams<{ id: string }>();
+
   const groupListQuery = useGroupListQuery({ kind: GROUP_KIND_ADMIN });
   const groupList = groupListQuery.data?.data.content || [];
   const groupOptions = groupList.map((item) => ({
     label: item.name,
     value: item.id.toString()
   }));
+
   const uploadImageMutation = useUploadAvatarMutation();
-  const { id } = useParams<{ id: string }>();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -78,6 +84,13 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     phone: ''
   };
 
+  const imageManager = useFileUploadManager({
+    initialUrl: data?.avatarPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
+  });
+
   const initialValues: AccountBodyType = useMemo(() => {
     return {
       username: data?.username ?? '',
@@ -92,18 +105,20 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  useEffect(() => {
-    if (data?.avatarPath) setAvatarPath(data?.avatarPath);
-  }, [data]);
+  const handleCancel = async () => {
+    await imageManager.handleCancel();
+  };
 
   const onSubmit = async (
     values: AccountBodyType,
     form: UseFormReturn<AccountBodyType>
   ) => {
+    await imageManager.handleSubmit();
+
     await handleSubmit(
       {
         ...values,
-        avatarPath: avatarPath,
+        avatarPath: imageManager.currentUrl,
         kind: GROUP_KIND_ADMIN
       },
       form,
@@ -134,19 +149,18 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
             <Row>
               <Col span={24}>
                 <UploadImageField
-                  value={renderImageUrl(avatarPath)}
+                  value={renderImageUrl(imageManager.currentUrl)}
                   loading={uploadImageMutation.isPending}
                   control={form.control}
                   name='avatarPath'
-                  onChange={(url) => {
-                    setAvatarPath(url);
-                  }}
+                  onChange={imageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
                   label='Ảnh đại diện'
+                  deleteImageFn={imageManager.handleDeleteOnClick}
                 />
               </Col>
             </Row>
@@ -237,7 +251,11 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                 />
               </Col>
             </Row>
-            <>{renderActions(form)}</>
+            <>
+              {renderActions(form, {
+                onCancel: handleCancel
+              })}
+            </>
             <Activity visible={loading}>
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

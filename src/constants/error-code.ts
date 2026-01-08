@@ -5,11 +5,11 @@ import {
   DbConfigBodyType,
   ErrorMaps,
   GroupBodyType,
+  GroupPermissionBodyType,
   PermissionBodyType,
   ProfileBodyType,
   ServerProviderBodyType
 } from '@/types';
-import { GroupPermissionBodyType } from '@/types/group-permission.type';
 
 export const ErrorCode = {
   // === General error code ===

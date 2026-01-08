@@ -4,15 +4,19 @@ import {
   Button,
   Col,
   InputField,
+  PasswordField,
   Row,
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import PasswordField from '@/components/form/password-field';
 import { profileErrorMaps, storageKeys } from '@/constants';
-import { useNavigate } from '@/hooks';
+import { useFileUploadManager, useNavigate } from '@/hooks';
 import { logger } from '@/logger';
-import { useUpdateProfileMutation, useUploadAvatarMutation } from '@/queries';
+import {
+  useDeleteFileMutation,
+  useUpdateProfileMutation,
+  useUploadAvatarMutation
+} from '@/queries';
 import { route } from '@/routes';
 import { updateProfileSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
@@ -25,15 +29,16 @@ import {
   renderImageUrl
 } from '@/utils';
 import { Save } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function ProfileForm() {
   const navigate = useNavigate();
   const { profile } = useAuthStore();
-  const fileMutation = useUploadAvatarMutation();
   const profileMutation = useUpdateProfileMutation();
-  const [avatarPath, setAvatarPath] = useState('');
+
+  const fileMutation = useUploadAvatarMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const defaultValues: ProfileBodyType = {
     email: '',
@@ -44,6 +49,13 @@ export default function ProfileForm() {
     password: '',
     confirmPassword: ''
   };
+
+  const imageManager = useFileUploadManager({
+    initialUrl: profile?.avatarPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing: true,
+    onOpen: true
+  });
 
   const initialValues: ProfileBodyType = useMemo(
     () => ({
@@ -56,16 +68,14 @@ export default function ProfileForm() {
     [profile?.avatarPath, profile?.email, profile?.fullName, profile?.phone]
   );
 
-  useEffect(() => {
-    if (profile?.avatarPath) setAvatarPath(profile?.avatarPath);
-  }, [profile?.avatarPath]);
-
   const onSubmit = async (
     values: ProfileBodyType,
     form: UseFormReturn<ProfileBodyType>
   ) => {
+    await imageManager.handleSubmit();
+
     await profileMutation.mutateAsync(
-      { ...values, avatarPath },
+      { ...values, avatarPath: imageManager.currentUrl },
       {
         onSuccess: (res) => {
           if (res.result) {
@@ -85,7 +95,8 @@ export default function ProfileForm() {
     );
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
+    await imageManager.handleCancel();
     const prevPath = getData(storageKeys.PREVIOUS_PATH);
     removeData(storageKeys.PREVIOUS_PATH);
     navigate(prevPath ?? route.home.path);
@@ -104,13 +115,11 @@ export default function ProfileForm() {
           <Row>
             <Col span={24}>
               <UploadImageField
-                value={renderImageUrl(avatarPath)}
+                value={renderImageUrl(imageManager.currentUrl)}
                 loading={fileMutation.isPending}
                 name='avatarPath'
                 control={form.control}
-                onChange={(url) => {
-                  setAvatarPath(url);
-                }}
+                onChange={imageManager.trackUpload}
                 size={100}
                 uploadImageFn={async (file: Blob) => {
                   const res = await fileMutation.mutateAsync({
@@ -119,6 +128,7 @@ export default function ProfileForm() {
                   return res.data?.filePath ?? '';
                 }}
                 label='Tải lên ảnh đại diện'
+                deleteImageFn={imageManager.handleDeleteOnClick}
               />
             </Col>
           </Row>
@@ -189,7 +199,7 @@ export default function ProfileForm() {
           <Row className='my-0 justify-end'>
             <Col className='w-40!'>
               <Button
-                onClick={() => handleCancel()}
+                onClick={handleCancel}
                 type='button'
                 variant={'ghost'}
                 className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'

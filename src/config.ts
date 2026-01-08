@@ -5,12 +5,12 @@ const configSchema = z.object({
   NEXT_PUBLIC_NODE_ENV: z.string(),
   NEXT_PUBLIC_API_ENDPOINT_URL: z.url(),
   NEXT_PUBLIC_TENANT_ID: z.string().min(1).max(100).optional(),
-  NEXT_PUBLIC_URL: z.string().optional(),
-  NEXT_PUBLIC_TINYMCE_URL: z.string().optional(),
-  NEXT_PUBLIC_API_MEDIA_URL: z.string().optional(),
-  NEXT_PUBLIC_GRANT_TYPE: z.string().optional(),
-  NEXT_PUBLIC_APP_USERNAME: z.string().optional(),
-  NEXT_PUBLIC_APP_PASSWORD: z.string().optional(),
+  NEXT_PUBLIC_URL: z.string(),
+  NEXT_PUBLIC_TINYMCE_URL: z.string(),
+  NEXT_PUBLIC_API_MEDIA_URL: z.string(),
+  NEXT_PUBLIC_GRANT_TYPE: z.string(),
+  NEXT_PUBLIC_APP_USERNAME: z.string(),
+  NEXT_PUBLIC_APP_PASSWORD: z.string(),
   NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN: z.string()
 });
 

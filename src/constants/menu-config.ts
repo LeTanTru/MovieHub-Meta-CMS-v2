@@ -1,7 +1,7 @@
 import apiConfig from '@/constants/api-config';
 import { route } from '@/routes';
 import { MenuItem } from '@/types';
-import { Settings } from 'lucide-react';
+import { Building2, Settings } from 'lucide-react';
 import { AiOutlineUser } from 'react-icons/ai';
 
 const menuConfig: MenuItem[] = [
@@ -28,7 +28,7 @@ const menuConfig: MenuItem[] = [
   {
     key: 'business-management',
     label: 'Quản lý doanh nghiệp',
-    icon: AiOutlineUser,
+    icon: Building2,
     permissionCode: [apiConfig.business.getList.permissionCode],
     children: [
       {

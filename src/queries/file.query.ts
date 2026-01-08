@@ -1,4 +1,4 @@
-import { apiConfig, uploadOptions } from '@/constants';
+import { apiConfig, queryKeys, uploadOptions } from '@/constants';
 import { ApiResponse, UploadImageResponseType } from '@/types';
 import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
@@ -6,6 +6,7 @@ import { AxiosRequestConfig } from 'axios';
 
 export const useUploadAvatarMutation = () => {
   return useMutation({
+    mutationKey: [`upload-logo-${queryKeys.FILE}`],
     mutationFn: ({
       file,
       options
@@ -25,6 +26,7 @@ export const useUploadAvatarMutation = () => {
 
 export const useUploadLogoMutation = () => {
   return useMutation({
+    mutationKey: [`upload-logo-${queryKeys.FILE}`],
     mutationFn: ({
       file,
       options
@@ -38,6 +40,16 @@ export const useUploadLogoMutation = () => {
           type: uploadOptions.LOGO
         },
         options
+      })
+  });
+};
+
+export const useDeleteFileMutation = () => {
+  return useMutation({
+    mutationKey: [`delete-${queryKeys.FILE}`],
+    mutationFn: (body: { filePath: string }) =>
+      http.post<ApiResponse<any>>(apiConfig.file.delete, {
+        body
       })
   });
 };
