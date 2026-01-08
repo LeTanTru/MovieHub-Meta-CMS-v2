@@ -269,6 +269,7 @@ export default function PermissionList() {
                                           onClick={() =>
                                             handleDelete(permission)
                                           }
+                                          className='w-15'
                                         >
                                           Có
                                         </Button>
@@ -326,13 +327,13 @@ export default function PermissionList() {
         title={`${!isEditing ? 'Thêm' : 'Cập nhật'} quyền`}
         open={opened}
         onClose={handleClose}
+        width={800}
       >
         <BaseForm
           defaultValues={defaultValues}
           initialValues={initialValues}
           onSubmit={onSubmit}
           schema={permissionSchema}
-          className='w-175 p-0'
         >
           {(form) => (
             <>
