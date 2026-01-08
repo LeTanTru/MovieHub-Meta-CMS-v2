@@ -363,6 +363,15 @@ export default function PermissionList() {
                     label='Tên quyền'
                     placeholder='Nhập tên quyền...'
                     required
+                    allowCustomInput
+                    options={[
+                      'List',
+                      'Get',
+                      'Create',
+                      'Update',
+                      'Delete',
+                      'Update ordering'
+                    ]}
                   />
                 </Col>
               </Row>
