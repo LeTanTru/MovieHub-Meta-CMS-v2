@@ -6,6 +6,7 @@ import { useProfileQuery, useRefreshTokenMutation } from '@/queries';
 import { useAuthStore } from '@/store';
 import { getData, isTokenExpiringSoon, setData } from '@/utils';
 import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function AppProvider({
   children
@@ -16,7 +17,13 @@ export default function AppProvider({
   const refreshToken = getData(storageKeys.REFRESH_TOKEN);
 
   const profileQuery = useProfileQuery();
-  const { setProfile, isAuthenticated, setLoading } = useAuthStore();
+  const { isAuthenticated, setLoading, setProfile } = useAuthStore(
+    useShallow((s) => ({
+      isAuthenticated: s.isAuthenticated,
+      setLoading: s.setLoading,
+      setProfile: s.setProfile
+    }))
+  );
   const refreshTokenMutation = useRefreshTokenMutation();
 
   useEffect(
