@@ -34,7 +34,7 @@ import { UseFormReturn } from 'react-hook-form';
 
 export default function ProfileForm() {
   const navigate = useNavigate();
-  const { profile } = useAuthStore();
+  const profile = useAuthStore((s) => s.profile);
   const profileMutation = useUpdateProfileMutation();
 
   const fileMutation = useUploadAvatarMutation();

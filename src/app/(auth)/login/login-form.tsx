@@ -13,10 +13,16 @@ import Image from 'next/image';
 import { CircleLoading } from '@/components/loading';
 import { useAuthStore } from '@/store';
 import envConfig from '@/config';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function LoginForm() {
   const loginMutation = useLoginMutation();
-  const { setAuthenticated, setLoading } = useAuthStore();
+  const { setAuthenticated, setLoading } = useAuthStore(
+    useShallow((s) => ({
+      setAuthenticated: s.setAuthenticated,
+      setLoading: s.setLoading
+    }))
+  );
   const defaultValues: LoginBodyType = {
     username: '',
     password: '',
