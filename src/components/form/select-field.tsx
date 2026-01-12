@@ -25,7 +25,8 @@ import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, ReactNode, MouseEvent } from 'react';
+import { useIsMounted } from '@/hooks';
 
 type SelectFieldProps<
   TFieldValues extends FieldValues,
@@ -41,14 +42,14 @@ type SelectFieldProps<
   required?: boolean;
   getLabel?: (option: TOption) => string | number;
   getValue?: (option: TOption) => string | number;
-  getPrefix?: (option: TOption) => React.ReactNode;
+  getPrefix?: (option: TOption) => ReactNode;
   allowClear?: boolean;
   searchText?: string;
-  notFoundContent?: React.ReactNode;
+  notFoundContent?: ReactNode;
   labelClassName?: string;
   disabled?: boolean;
   onValueChange?: (value: string | number | null) => void;
-  renderOption?: (option: TOption) => React.ReactNode;
+  renderOption?: (option: TOption) => ReactNode;
 };
 
 const normalizeText = (text: string): string =>
@@ -91,6 +92,7 @@ export default function SelectField<
   getPrefix = (opt) => opt.prefix,
   onValueChange
 }: SelectFieldProps<TFieldValues, TOption>) {
+  const isMounted = useIsMounted();
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -103,6 +105,8 @@ export default function SelectField<
   useEffect(() => {
     if (!searchValue) setHighlightedIndex(-1);
   }, [searchValue]);
+
+  if (!isMounted) return null;
 
   return (
     <FormField
@@ -120,7 +124,7 @@ export default function SelectField<
           setOpen(false);
         };
 
-        const handleClear = (e: React.MouseEvent) => {
+        const handleClear = (e: MouseEvent) => {
           e.stopPropagation();
           field.onChange(null);
           onValueChange?.(null);

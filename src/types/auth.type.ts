@@ -1,6 +1,6 @@
 import { loginSchema } from '@/schemaValidations';
 import { ProfileResType } from '@/types/account.type';
-import z from 'zod';
+import { z } from 'zod';
 
 export type LoginBodyType = z.infer<typeof loginSchema>;
 export type LoginResType = {

@@ -4,7 +4,7 @@ import {
   updateProfileSchema
 } from '@/schemaValidations/account.schema';
 import { BaseSearchType } from '@/types/search.type';
-import z from 'zod';
+import { z } from 'zod';
 
 export type Group = {
   id: string;

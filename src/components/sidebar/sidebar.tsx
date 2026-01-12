@@ -305,7 +305,7 @@ const renderMenu = (items: MenuItem[]) => {
 
 const AppSidebar = () => {
   const { profile } = useAuth();
-  const { hasPermission } = useValidatePermission();
+  const hasPermission = useValidatePermission();
   const [clientMenu, setClientMenu] = useState<MenuItem[]>([]);
   const openLastMenu = useSidebarStore((s) => s.openLastMenu);
   const { state } = useSidebar();

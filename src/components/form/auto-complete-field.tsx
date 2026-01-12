@@ -35,13 +35,13 @@ import {
 import debounce from 'lodash/debounce';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { CircleLoading } from '@/components/loading';
 
 type AutoCompleteOption<T = any> = {
   label: string;
   value: string | number;
-  prefix?: React.ReactNode;
+  prefix?: ReactNode;
   extra?: T;
 };
 
@@ -60,7 +60,7 @@ type AutoCompleteFieldProps<
   required?: boolean;
   allowClear?: boolean;
   searchText?: string;
-  notFoundContent?: React.ReactNode;
+  notFoundContent?: ReactNode;
   labelClassName?: string;
   disabled?: boolean;
   apiConfig: ApiConfig;
@@ -68,7 +68,7 @@ type AutoCompleteFieldProps<
   initialOptionParamName?: string;
   onValueChange?: (value: string | number | null) => void;
   mappingData: (option: TOption) => AutoCompleteOption | null;
-  renderOption?: (option: AutoCompleteOption<TOption>) => React.ReactNode;
+  renderOption?: (option: AutoCompleteOption<TOption>) => ReactNode;
 };
 
 export default function AutoCompleteField<
@@ -138,7 +138,7 @@ export default function AutoCompleteField<
       }
       return http.get<ApiResponseList<TOption>>(apiConfig, { params });
     },
-    enabled: true
+    enabled: open
   });
 
   const loading = query.isLoading || query.isFetching;

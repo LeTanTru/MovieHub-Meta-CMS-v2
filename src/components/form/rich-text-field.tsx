@@ -3,8 +3,6 @@
 import './rich-text-field.css';
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import { Editor } from '@tinymce/tinymce-react';
-import { useIsMounted } from '@/hooks';
 import {
   FormField,
   FormItem,
@@ -27,6 +25,19 @@ type RichTextFieldProps<T extends FieldValues> = {
 
 import type { Editor as TinyMCEEditor } from 'tinymce';
 import envConfig from '@/config';
+import dynamic from 'next/dynamic';
+
+const TinyEditor = dynamic(
+  () => import('@tinymce/tinymce-react').then((m) => m.Editor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='bg-muted text-muted-foreground flex h-[450px] items-center justify-center rounded border text-sm'>
+        Loading editor...
+      </div>
+    )
+  }
+);
 
 export default function RichTextField<T extends FieldValues>({
   control,
@@ -39,9 +50,6 @@ export default function RichTextField<T extends FieldValues>({
   readOnly = false,
   height
 }: RichTextFieldProps<T>) {
-  const isMounted = useIsMounted();
-  if (!isMounted) return null;
-
   return (
     <FormField
       control={control}
@@ -56,7 +64,7 @@ export default function RichTextField<T extends FieldValues>({
           )}
 
           <FormControl>
-            <Editor
+            <TinyEditor
               tinymceScriptSrc={envConfig.NEXT_PUBLIC_TINYMCE_URL}
               licenseKey='gpl'
               value={field.value || ''}

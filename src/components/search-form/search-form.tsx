@@ -17,7 +17,7 @@ import { cn } from '@/lib';
 import { ApiConfig, AutoCompleteOption, SearchFormProps } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
-import z from 'zod';
+import { z } from 'zod';
 
 function buildDefaultValues<S extends FieldValues>(
   searchFields: SearchFormProps<S>['searchFields']

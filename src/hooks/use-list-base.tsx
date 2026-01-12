@@ -46,7 +46,7 @@ import {
 import { Info, PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { ReactNode, UIEvent, useEffect, useMemo, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
@@ -58,15 +58,15 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   }) => Column<T>;
   additionalParams: () => Partial<S>;
   additionalPathParams: () => Record<string, any>;
-  additionalColumns: () => React.ReactNode | any;
-  renderAddButton: () => React.ReactNode | any;
+  additionalColumns: () => ReactNode | any;
+  renderAddButton: () => ReactNode | any;
   renderSearchForm: ({
     searchFields,
     schema
   }: {
     searchFields: SearchFormProps<S>['searchFields'];
     schema: SearchFormProps<S>['schema'];
-  }) => React.ReactNode | any;
+  }) => ReactNode | any;
   renderStatusColumn: ({
     statusOptions,
     columnProps
@@ -81,7 +81,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
     options?: { onSuccess?: () => void; onError?: (code: string) => void }
   ) => void;
   invalidateQueries: () => void;
-  renderReloadButton: () => React.ReactNode;
+  renderReloadButton: () => ReactNode;
   changeQueryFilter: (filter: Partial<S>) => void;
   handleDeleteError: (code: string) => void;
   hasPermission: ({
@@ -101,7 +101,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   }) => boolean;
   setData: (data: T[]) => void;
   loadMore: () => void;
-  handleScrollLoadMore: (e: React.UIEvent<HTMLElement>) => void;
+  handleScrollLoadMore: (e: UIEvent<HTMLElement>) => void;
   mappingData: (respose: ApiResponseList<T>) => ApiResponseList<T>;
 };
 
@@ -129,10 +129,11 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
 
-export default function useListBase<
-  T extends { id: string },
-  S extends BaseSearchType
->({ apiConfig, options, override }: UseListBaseProps<T, S>) {
+const useListBase = <T extends { id: string }, S extends BaseSearchType>({
+  apiConfig,
+  options,
+  override
+}: UseListBaseProps<T, S>) => {
   const {
     queryKey = '',
     objectName = '',
@@ -148,7 +149,7 @@ export default function useListBase<
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const [data, setData] = useState<T[]>([]);
-  const { hasPermission } = useValidatePermission();
+  const hasPermission = useValidatePermission();
 
   const [pagination, setPagination] = useState<PaginationType>({
     current: DEFAULT_TABLE_PAGE_START,
@@ -408,7 +409,7 @@ export default function useListBase<
                   e.stopPropagation();
                   handleDeleteClick(record.id);
                 }}
-                className='bg-dodger-blue hover:bg-dodger-blue/80 w-15 cursor-pointer transition-all duration-200 ease-linear'
+                className='bg-dodger-blue hover:bg-dodger-blue/80 w-20 cursor-pointer transition-all duration-200 ease-linear'
               >
                 Có
               </AlertDialogAction>
@@ -427,7 +428,7 @@ export default function useListBase<
     const extraColumns = handlers.additionalColumns?.() || {};
     const actionsObj: Record<
       string,
-      (record: T, buttonProps?: any) => React.ReactNode
+      (record: T, buttonProps?: any) => ReactNode
     > = { ...actionColumn(), ...extraColumns };
 
     return {
@@ -637,7 +638,7 @@ export default function useListBase<
     }
   };
 
-  const handleScrollLoadMore = (e: React.UIEvent<HTMLElement>) => {
+  const handleScrollLoadMore = (e: UIEvent<HTMLElement>) => {
     const target = e.currentTarget;
 
     if (target.scrollTop + target.clientHeight >= target.scrollHeight - 100) {
@@ -721,4 +722,6 @@ export default function useListBase<
     totalElements,
     totalLeft
   };
-}
+};
+
+export default useListBase;

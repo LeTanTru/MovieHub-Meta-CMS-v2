@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 export const dbConfigSchema = z.object({
   businessId: z.string().nonempty('Bắt buộc'),

@@ -40,7 +40,7 @@ export default function LoginForm() {
         setLoading(true);
       },
       onError: (error) => {
-        logger.error('Error while logging in: ', error);
+        logger.error('Error while logging in:', error);
         notify.error('Đăng nhập thất bại');
       }
     });
@@ -51,7 +51,7 @@ export default function LoginForm() {
       defaultValues={defaultValues}
       schema={loginSchema}
       onSubmit={onSubmit}
-      className='flex flex-col items-center justify-around gap-0 rounded-lg border border-solid border-gray-200 px-6 py-6 shadow-[0px_0px_10px_1px] shadow-slate-200 max-[1560px]:w-100 min-[1560px]:w-120'
+      className='flex flex-col items-center justify-around gap-0 rounded-lg border border-solid border-gray-200 px-6 py-6 shadow-[0px_0px_10px_2px] shadow-black/20 max-[1560px]:w-100 min-[1560px]:w-120'
     >
       {(form) => (
         <>

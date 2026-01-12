@@ -12,13 +12,13 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { CalendarIcon } from '@radix-ui/react-icons';
 import { Calendar } from '@/components/ui/calendar';
-import { format, Locale } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
-import { vi } from 'date-fns/locale';
 import { Button } from '@/components/form';
+import { CalendarIcon } from 'lucide-react';
+import { format, Locale } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 type DateRangePickerFieldProps<T extends FieldValues> = {
   control: Control<T>;

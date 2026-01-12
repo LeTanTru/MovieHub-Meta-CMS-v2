@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 export const groupSchema = z.object({
   id: z.union([z.string(), z.number()]).optional(),
