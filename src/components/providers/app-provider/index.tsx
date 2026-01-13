@@ -5,14 +5,10 @@ import { storageKeys } from '@/constants';
 import { useProfileQuery, useRefreshTokenMutation } from '@/queries';
 import { useAuthStore } from '@/store';
 import { getData, isTokenExpiringSoon, setData } from '@/utils';
-import { useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-export default function AppProvider({
-  children
-}: {
-  children: React.ReactNode;
-}) {
+export default function AppProvider({ children }: { children: ReactNode }) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
   const refreshToken = getData(storageKeys.REFRESH_TOKEN);
 

@@ -20,7 +20,7 @@ import {
 import { route } from '@/routes';
 import { updateProfileSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
-import { ProfileBodyType } from '@/types';
+import type { ProfileBodyType } from '@/types';
 import {
   applyFormErrors,
   getData,
@@ -30,7 +30,7 @@ import {
 } from '@/utils';
 import { Save } from 'lucide-react';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function ProfileForm() {
   const navigate = useNavigate();

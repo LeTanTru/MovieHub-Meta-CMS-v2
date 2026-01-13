@@ -1,8 +1,5 @@
-import {
-  customerSchema,
-  customerSearchSchema
-} from '@/schemaValidations/customer.schema';
-import { BaseSearchType } from '@/types/search.type';
+import { customerSchema, customerSearchSchema } from '@/schemaValidations';
+import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
 export type CustomerAutoCompleteType = {

@@ -1,6 +1,6 @@
 import apiConfig from '@/constants/api-config';
 import { route } from '@/routes';
-import { MenuItem } from '@/types';
+import type { MenuItem } from '@/types';
 import { Building2, Settings, UserRound } from 'lucide-react';
 
 const menuConfig: MenuItem[] = [

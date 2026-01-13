@@ -30,7 +30,7 @@ import {
 } from '@/queries';
 import { route } from '@/routes';
 import { businessSchema } from '@/schemaValidations';
-import { BusinessBodyType, BusinessResType } from '@/types';
+import type { BusinessBodyType, BusinessResType } from '@/types';
 import {
   convertLocalToUTC,
   convertUTCToLocal,
@@ -40,7 +40,7 @@ import {
 } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function BusinessForm({ queryKey }: { queryKey: string }) {
   const { id: customerId, businessId } = useParams<{

@@ -1,10 +1,11 @@
 import { apiConfig } from '@/constants';
-import { ApiResponse, ApiResponseList } from '@/types';
-import {
+import type {
+  ApiResponse,
+  ApiResponseList,
   GroupPermissionBodyType,
   GroupPermissionResType,
   GroupPermissionSearchType
-} from '@/types/group-permission.type';
+} from '@/types';
 import { http } from '@/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
 

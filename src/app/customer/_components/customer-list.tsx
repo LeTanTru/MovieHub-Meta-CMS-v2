@@ -15,8 +15,8 @@ import {
 import { useListBase } from '@/hooks';
 import { useChangeStatusCustomerMutation } from '@/queries';
 import { route } from '@/routes';
-import { customerSearchSchema } from '@/schemaValidations/customer.schema';
-import {
+import { customerSearchSchema } from '@/schemaValidations';
+import type {
   Column,
   CustomerResType,
   CustomerSearchType,

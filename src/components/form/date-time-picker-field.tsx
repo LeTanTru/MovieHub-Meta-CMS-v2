@@ -13,7 +13,12 @@ import {
   FormLabel
 } from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import {
+  type Control,
+  Controller,
+  type FieldPath,
+  type FieldValues
+} from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/form';
 import { DropdownProps } from 'react-day-picker';
@@ -26,7 +31,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { DATE_TIME_FORMAT } from '@/constants';
-import { ChangeEvent, useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { CalendarIcon } from 'lucide-react';
 import { format, isValid, Locale, parse } from 'date-fns';
 import { vi } from 'date-fns/locale';

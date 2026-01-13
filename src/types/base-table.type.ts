@@ -1,6 +1,7 @@
-import { PaginationType } from '@/types/table.type';
-import { DragEndEvent } from '@dnd-kit/core';
-import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+import type { PaginationType } from '@/types/table.type';
+import type { DragEndEvent } from '@dnd-kit/core';
+import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+import type { CSSProperties, ReactNode } from 'react';
 
 export type Column<T> = {
   title: string;
@@ -10,7 +11,7 @@ export type Column<T> = {
     record: T,
     index: number,
     options?: { listeners: SyntheticListenerMap | undefined }
-  ) => React.ReactNode;
+  ) => ReactNode;
   width?: string | number;
   align?: 'left' | 'right' | 'center';
   fixed?: boolean;
@@ -35,5 +36,5 @@ export type DragDropTableProps<T extends Record<any, any>> = {
   onSelectRow?: (record: T) => void;
   onRow?: (record: T, index: number) => void;
   rowClassName?: (record: T, index: number) => string;
-  rowStyle?: (record: T, index: number) => React.CSSProperties;
+  rowStyle?: (record: T, index: number) => CSSProperties;
 };

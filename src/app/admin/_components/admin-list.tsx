@@ -11,7 +11,7 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { accountSearchSchema } from '@/schemaValidations';
-import {
+import type {
   AccountAutoResType,
   AccountSearchType,
   Column,

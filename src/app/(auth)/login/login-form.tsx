@@ -7,7 +7,7 @@ import { storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { useLoginMutation } from '@/queries';
 import { loginSchema } from '@/schemaValidations';
-import { LoginBodyType } from '@/types/auth.type';
+import type { LoginBodyType } from '@/types';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
 import { CircleLoading } from '@/components/loading';

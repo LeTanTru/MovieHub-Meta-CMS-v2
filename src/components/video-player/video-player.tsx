@@ -24,16 +24,16 @@ import {
   MediaPlayer,
   MediaPlayerInstance,
   MediaProvider,
-  MediaProviderAdapter,
-  MediaTimeUpdateEventDetail,
+  type MediaProviderAdapter,
+  type MediaTimeUpdateEventDetail,
   Poster,
   Track,
-  TrackProps
+  type TrackProps
 } from '@vidstack/react';
 import {
   DefaultVideoLayout,
   defaultLayoutIcons,
-  DefaultVideoLayoutSlots
+  type DefaultVideoLayoutSlots
 } from '@vidstack/react/player/layouts/default';
 import { useRef, useState } from 'react';
 

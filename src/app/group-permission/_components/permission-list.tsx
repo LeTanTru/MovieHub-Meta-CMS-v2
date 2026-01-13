@@ -42,11 +42,11 @@ import {
   useUpdatePermissionMutation
 } from '@/queries/permission.query';
 import { permissionSchema } from '@/schemaValidations';
-import { PermissionBodyType, PermissionResType } from '@/types';
+import type { PermissionBodyType, PermissionResType } from '@/types';
 import { applyFormErrors, notify } from '@/utils';
 import { ArrowLeftFromLine, Info, Plus, Save } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import MediaQuery from 'react-responsive';
 

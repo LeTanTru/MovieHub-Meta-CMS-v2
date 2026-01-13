@@ -14,11 +14,11 @@ import {
 import { useSaveBase } from '@/hooks';
 import { route } from '@/routes';
 import { serverProviderSchema } from '@/schemaValidations';
-import { ServerProviderBodyType, ServerProviderResType } from '@/types';
+import type { ServerProviderBodyType, ServerProviderResType } from '@/types';
 import { renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();

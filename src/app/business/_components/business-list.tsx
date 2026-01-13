@@ -14,7 +14,7 @@ import {
 import { useDisclosure, useListBase } from '@/hooks';
 import { useSnsConfigQuery } from '@/queries';
 import { businessSearchSchema } from '@/schemaValidations';
-import {
+import type {
   BusinessResType,
   BusinessSearchType,
   Column,

@@ -6,7 +6,8 @@ import { Breadcrumb } from '@/components/form';
 import { NotFound } from '@/components/not-found';
 import { useFirstActiveRoute } from '@/hooks';
 import { cn } from '@/lib';
-import { BreadcrumbType } from '@/types';
+import type { BreadcrumbType } from '@/types';
+import type { HTMLAttributes } from 'react';
 
 export default function PageWrapper({
   children,
@@ -15,7 +16,7 @@ export default function PageWrapper({
   notFound,
   notFoundContent,
   ...props
-}: React.HTMLAttributes<HTMLElement> & {
+}: HTMLAttributes<HTMLElement> & {
   breadcrumbs: BreadcrumbType[];
   loading?: boolean;
   notFound?: boolean;

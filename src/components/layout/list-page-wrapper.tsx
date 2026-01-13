@@ -1,5 +1,6 @@
 import { Activity } from '@/components/activity';
 import { cn } from '@/lib';
+import type { ReactNode } from 'react';
 
 export default function ListPageWrapper({
   className,
@@ -9,10 +10,10 @@ export default function ListPageWrapper({
   reloadButton
 }: {
   className?: string;
-  children?: React.ReactNode;
-  searchForm?: React.ReactNode;
-  addButton?: React.ReactNode;
-  reloadButton?: React.ReactNode;
+  children?: ReactNode;
+  searchForm?: ReactNode;
+  addButton?: ReactNode;
+  reloadButton?: ReactNode;
 }) {
   return (
     <div

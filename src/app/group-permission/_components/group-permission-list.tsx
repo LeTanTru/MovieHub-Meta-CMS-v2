@@ -12,18 +12,19 @@ import {
   MAX_PAGE_SIZE
 } from '@/constants';
 import { useDisclosure, useDragDrop, useListBase, useSaveBase } from '@/hooks';
+import { logger } from '@/logger';
 import { groupPermissionSchema } from '@/schemaValidations';
-import { Column } from '@/types';
-import {
+import type {
+  ApiResponse,
+  Column,
   GroupPermissionBodyType,
   GroupPermissionResType,
   GroupPermissionSearchType
-} from '@/types/group-permission.type';
+} from '@/types';
 import { applyFormErrors } from '@/utils';
-import { AxiosError } from 'axios';
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 import { AiOutlineEdit } from 'react-icons/ai';
 
 export default function GroupPermissionList({
@@ -162,16 +163,18 @@ export default function GroupPermissionList({
     form: UseFormReturn<GroupPermissionBodyType>
   ) => {
     try {
-      await handleSubmit(
+      const res: ApiResponse<any> = await handleSubmit(
         !isEditing ? values : { ...values, id: selectedRow?.id }
       );
-      listQuery.refetch();
-      handleClose();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const errCode = error.response?.data?.code;
-        applyFormErrors(form, errCode, groupPermissionErrorMaps);
+      if (res.result) {
+        listQuery.refetch();
+        handleClose();
+      } else {
+        const errCode = res.code;
+        if (errCode) applyFormErrors(form, errCode, groupPermissionErrorMaps);
       }
+    } catch (error) {
+      logger.error('Error while creating/updating:', error);
     }
   };
 

@@ -1,7 +1,7 @@
 import { businessSchema, businessSearchSchema } from '@/schemaValidations';
-import { CustomerResType } from '@/types/customer.type';
-import { BaseSearchType } from '@/types/search.type';
-import { ServerProviderResType } from '@/types/server-provider.type';
+import type { CustomerResType } from '@/types/customer.type';
+import type { BaseSearchType } from '@/types/search.type';
+import type { ServerProviderResType } from '@/types/server-provider.type';
 import { z } from 'zod';
 
 export type BusinessResType = {

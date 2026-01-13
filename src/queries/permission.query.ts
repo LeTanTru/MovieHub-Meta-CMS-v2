@@ -1,6 +1,6 @@
 import { apiConfig } from '@/constants';
 import { logger } from '@/logger';
-import {
+import type {
   ApiResponse,
   ApiResponseList,
   PermissionBodyType,
