@@ -9,19 +9,15 @@ import {
 import {
   FormControl,
   FormDescription,
+  FormField,
   FormItem,
   FormLabel
 } from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import {
-  type Control,
-  Controller,
-  type FieldPath,
-  type FieldValues
-} from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/form';
-import { DropdownProps } from 'react-day-picker';
+import type { DropdownProps } from 'react-day-picker';
 import {
   Select,
   SelectContent,
@@ -72,7 +68,7 @@ export default function DateTimePickerField<T extends FieldValues>({
   };
 
   return (
-    <Controller
+    <FormField
       name={name}
       control={control}
       render={({ field, fieldState }) => {
