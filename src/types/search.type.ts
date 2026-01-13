@@ -1,6 +1,7 @@
-import { ApiConfig } from '@/types/api.type';
-import { FieldValues } from 'react-hook-form';
-import { ZodObject } from 'zod';
+import type { ApiConfig } from '@/types/api.type';
+import type { ReactNode } from 'react';
+import type { FieldValues } from 'react-hook-form';
+import type { ZodObject } from 'zod/v4';
 
 export type BaseSearchType = {
   id?: string;
@@ -11,7 +12,7 @@ export type BaseSearchType = {
 export type AutoCompleteOption = {
   label: string;
   value: string | number;
-  prefix?: React.ReactNode;
+  prefix?: ReactNode;
 };
 
 export type OptionType<V = string | number> = {

@@ -1,13 +1,13 @@
 'use client';
 
-import { Activity as BaseActivity } from 'react';
+import { Activity as BaseActivity, type ReactNode } from 'react';
 
 export default function Activity({
   visible,
   children
 }: {
   visible: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <BaseActivity mode={visible ? 'visible' : 'hidden'}>

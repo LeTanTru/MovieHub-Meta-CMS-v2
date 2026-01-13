@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 export const serverProviderSchema = z.object({
   driverClassName: z.string().nonempty('Bắt buộc'),

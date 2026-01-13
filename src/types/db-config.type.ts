@@ -1,6 +1,6 @@
 import { dbConfigSchema } from '@/schemaValidations';
-import { ServerProviderResType } from '@/types/server-provider.type';
-import z from 'zod';
+import type { ServerProviderResType } from '@/types/server-provider.type';
+import { z } from 'zod';
 
 export type DbConfigBodyType = z.infer<typeof dbConfigSchema>;
 

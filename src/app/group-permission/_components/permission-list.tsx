@@ -42,12 +42,11 @@ import {
   useUpdatePermissionMutation
 } from '@/queries/permission.query';
 import { permissionSchema } from '@/schemaValidations';
-import { PermissionBodyType, PermissionResType } from '@/types';
+import type { PermissionBodyType, PermissionResType } from '@/types';
 import { applyFormErrors, notify } from '@/utils';
-import { omit } from 'lodash';
 import { ArrowLeftFromLine, Info, Plus, Save } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import MediaQuery from 'react-responsive';
 
@@ -123,6 +122,46 @@ export default function PermissionList() {
     [selectedGroupPermissionId, selectedPermission]
   );
 
+  // const onSubmit = async (
+  //   values: PermissionBodyType,
+  //   form: UseFormReturn<PermissionBodyType>
+  // ) => {
+  //   const mutation = !isEditing
+  //     ? createPermissionMutation
+  //     : updatePermissionMutation;
+  //   await mutation.mutateAsync(
+  //     !isEditing
+  //       ? values
+  //       : {
+  //           ...omit(values, 'groupPermissionid'),
+  //           id: selectedPermission?.id
+  //         },
+  //     {
+  //       onSuccess: (res) => {
+  //         if (res.result) {
+  //           notify.success(
+  //             `${!isEditing ? 'Thêm mới' : 'Cập nhật'} quyền thành công`
+  //           );
+  //           handleClose();
+  //           permissionListQuery.refetch();
+  //         } else {
+  //           const errCode = res.code;
+  //           if (errCode) {
+  //             applyFormErrors(form, errCode, permissionErrorMaps);
+  //           } else {
+  //             logger.error('Error while creating/updating permission:', res);
+  //             notify.error('Có lỗi xảy ra');
+  //           }
+  //         }
+  //       },
+  //       onError: (error) => {
+  //         logger.error('Error while creating/updating permission:', error);
+  //         notify.error('Có lỗi xảy ra');
+  //       }
+  //     }
+  //   );
+  // };
+
   const onSubmit = async (
     values: PermissionBodyType,
     form: UseFormReturn<PermissionBodyType>
@@ -130,11 +169,14 @@ export default function PermissionList() {
     const mutation = !isEditing
       ? createPermissionMutation
       : updatePermissionMutation;
+
+    const { groupPermissionId: _, ...rest } = values;
+
     await mutation.mutateAsync(
       !isEditing
         ? values
         : {
-            ...omit(values, 'permissionGroupId'),
+            ...rest,
             id: selectedPermission?.id
           },
       {

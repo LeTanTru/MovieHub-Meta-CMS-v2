@@ -1,9 +1,6 @@
 import { SidebarLayout } from '@/components/layout';
+import type { ReactNode } from 'react';
 
-export default function BusinessLayout({
-  children
-}: {
-  children: React.ReactNode;
-}) {
+export default function BusinessLayout({ children }: { children: ReactNode }) {
   return <SidebarLayout>{children}</SidebarLayout>;
 }

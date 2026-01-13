@@ -10,12 +10,12 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { BaseTableProps, DragDropTableProps } from '@/types';
+import type { BaseTableProps, DragDropTableProps } from '@/types';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
 import { cn } from '@/lib';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import {
   DndContext,
   PointerSensor,
@@ -71,7 +71,7 @@ function SortableRow<T extends Record<any, any>>({
   rowKey: string;
   onSelect?: () => void;
   rowClassName?: (row: T, index: number) => string;
-  rowStyle?: (row: T, index: number) => React.CSSProperties;
+  rowStyle?: (row: T, index: number) => CSSProperties;
 }) {
   const {
     attributes,
@@ -82,7 +82,7 @@ function SortableRow<T extends Record<any, any>>({
     setNodeRef
   } = useSortable({ id: row[rowKey], animateLayoutChanges: () => false });
 
-  const style: React.CSSProperties = {
+  const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
     zIndex: isDragging ? 9999 : undefined,

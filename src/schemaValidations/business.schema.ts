@@ -1,7 +1,7 @@
 import { DATE_TIME_FORMAT } from '@/constants';
 import { parse } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import z from 'zod';
+import { z } from 'zod';
 
 export const businessSearchSchema = z.object({
   businessName: z.string().optional().nullable(),

@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 export const customerSearchSchema = z.object({
   fullName: z.string().optional().nullable(),

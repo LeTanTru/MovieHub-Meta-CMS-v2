@@ -14,12 +14,11 @@ import {
 import { useSaveBase } from '@/hooks';
 import { route } from '@/routes';
 import { serverProviderSchema } from '@/schemaValidations';
-import { ServerProviderBodyType, ServerProviderResType } from '@/types';
+import type { ServerProviderBodyType, ServerProviderResType } from '@/types';
 import { renderListPageUrl } from '@/utils';
-import { omit } from 'lodash';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
@@ -93,17 +92,29 @@ export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
+  // const onSubmit = async (
+  //   values: ServerProviderBodyType,
+  //   form: UseFormReturn<ServerProviderBodyType>
+  // ) => {
+  //   const payload = omit(
+  //     {
+  //       ...values,
+  //       url: buildJdbcUrl(values.host, values.port)
+  //     },
+  //     ['host', 'port']
+  //   );
+  //   await handleSubmit(payload as any, form, serverProviderErrorMaps);
+  // };
+
   const onSubmit = async (
     values: ServerProviderBodyType,
     form: UseFormReturn<ServerProviderBodyType>
   ) => {
-    const payload = omit(
-      {
-        ...values,
-        url: buildJdbcUrl(values.host, values.port)
-      },
-      ['host', 'port']
-    );
+    const { host, port, ...rest } = values;
+    const payload = {
+      ...rest,
+      url: buildJdbcUrl(host, port)
+    };
     await handleSubmit(payload as any, form, serverProviderErrorMaps);
   };
 

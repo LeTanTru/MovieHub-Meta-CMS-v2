@@ -20,11 +20,14 @@ import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useServerProviderListQuery } from '@/queries';
 import { dbConfigSchema } from '@/schemaValidations';
-import { DbConfigBodyType, DbConfigResType, BusinessResType } from '@/types';
+import type {
+  DbConfigBodyType,
+  DbConfigResType,
+  BusinessResType
+} from '@/types';
 import { notify } from '@/utils';
-import { useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function DbConfigModal({
   data,
@@ -35,7 +38,6 @@ export default function DbConfigModal({
   open: boolean;
   onClose: () => void;
 }) {
-  const queryClient = useQueryClient();
   const serverProviderListQuery = useServerProviderListQuery({ enabled: open });
   const serverProviderList =
     serverProviderListQuery.data?.data?.content?.map((item) => ({
@@ -45,6 +47,7 @@ export default function DbConfigModal({
 
   const {
     data: dbConfig,
+    itemQuery,
     isEditing,
     renderActions,
     handleSubmit
@@ -106,9 +109,7 @@ export default function DbConfigModal({
     try {
       const res = await handleSubmit({ ...values }, form, dbConfigErrorMaps);
       if (res.result) {
-        queryClient.invalidateQueries({
-          queryKey: [`${queryKeys.BUSINESS}-list`]
-        });
+        itemQuery.refetch();
         onClose();
       } else {
         const errorCode = res.code;

@@ -28,11 +28,11 @@ import {
 } from '@/queries';
 import { route } from '@/routes';
 import { accountSchema } from '@/schemaValidations';
-import { AccountBodyType, AccountResType } from '@/types';
+import type { AccountBodyType, AccountResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function AdminForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();

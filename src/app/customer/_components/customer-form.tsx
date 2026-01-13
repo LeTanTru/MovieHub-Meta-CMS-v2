@@ -23,11 +23,11 @@ import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
 import { customerSchema } from '@/schemaValidations';
-import { CustomerBodyType, CustomerResType } from '@/types';
+import type { CustomerBodyType, CustomerResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function CustomerForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();

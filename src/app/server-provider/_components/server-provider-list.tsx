@@ -4,7 +4,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { apiConfig } from '@/constants';
 import { useListBase } from '@/hooks';
-import { Column, ServerProviderResType } from '@/types';
+import type { Column, ServerProviderResType } from '@/types';
 
 export default function ServerProviderList({ queryKey }: { queryKey: string }) {
   const { data, loading, pagination, handlers } = useListBase<

@@ -1,8 +1,5 @@
 'use client';
 
-import * as React from 'react';
-import { CalendarIcon } from '@radix-ui/react-icons';
-import { format, isValid, Locale, parse } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -16,10 +13,14 @@ import {
   FormLabel
 } from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import {
+  type Control,
+  Controller,
+  type FieldPath,
+  type FieldValues
+} from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/form';
-import { vi } from 'date-fns/locale';
 import { DropdownProps } from 'react-day-picker';
 import {
   Select,
@@ -30,6 +31,10 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { DATE_TIME_FORMAT } from '@/constants';
+import { type ChangeEvent, useState } from 'react';
+import { CalendarIcon } from 'lucide-react';
+import { format, isValid, Locale, parse } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 type DateTimePickerFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -57,7 +62,7 @@ export default function DateTimePickerField<T extends FieldValues>({
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
   const seconds = Array.from({ length: 60 }, (_, i) => i);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const calendarLocale: Locale = vi;
 
   const parseDate = (value: string) => {
@@ -313,7 +318,7 @@ function CustomSelectDropdown(props: DropdownProps) {
         target: {
           value: newValue
         }
-      } as React.ChangeEvent<HTMLSelectElement>;
+      } as ChangeEvent<HTMLSelectElement>;
       onChange(syntheticEvent);
     }
   };

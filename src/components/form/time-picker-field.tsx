@@ -8,7 +8,12 @@ import {
 import { FormControl, FormItem, FormLabel } from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import {
+  type Control,
+  Controller,
+  type FieldPath,
+  type FieldValues
+} from 'react-hook-form';
 import { useState } from 'react';
 import { Button } from '@/components/form';
 

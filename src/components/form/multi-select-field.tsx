@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
   Command,
   CommandEmpty,
@@ -25,7 +25,13 @@ import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
-import { useEffect, useRef, useState } from 'react';
+import {
+  type MouseEvent,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 
 type MultiSelectFieldProps<
   TFieldValues extends FieldValues,
@@ -41,9 +47,9 @@ type MultiSelectFieldProps<
   required?: boolean;
   getLabel?: (option: TOption) => string | number;
   getValue?: (option: TOption) => string | number;
-  getPrefix?: (option: TOption) => React.ReactNode;
+  getPrefix?: (option: TOption) => ReactNode;
   searchText?: string;
-  notFoundContent?: React.ReactNode;
+  notFoundContent?: ReactNode;
   labelClassName?: string;
   disabled?: boolean;
   onValueChange?: (value: Array<string | number>) => void;
@@ -126,7 +132,7 @@ export default function MultiSelectField<
           onValueChange?.(newValues);
         };
 
-        const handleRemove = (val: string | number, e: React.MouseEvent) => {
+        const handleRemove = (val: string | number, e: MouseEvent) => {
           e.stopPropagation();
           e.preventDefault();
           const newValues = selectedValues.filter((v) => v !== val);

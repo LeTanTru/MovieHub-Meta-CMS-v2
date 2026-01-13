@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { apiConfig, FieldTypes, groupKinds } from '@/constants';
 import { useListBase } from '@/hooks';
 import { groupSearchSchema } from '@/schemaValidations';
-import {
+import type {
   Column,
   GroupResType,
   GroupSearchType,

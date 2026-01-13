@@ -1,16 +1,24 @@
 'use client';
 
-import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { AiOutlineUser } from 'react-icons/ai';
+import {
+  type HTMLAttributes,
+  type MouseEvent,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 
 type AvatarFieldProps = {
   size?: number;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   src?: string;
   className?: string;
   previewClassName?: string;
@@ -24,7 +32,7 @@ type AvatarFieldProps = {
   alt?: string;
   zoomOnScroll?: boolean;
   showHoverIcon?: boolean;
-} & React.HTMLAttributes<HTMLElement>;
+} & HTMLAttributes<HTMLElement>;
 
 export default function AvatarField({
   size = 48,
@@ -44,19 +52,19 @@ export default function AvatarField({
   alt,
   ...props
 }: AvatarFieldProps) {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [scale, setScale] = React.useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scale, setScale] = useState(1);
 
-  const previewRef = React.useRef<HTMLDivElement | null>(null);
+  const previewRef = useRef<HTMLDivElement | null>(null);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: MouseEvent) => {
     if (disablePreview || !src) return;
     e.preventDefault();
     e.stopPropagation();
     setIsModalOpen(true);
   };
 
-  const handleWheel = React.useCallback(
+  const handleWheel = useCallback(
     (e: WheelEvent) => {
       if (!zoomOnScroll) return;
 
@@ -71,7 +79,7 @@ export default function AvatarField({
     [zoomOnScroll]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isModalOpen || !previewRef.current) return;
 
     const node = previewRef.current;

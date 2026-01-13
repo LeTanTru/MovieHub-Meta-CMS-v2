@@ -1,5 +1,5 @@
 import { apiConfig, queryKeys } from '@/constants';
-import { ApiResponseList, ServerProviderResType } from '@/types';
+import type { ApiResponseList, ServerProviderResType } from '@/types';
 import { http } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 

@@ -1,7 +1,6 @@
 'use client';
 
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
-import { format, isValid, Locale, parse } from 'date-fns';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
   FormControl,
   FormDescription,
@@ -18,9 +17,8 @@ import {
 } from '@/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { vi } from 'date-fns/locale';
 import { Button } from '@/components/form';
-import { useState, useRef } from 'react';
+import { useState, useRef, ChangeEvent } from 'react';
 import {
   Select,
   SelectContent,
@@ -29,8 +27,10 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { DropdownProps } from 'react-day-picker';
+import { DropdownProps } from 'react-day-picker/';
 import { DEFAULT_DATE_FORMAT } from '@/constants';
+import { vi } from 'date-fns/locale';
+import { format, parse, isValid, Locale } from 'date-fns';
 
 type DatePickerFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -206,7 +206,7 @@ function CustomSelectDropdown(props: DropdownProps) {
         target: {
           value: newValue
         }
-      } as React.ChangeEvent<HTMLSelectElement>;
+      } as ChangeEvent<HTMLSelectElement>;
 
       onChange(syntheticEvent);
     }

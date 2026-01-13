@@ -6,8 +6,11 @@ import {
   useId,
   useRef,
   useState,
-  ForwardedRef,
-  useImperativeHandle
+  type ForwardedRef,
+  useImperativeHandle,
+  type ReactNode,
+  type TextareaHTMLAttributes,
+  type ReactElement
 } from 'react';
 import {
   FormControl,
@@ -17,13 +20,13 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 
 type TextAreaFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
-  label?: string | React.ReactNode;
+  label?: string | ReactNode;
   placeholder?: string;
   className?: string;
   labelClassName?: string;
@@ -34,7 +37,7 @@ type TextAreaFieldProps<T extends FieldValues> = {
   maxLength?: number;
   rows?: number;
   maxRows?: number;
-} & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+} & TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 const TextAreaField = <T extends FieldValues>(
   {
@@ -149,6 +152,6 @@ const TextAreaField = <T extends FieldValues>(
 
 export default forwardRef(TextAreaField) as <T extends FieldValues>(
   props: TextAreaFieldProps<T> & {
-    ref?: React.ForwardedRef<HTMLTextAreaElement>;
+    ref?: ForwardedRef<HTMLTextAreaElement>;
   }
-) => React.ReactElement;
+) => ReactElement;

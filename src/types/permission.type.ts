@@ -1,7 +1,7 @@
 import { permissionSchema } from '@/schemaValidations';
-import { GroupPermissionResType } from '@/types/group-permission.type';
-import { BaseSearchType } from '@/types/search.type';
-import z from 'zod';
+import type { GroupPermissionResType } from '@/types/group-permission.type';
+import type { BaseSearchType } from '@/types/search.type';
+import { z } from 'zod';
 
 export type PermissionResType = {
   id: string;

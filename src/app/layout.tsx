@@ -2,7 +2,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import NextTopLoader from 'nextjs-toploader';
-import { Suspense } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import {
   AppProvider,
   QueryProvider,
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <html suppressHydrationWarning lang={'vi'}>

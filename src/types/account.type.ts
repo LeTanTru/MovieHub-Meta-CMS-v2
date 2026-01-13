@@ -2,9 +2,9 @@ import {
   accountSchema,
   accountSearchSchema,
   updateProfileSchema
-} from '@/schemaValidations/account.schema';
-import { BaseSearchType } from '@/types/search.type';
-import z from 'zod';
+} from '@/schemaValidations';
+import type { BaseSearchType } from '@/types/search.type';
+import { z } from 'zod';
 
 export type Group = {
   id: string;

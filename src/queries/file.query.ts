@@ -1,8 +1,8 @@
 import { apiConfig, queryKeys, uploadOptions } from '@/constants';
-import { ApiResponse, UploadImageResponseType } from '@/types';
+import type { ApiResponse, UploadImageResponseType } from '@/types';
 import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
-import { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 
 export const useUploadAvatarMutation = () => {
   return useMutation({
