@@ -18,14 +18,12 @@ export type LoginResType = {
 };
 
 type AuthStoreState = {
-  isAuthenticated: boolean;
   profile: ProfileResType | null;
   loading: boolean;
   isLoggedOut: boolean;
 };
 
 type AuthStoreActions = {
-  setAuthenticated: (isAuthenticated: boolean) => void;
   setProfile: (profile: ProfileResType | null) => void;
   setLoading: (loading: boolean) => void;
   setIsLoggedOut: (isLogout: boolean) => void;

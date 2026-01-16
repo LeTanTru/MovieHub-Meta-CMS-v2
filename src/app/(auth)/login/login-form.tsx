@@ -5,7 +5,7 @@ import { Button, Col, InputField, PasswordField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { storageKeys } from '@/constants';
 import { logger } from '@/logger';
-import { useLoginMutation } from '@/queries';
+import { useLoginMutation, useProfileQuery } from '@/queries';
 import { loginSchema } from '@/schemaValidations';
 import type { LoginBodyType } from '@/types';
 import { notify, setData } from '@/utils';
@@ -16,10 +16,11 @@ import envConfig from '@/config';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function LoginForm() {
+  const profileQuery = useProfileQuery();
   const loginMutation = useLoginMutation();
-  const { setAuthenticated, setLoading } = useAuthStore(
+  const { setProfile, setLoading } = useAuthStore(
     useShallow((s) => ({
-      setAuthenticated: s.setAuthenticated,
+      setProfile: s.setProfile,
       setLoading: s.setLoading
     }))
   );
@@ -31,13 +32,16 @@ export default function LoginForm() {
 
   const onSubmit = async (values: LoginBodyType) => {
     await loginMutation.mutateAsync(values, {
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
         notify.success('Đăng nhập thành công');
         setData(storageKeys.ACCESS_TOKEN, res?.access_token!);
         setData(storageKeys.REFRESH_TOKEN, res?.refresh_token!);
         setData(storageKeys.USER_KIND, res?.user_kind?.toString()!);
-        setAuthenticated(true);
-        setLoading(true);
+        const profile = await profileQuery.refetch();
+        if (profile.data?.data) {
+          setProfile(profile.data?.data);
+          setLoading(true);
+        }
       },
       onError: (error) => {
         logger.error('Error while logging in:', error);
