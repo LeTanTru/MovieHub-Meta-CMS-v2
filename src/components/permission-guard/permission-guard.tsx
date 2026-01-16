@@ -20,17 +20,15 @@ import type { RouteItem } from '@/routes/route';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function PermissionGuard({ children }: { children: ReactNode }) {
-  const {
-    loading,
-    permissionCode: userPermissions,
-    isAuthenticated
-  } = useAuth();
-  const { isLoggedOut, setLoading } = useAuthStore(
+  const { permissionCode: userPermissions, isAuthenticated } = useAuth();
+  const { isLoggedOut, loading, setLoading } = useAuthStore(
     useShallow((s) => ({
       isLoggedOut: s.isLoggedOut,
+      loading: s.loading,
       setLoading: s.setLoading
     }))
   );
+
   // const navigate = useNavigate(false);
   const router = useRouter();
   const accessToken = getAccessTokenFromLocalStorage();
@@ -136,12 +134,12 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
     });
 
   // show overlay
-  const showOverlay =
-    (!isAuthenticated && pathname !== route.login.path) ||
-    !ready ||
-    loading ||
-    (isAuthenticated && pathname === route.login.path) ||
-    (isAuthenticated && pathname === route.home.path);
+  // const showOverlay =
+  //   (!isAuthenticated && pathname !== route.login.path) ||
+  //   !ready ||
+  //   loading ||
+  //   (isAuthenticated && pathname === route.login.path) ||
+  //   (isAuthenticated && pathname === route.home.path);
 
   // check authorization
   if (!hasPermission && isAuthenticated && ready) {
@@ -157,7 +155,7 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
       <motion.div
         key='content'
         initial={{ opacity: 0 }}
-        animate={{ opacity: showOverlay ? 0 : 1 }}
+        animate={{ opacity: loading ? 0 : 1 }}
       >
         {children}
       </motion.div>
@@ -166,9 +164,9 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
         key='loading'
         initial={{ opacity: 0 }}
         animate={{
-          opacity: showOverlay ? 1 : 0,
-          zIndex: showOverlay ? 9999 : -9999,
-          display: showOverlay ? 'flex' : 'none'
+          opacity: loading ? 1 : 0,
+          zIndex: loading ? 9999 : -9999,
+          display: loading ? 'flex' : 'none'
         }}
         className='fixed inset-0 z-50 flex h-dvh w-full items-center justify-center bg-white'
       >

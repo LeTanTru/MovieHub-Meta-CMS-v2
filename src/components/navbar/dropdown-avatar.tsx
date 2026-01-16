@@ -15,15 +15,13 @@ import { useShallow } from 'zustand/react/shallow';
 
 export default function DropdownAvatar() {
   const navigate = useNavigate();
-  const { profile, setAuthenticated, setProfile, setIsLoggedOut } =
-    useAuthStore(
-      useShallow((s) => ({
-        profile: s.profile,
-        setAuthenticated: s.setAuthenticated,
-        setProfile: s.setProfile,
-        setIsLoggedOut: s.setIsLoggedOut
-      }))
-    );
+  const { profile, setProfile, setIsLoggedOut } = useAuthStore(
+    useShallow((s) => ({
+      profile: s.profile,
+      setProfile: s.setProfile,
+      setIsLoggedOut: s.setIsLoggedOut
+    }))
+  );
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { queryString } = useQueryParams();
@@ -36,7 +34,6 @@ export default function DropdownAvatar() {
     removeData(storageKeys.REFRESH_TOKEN);
     removeData(storageKeys.USER_KIND);
 
-    setAuthenticated(false);
     setProfile(null);
 
     setIsLoggedOut(true);

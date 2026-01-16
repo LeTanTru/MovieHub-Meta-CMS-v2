@@ -5,11 +5,10 @@ import { decodeJwt, getAccessTokenFromLocalStorage } from '@/utils';
 import { useShallow } from 'zustand/react/shallow';
 
 const useAuth = () => {
-  const { profile, loading, isAuthenticated } = useAuthStore(
+  const { profile } = useAuthStore(
     useShallow((s) => ({
       profile: s.profile,
-      loading: s.loading,
-      isAuthenticated: s.isAuthenticated
+      loading: s.loading
     }))
   );
   const accessToken = getAccessTokenFromLocalStorage();
@@ -25,11 +24,10 @@ const useAuth = () => {
   }
 
   return {
-    isAuthenticated: isAuthenticated || !!profile,
+    isAuthenticated: !!profile,
     profile,
     kind: profile?.kind,
-    permissionCode: permissionCode.map((pCode) => pCode),
-    loading
+    permissionCode: permissionCode.map((pCode) => pCode)
   };
 };
 
