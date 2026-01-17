@@ -1,5 +1,4 @@
 'use client';
-
 import { logoWithText } from '@/assets';
 import { Button, Col, InputField, PasswordField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
@@ -11,19 +10,16 @@ import type { LoginBodyType } from '@/types';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
 import { CircleLoading } from '@/components/loading';
-import { useAuthStore } from '@/store';
+import { useAppLoading, useAuthStore } from '@/store';
 import envConfig from '@/config';
-import { useShallow } from 'zustand/react/shallow';
 
 export default function LoginForm() {
   const profileQuery = useProfileQuery();
   const loginMutation = useLoginMutation();
-  const { setProfile, setLoading } = useAuthStore(
-    useShallow((s) => ({
-      setProfile: s.setProfile,
-      setLoading: s.setLoading
-    }))
-  );
+
+  const setLoading = useAppLoading((s) => s.setLoading);
+  const setProfile = useAuthStore((s) => s.setProfile);
+
   const defaultValues: LoginBodyType = {
     username: '',
     password: '',
