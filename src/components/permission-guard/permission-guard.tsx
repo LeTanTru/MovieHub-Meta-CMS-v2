@@ -13,7 +13,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
 import { motion } from 'framer-motion';
 import { Loader } from 'lucide-react';
-import { useAuthStore } from '@/store';
+import { useAppLoading, useAuthStore } from '@/store';
 import { route } from '@/routes';
 import { storageKeys } from '@/constants';
 import type { RouteItem } from '@/routes/route';
@@ -21,13 +21,12 @@ import { useShallow } from 'zustand/react/shallow';
 
 export default function PermissionGuard({ children }: { children: ReactNode }) {
   const { permissionCode: userPermissions, isAuthenticated } = useAuth();
-  const { isLoggedOut, loading, setLoading } = useAuthStore(
-    useShallow((s) => ({
-      isLoggedOut: s.isLoggedOut,
-      loading: s.loading,
-      setLoading: s.setLoading
-    }))
+
+  const { loading, setLoading } = useAppLoading(
+    useShallow((s) => ({ loading: s.loading, setLoading: s.setLoading }))
   );
+
+  const isLoggedOut = useAuthStore((s) => s.isLoggedOut);
 
   // const navigate = useNavigate(false);
   const router = useRouter();

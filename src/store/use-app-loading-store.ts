@@ -1,0 +1,10 @@
+import { AppLoadingStoreType } from '@/types';
+import { create } from 'zustand';
+
+const useAppLoading = create<AppLoadingStoreType>((set) => ({
+  loading: false,
+
+  setLoading: (loading) => set({ loading })
+}));
+
+export default useAppLoading;

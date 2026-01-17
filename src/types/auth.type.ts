@@ -19,13 +19,11 @@ export type LoginResType = {
 
 type AuthStoreState = {
   profile: ProfileResType | null;
-  loading: boolean;
   isLoggedOut: boolean;
 };
 
 type AuthStoreActions = {
   setProfile: (profile: ProfileResType | null) => void;
-  setLoading: (loading: boolean) => void;
   setIsLoggedOut: (isLogout: boolean) => void;
 };
 

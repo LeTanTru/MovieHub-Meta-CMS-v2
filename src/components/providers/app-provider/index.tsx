@@ -2,20 +2,15 @@
 
 import { logger } from '@/logger';
 import { useProfileQuery } from '@/queries';
-import { useAuthStore } from '@/store';
+import { useAppLoading, useAuthStore } from '@/store';
 import { getAccessTokenFromLocalStorage } from '@/utils';
 import { type ReactNode, useEffect } from 'react';
-import { useShallow } from 'zustand/react/shallow';
 
 export default function AppProvider({ children }: { children: ReactNode }) {
   const accessToken = getAccessTokenFromLocalStorage();
   const profileQuery = useProfileQuery(!!accessToken);
-  const { setLoading, setProfile } = useAuthStore(
-    useShallow((s) => ({
-      setLoading: s.setLoading,
-      setProfile: s.setProfile
-    }))
-  );
+  const setLoading = useAppLoading((s) => s.setLoading);
+  const setProfile = useAuthStore((s) => s.setProfile);
 
   useEffect(() => {
     setLoading(profileQuery.isLoading || profileQuery.isFetching);
