@@ -29,11 +29,6 @@ type AuthStoreActions = {
 
 export type AuthStoreType = AuthStoreState & AuthStoreActions;
 
-export type RefreshTokenBodyType = {
-  refresh_token: string;
-  grant_type: string;
-};
-
 export type RefreshTokenResType = {
   access_token: string;
   token_type: string;

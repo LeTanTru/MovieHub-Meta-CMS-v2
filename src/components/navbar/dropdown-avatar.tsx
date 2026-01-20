@@ -4,9 +4,11 @@ import { AvatarField } from '@/components/form';
 import { List, ListItem } from '@/components/list';
 import { storageKeys } from '@/constants';
 import { useNavigate, useQueryParams } from '@/hooks';
+import { logger } from '@/logger';
+import { useLogoutMutation } from '@/queries';
 import { route } from '@/routes';
-import { useAuthStore } from '@/store';
-import { getData, removeData, renderImageUrl, setData } from '@/utils';
+import { useAppLoading, useAuthStore } from '@/store';
+import { getData, notify, removeData, renderImageUrl, setData } from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, CircleUserRound, LogOut, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -15,6 +17,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 export default function DropdownAvatar() {
   const navigate = useNavigate();
+  const setLoading = useAppLoading((s) => s.setLoading);
   const { profile, setProfile, setIsLoggedOut } = useAuthStore(
     useShallow((s) => ({
       profile: s.profile,
@@ -25,20 +28,38 @@ export default function DropdownAvatar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { queryString } = useQueryParams();
+  const { mutateAsync: logoutMutation, isPending: logoutLoading } =
+    useLogoutMutation();
 
   const handleLogout = async () => {
-    removeData(storageKeys.PATH_NO_LOGIN);
-    removeData(storageKeys.PREVIOUS_PATH);
+    await logoutMutation(undefined, {
+      onSuccess: (res) => {
+        if (res.result) {
+          notify.success('Đăng xuất thành công');
+          removeData(storageKeys.PATH_NO_LOGIN);
+          removeData(storageKeys.PREVIOUS_PATH);
 
-    removeData(storageKeys.ACCESS_TOKEN);
-    removeData(storageKeys.REFRESH_TOKEN);
-    removeData(storageKeys.USER_KIND);
+          removeData(storageKeys.ACCESS_TOKEN);
+          removeData(storageKeys.REFRESH_TOKEN);
+          removeData(storageKeys.USER_KIND);
 
-    setProfile(null);
-
-    setIsLoggedOut(true);
-    navigate(route.login.path);
+          setProfile(null);
+          setIsLoggedOut(true);
+          navigate(route.login.path);
+        } else {
+          notify.error('Đăng xuất thất bại');
+        }
+      },
+      onError: (error) => {
+        logger.error('Error while logging out', error);
+        notify.error('Có lỗi xảy ra khi đăng xuất');
+      }
+    });
   };
+
+  useEffect(() => {
+    setLoading(logoutLoading);
+  }, [logoutLoading, setLoading]);
 
   const handleProfileClick = () => {
     if (getData(storageKeys.PREVIOUS_PATH) === pathname) {
