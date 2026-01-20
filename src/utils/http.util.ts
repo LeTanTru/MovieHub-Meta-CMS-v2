@@ -1,6 +1,7 @@
 import envConfig from '@/config';
 import { apiConfig, storageKeys } from '@/constants';
 import { logger } from '@/logger';
+import { route } from '@/routes';
 import type {
   ApiConfig,
   ApiResponse,
@@ -15,7 +16,6 @@ import {
   removeRefreshTokenFromLocalStorage,
   setAccessTokenToLocalStorage,
   setRefreshTokenToLocalStorage,
-  isTokenExpired,
   getAccessTokenFromCookie,
   getRefreshTokenFromCookie,
   removeAccessTokenFromCookie,
@@ -30,6 +30,7 @@ import axios, {
   type AxiosRequestConfig,
   type AxiosResponse
 } from 'axios';
+import { redirect } from 'next/navigation';
 
 const isClient = () => typeof window !== 'undefined';
 const axiosInstance = axios.create();
@@ -58,73 +59,49 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 const refreshToken = async () => {
-  try {
-    let token: string | null = null;
-    if (isClient()) {
-      token = getRefreshTokenFromLocalStorage();
-    } else {
-      token = await getRefreshTokenFromCookie();
-    }
-    if (!token || isTokenExpired(token)) {
-      if (isClient()) {
-        removeAccessTokenFromLocalStorage();
-        removeRefreshTokenFromLocalStorage();
-        // window.location.href = route.login.path;
-      } else {
-        await removeAccessTokenFromCookie();
-        await removeRefreshTokenFromCookie();
-      }
-      return;
-    }
-    const response: ApiResponse<RefreshTokenResType> = await axios.post(
-      apiConfig.auth.refreshToken.baseUrl,
-      {
-        refresh_token: token,
-        grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
-      },
-      {
-        headers: {
-          Authorization: `Basic ${btoa(`${envConfig.NEXT_PUBLIC_APP_USERNAME}:${envConfig.NEXT_PUBLIC_APP_PASSWORD}`)}`
-        }
-      }
-    );
-    const data = response.data;
-    if (data) {
-      const newAccessToken = data.access_token;
-      const newRefreshToken = data.refresh_token;
-      if (isClient()) {
-        if (newAccessToken) setAccessTokenToLocalStorage(newAccessToken);
-        if (newRefreshToken) setRefreshTokenToLocalStorage(newRefreshToken);
-      } else {
-        if (newAccessToken) await setAccessTokenToCookie(newAccessToken);
-        if (newRefreshToken) await setRefreshTokenToCookie(newRefreshToken);
-      }
-    }
-    return response.data?.access_token;
-  } catch (error) {
-    logger.error('Error while refreshing access token', error);
+  let token: string | null = null;
+  if (isClient()) {
+    token = getRefreshTokenFromLocalStorage();
+  } else {
+    token = await getRefreshTokenFromCookie();
   }
+  const response: ApiResponse<RefreshTokenResType> = await axios.post(
+    apiConfig.auth.refreshToken.baseUrl,
+    {
+      refresh_token: token,
+      grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
+    },
+    {
+      headers: {
+        Authorization: `Basic ${btoa(`${envConfig.NEXT_PUBLIC_APP_USERNAME}:${envConfig.NEXT_PUBLIC_APP_PASSWORD}`)}`
+      }
+    }
+  );
+  const data = response.data;
+  if (data) {
+    const newAccessToken = data.access_token;
+    const newRefreshToken = data.refresh_token;
+    if (isClient()) {
+      if (newAccessToken) setAccessTokenToLocalStorage(newAccessToken);
+      if (newRefreshToken) setRefreshTokenToLocalStorage(newRefreshToken);
+    } else {
+      if (newAccessToken) await setAccessTokenToCookie(newAccessToken);
+      if (newRefreshToken) await setRefreshTokenToCookie(newRefreshToken);
+    }
+  }
+  return response.data?.access_token;
 };
 
 axiosInstance.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
-    logger.error('Error in http util', error);
     const originalConfig = error.config as RequestConfigWithRetry;
-    if (originalConfig && error.status === HttpStatusCode.Unauthorized) {
-      if (
-        originalConfig._retry ||
-        originalConfig.url?.includes(apiConfig.auth.refreshToken.baseUrl)
-      ) {
-        if (isClient()) {
-          removeAccessTokenFromLocalStorage();
-          removeRefreshTokenFromLocalStorage();
-          // window.location.href = route.login.path;
-        } else {
-          await removeAccessTokenFromCookie();
-          await removeRefreshTokenFromCookie();
-        }
-      }
+    if (
+      error.response &&
+      error.status === HttpStatusCode.Unauthorized &&
+      !originalConfig._retry
+    ) {
+      originalConfig._retry = true;
 
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -141,7 +118,6 @@ axiosInstance.interceptors.response.use(
           });
       }
 
-      originalConfig._retry = true;
       isRefreshing = true;
 
       try {
@@ -156,6 +132,20 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance.request(originalConfig);
       } catch (refreshError) {
+        if (
+          refreshError instanceof AxiosError &&
+          refreshError?.response?.status === HttpStatusCode.BadRequest
+        ) {
+          if (isClient()) {
+            removeAccessTokenFromLocalStorage();
+            removeRefreshTokenFromLocalStorage();
+            window.location.href = route.login.path;
+          } else {
+            await removeAccessTokenFromCookie();
+            await removeRefreshTokenFromCookie();
+            redirect(route.login.path);
+          }
+        }
         processQueue(refreshError, null);
         isRefreshing = false;
         return Promise.reject(refreshError);
