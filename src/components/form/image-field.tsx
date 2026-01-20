@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { AiOutlineFileImage } from 'react-icons/ai';
 import {
@@ -143,65 +143,66 @@ export default function ImageField({
           </div>
         )}
       </div>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={(e) => {
-              setScale(1);
-              setIsOpen(false);
-              e.stopPropagation();
-            }}
-          >
-            <motion.div
-              ref={previewRef}
-              className={cn(
-                'relative cursor-zoom-in rounded',
-                previewClassName
-              )}
-              style={{
-                width: previewSize * previewAspect,
-                height: previewSize
+      <LazyMotion features={domAnimation} strict>
+        <AnimatePresence>
+          {isOpen && (
+            <m.div
+              className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={(e) => {
+                setScale(1);
+                setIsOpen(false);
+                e.stopPropagation();
               }}
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={(e) => e.stopPropagation()}
             >
-              {src && (
-                <div
-                  className='relative'
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    overflow: 'visible'
-                  }}
-                >
-                  <Image
-                    src={src}
-                    alt='Preview'
-                    fill
-                    className={cn(
-                      'rounded object-cover transition-transform duration-100',
-                      imagePreviewClassName
-                    )}
+              <m.div
+                ref={previewRef}
+                className={cn(
+                  'relative cursor-zoom-in rounded',
+                  previewClassName
+                )}
+                style={{
+                  width: previewSize * previewAspect,
+                  height: previewSize
+                }}
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.85, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {src && (
+                  <div
+                    className='relative'
                     style={{
-                      transform: `scale(${scale})`,
-                      transformOrigin: 'center center'
+                      width: '100%',
+                      height: '100%',
+                      overflow: 'visible'
                     }}
-                    unoptimized
-                  />
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  >
+                    <Image
+                      src={src}
+                      alt='Preview'
+                      fill
+                      className={cn(
+                        'rounded object-cover transition-transform duration-100',
+                        imagePreviewClassName
+                      )}
+                      style={{
+                        transform: `scale(${scale})`,
+                        transformOrigin: 'center center'
+                      }}
+                      unoptimized
+                    />
+                  </div>
+                )}
+              </m.div>
+            </m.div>
+          )}
+        </AnimatePresence>
+      </LazyMotion>
     </>
   );
 }

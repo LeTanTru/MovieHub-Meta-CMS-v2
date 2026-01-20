@@ -9,13 +9,12 @@ import { loginSchema } from '@/schemaValidations';
 import type { LoginBodyType } from '@/types';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
-import { CircleLoading } from '@/components/loading';
 import { useAppLoading, useAuthStore } from '@/store';
 import envConfig from '@/config';
 
 export default function LoginForm() {
   const profileQuery = useProfileQuery();
-  const loginMutation = useLoginMutation();
+  const { mutateAsync: loginMutation, isPending } = useLoginMutation();
 
   const setLoading = useAppLoading((s) => s.setLoading);
   const setProfile = useAuthStore((s) => s.setProfile);
@@ -27,7 +26,7 @@ export default function LoginForm() {
   };
 
   const onSubmit = async (values: LoginBodyType) => {
-    await loginMutation.mutateAsync(values, {
+    await loginMutation(values, {
       onSuccess: async (res) => {
         notify.success('Đăng nhập thành công');
         setData(storageKeys.ACCESS_TOKEN, res?.access_token!);
@@ -89,12 +88,13 @@ export default function LoginForm() {
             </Col>
           </Row>
           <Row className='mb-0 w-full'>
-            <Col className='my-0' span={24}>
+            <Col className='my-0 px-0' span={24}>
               <Button
-                disabled={!form.formState.isDirty || loginMutation.isPending}
+                disabled={!form.formState.isDirty || isPending}
                 variant={'primary'}
+                loading={isPending}
               >
-                {loginMutation.isPending ? <CircleLoading /> : 'Đăng nhập'}
+                Đăng nhập
               </Button>
             </Col>
           </Row>
