@@ -187,7 +187,7 @@ export const sendRequest = async <T>(
       tenantId =
         getData(storageKeys.X_TENANT) || envConfig.NEXT_PUBLIC_TENANT_ID;
     } else {
-      tenantId = process.env.TENANT_ID;
+      tenantId = envConfig.NEXT_PUBLIC_TENANT_ID;
     }
   }
 
