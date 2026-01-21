@@ -1,11 +1,16 @@
 'use server';
 
 import { storageKeys } from '@/constants';
+import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';
 
-export async function setCookieData(key: string, value: any) {
+export async function setCookieData(
+  key: string,
+  value: any,
+  cookie?: Partial<ResponseCookie>
+) {
   const cookieStore = await cookies();
-  cookieStore.set(key, value);
+  cookieStore.set(key, value, cookie);
 }
 
 export async function getCookieData(key: string) {
@@ -18,8 +23,11 @@ export async function removeCookieData(key: string) {
   cookieStore.delete(key);
 }
 
-export const setAccessTokenToCookie = async (token: string): Promise<void> => {
-  await setCookieData(storageKeys.ACCESS_TOKEN, token);
+export const setAccessTokenToCookie = async (
+  token: string,
+  cookie?: Partial<ResponseCookie>
+): Promise<void> => {
+  await setCookieData(storageKeys.ACCESS_TOKEN, token, cookie);
 };
 
 export const getAccessTokenFromCookie = async (): Promise<string | null> => {
@@ -27,8 +35,11 @@ export const getAccessTokenFromCookie = async (): Promise<string | null> => {
   return cookie?.value || null;
 };
 
-export const setRefreshTokenToCookie = async (token: string): Promise<void> => {
-  await setCookieData(storageKeys.REFRESH_TOKEN, token);
+export const setRefreshTokenToCookie = async (
+  token: string,
+  cookie?: Partial<ResponseCookie>
+): Promise<void> => {
+  await setCookieData(storageKeys.REFRESH_TOKEN, token, cookie);
 };
 
 export const getRefreshTokenFromCookie = async (): Promise<string | null> => {
