@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 import createBundleAnalyzer from '@next/bundle-analyzer';
 import path from 'path';
+import envConfig from '@/config';
 
 const nextConfig: NextConfig = {
   images: {
@@ -12,7 +13,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'media.moviehub.biz',
+        hostname: envConfig.NEXT_PUBLIC_MEDIA_HOST,
         pathname: '/**'
       }
     ]
