@@ -81,14 +81,15 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
     }
   });
 
-  const changeStatusMutation = useChangeStatusCustomerMutation();
+  const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
+    useChangeStatusCustomerMutation();
 
   const handleChangeStatus = async (record: CustomerResType) => {
     const message =
       record.status === STATUS_ACTIVE
         ? 'Khóa tài khoản thành công'
         : 'Mở khóa tài khoản thành công';
-    await changeStatusMutation.mutateAsync(
+    await changeStatusMutate(
       {
         id: record.id,
         status: record.status === STATUS_ACTIVE ? STATUS_LOCK : STATUS_ACTIVE
@@ -183,7 +184,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
           columns={columns}
           dataSource={data || []}
           pagination={pagination}
-          loading={loading || changeStatusMutation.isPending}
+          loading={loading || changeStatusLoading}
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>

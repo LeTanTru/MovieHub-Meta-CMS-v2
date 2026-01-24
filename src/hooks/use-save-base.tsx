@@ -112,9 +112,9 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
         ? { ...values }
         : { ...values, id: values.id ?? data?.id ?? pathParams.id },
       {
-        onSuccess: (res) => {
+        onSuccess: async (res) => {
           if (res.result) {
-            queryClient.invalidateQueries({
+            await queryClient.invalidateQueries({
               queryKey: [queryKey, pathParams.id]
             });
             if (showNotify)

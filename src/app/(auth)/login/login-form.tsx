@@ -9,14 +9,14 @@ import { loginSchema } from '@/schemaValidations';
 import type { LoginBodyType } from '@/types';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
-import { useAppLoading, useAuthStore } from '@/store';
+import { useAppLoadingStore, useAuthStore } from '@/store';
 import envConfig from '@/config';
 
 export default function LoginForm() {
-  const profileQuery = useProfileQuery();
-  const { mutateAsync: loginMutation, isPending } = useLoginMutation();
+  const { refetch: getProfile } = useProfileQuery();
+  const { mutateAsync: loginMutate, isPending } = useLoginMutation();
 
-  const setLoading = useAppLoading((s) => s.setLoading);
+  const setLoading = useAppLoadingStore((s) => s.setLoading);
   const setProfile = useAuthStore((s) => s.setProfile);
 
   const defaultValues: LoginBodyType = {
@@ -26,13 +26,13 @@ export default function LoginForm() {
   };
 
   const onSubmit = async (values: LoginBodyType) => {
-    await loginMutation(values, {
+    await loginMutate(values, {
       onSuccess: async (res) => {
         notify.success('Đăng nhập thành công');
         setData(storageKeys.ACCESS_TOKEN, res?.access_token!);
         setData(storageKeys.REFRESH_TOKEN, res?.refresh_token!);
         setData(storageKeys.USER_KIND, res?.user_kind?.toString()!);
-        const profile = await profileQuery.refetch();
+        const profile = await getProfile();
         if (profile.data?.data) {
           setProfile(profile.data?.data);
           setLoading(true);

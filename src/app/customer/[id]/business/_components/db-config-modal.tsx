@@ -38,9 +38,11 @@ export default function DbConfigModal({
   open: boolean;
   onClose: () => void;
 }) {
-  const serverProviderListQuery = useServerProviderListQuery({ enabled: open });
+  const { data: serverProviderListData } = useServerProviderListQuery({
+    enabled: open
+  });
   const serverProviderList =
-    serverProviderListQuery.data?.data?.content?.map((item) => ({
+    serverProviderListData?.data?.content?.map((item) => ({
       label: item.name,
       value: item.id.toString()
     })) || [];
@@ -100,7 +102,15 @@ export default function DbConfigModal({
       host: dbInfo?.host,
       port: dbInfo?.port
     };
-  }, [dbConfig, data?.id]);
+  }, [
+    data?.id,
+    dbConfig?.driverClassName,
+    dbConfig?.initialize,
+    dbConfig?.maxConnection,
+    dbConfig?.serverProvider?.id,
+    dbInfo?.host,
+    dbInfo?.port
+  ]);
 
   const onSubmit = async (
     values: DbConfigBodyType,

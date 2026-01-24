@@ -48,11 +48,11 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
     businessId: string;
   }>();
 
-  const customerQuery = useCustomerQuery(customerId);
-  const customer = customerQuery.data?.data;
-
-  const uploadLogoMutation = useUploadLogoMutation();
-  const deleteFileMutation = useDeleteFileMutation();
+  const { data: customerData } = useCustomerQuery(customerId);
+  const customer = customerData?.data;
+  const { mutateAsync: uploadLogoMutate, isPending: uploadLogoLoading } =
+    useUploadLogoMutation();
+  const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const {
     data,
@@ -98,14 +98,14 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
 
   const logoImageManager = useFileUploadManager({
     initialUrl: data?.logoPath,
-    deleteFileMutation: deleteFileMutation,
+    deleteFileMutate: deleteFileMutate,
     isEditing,
     onOpen: true
   });
 
   const bannerImageManager = useFileUploadManager({
     initialUrl: data?.bannerPath,
-    deleteFileMutation: deleteFileMutation,
+    deleteFileMutate: deleteFileMutate,
     isEditing,
     onOpen: true
   });
@@ -189,13 +189,13 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
               <Col>
                 <UploadImageField
                   value={renderImageUrl(logoImageManager.currentUrl)}
-                  loading={uploadLogoMutation.isPending}
+                  loading={uploadLogoLoading}
                   control={form.control}
                   name='logoPath'
                   onChange={logoImageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
-                    const res = await uploadLogoMutation.mutateAsync({
+                    const res = await uploadLogoMutate({
                       file
                     });
                     return res.data?.filePath ?? '';
@@ -208,13 +208,13 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
               <Col>
                 <UploadImageField
                   value={renderImageUrl(bannerImageManager.currentUrl)}
-                  loading={uploadLogoMutation.isPending}
+                  loading={uploadLogoLoading}
                   control={form.control}
                   name='bannerPath'
                   onChange={bannerImageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
-                    const res = await uploadLogoMutation.mutateAsync({
+                    const res = await uploadLogoMutate({
                       file
                     });
                     return res.data?.filePath ?? '';

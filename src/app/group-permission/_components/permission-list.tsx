@@ -34,13 +34,13 @@ import {
 import { useDisclosure } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
-import { useGroupPermissionListQuery } from '@/queries';
 import {
   useCreatePermissionMutation,
   useDeletePermissionMutation,
+  useGroupPermissionListQuery,
   usePermissionListQuery,
   useUpdatePermissionMutation
-} from '@/queries/permission.query';
+} from '@/queries';
 import { permissionSchema } from '@/schemaValidations';
 import type { PermissionBodyType, PermissionResType } from '@/types';
 import { applyFormErrors, notify } from '@/utils';
@@ -58,26 +58,36 @@ export default function PermissionList() {
   const [selectedPermission, setSelectedPermission] =
     useState<PermissionResType | null>(null);
 
-  const groupPermissionListQuery = useGroupPermissionListQuery({
-    page: DEFAULT_TABLE_PAGE_START,
-    size: MAX_PAGE_SIZE
-  });
+  const { data: groupPermissionListData, isLoading: groupPermissionLoading } =
+    useGroupPermissionListQuery({
+      page: DEFAULT_TABLE_PAGE_START,
+      size: MAX_PAGE_SIZE
+    });
 
-  const permissionListQuery = usePermissionListQuery({
+  const {
+    data: permissionListData,
+    refetch: getPermissionList,
+    isLoading: permissionListLoading
+  } = usePermissionListQuery({
     page: DEFAULT_TABLE_PAGE_START,
     size: MAX_PAGE_SIZE
   });
-  const createPermissionMutation = useCreatePermissionMutation();
-  const updatePermissionMutation = useUpdatePermissionMutation();
-  const deletePermissionMutation = useDeletePermissionMutation();
+  const {
+    mutateAsync: createPermissionMutate,
+    isPending: createPermissionLoading
+  } = useCreatePermissionMutation();
+  const {
+    mutateAsync: updatePermissionMutate,
+    isPending: updatePermissionLoading
+  } = useUpdatePermissionMutation();
+  const { mutateAsync: deletePermissionMutate } = useDeletePermissionMutation();
 
   const groupPermissions = useMemo(() => {
-    return groupPermissionListQuery.data?.data?.content || [];
-  }, [groupPermissionListQuery.data?.data?.content]);
-  const permissions = permissionListQuery.data?.data.content || [];
+    return groupPermissionListData?.data?.content || [];
+  }, [groupPermissionListData?.data?.content]);
+  const permissions = permissionListData?.data.content || [];
 
-  const loading =
-    permissionListQuery.isLoading || groupPermissionListQuery.isLoading;
+  const loading = permissionListLoading || groupPermissionLoading;
 
   const groupedPermissions = (permissions || []).reduce((acc, permission) => {
     const group = permission.groupPermission.name || 'Unknown';
@@ -167,12 +177,12 @@ export default function PermissionList() {
     form: UseFormReturn<PermissionBodyType>
   ) => {
     const mutation = !isEditing
-      ? createPermissionMutation
-      : updatePermissionMutation;
+      ? createPermissionMutate
+      : updatePermissionMutate;
 
     const { groupPermissionId: _, ...rest } = values;
 
-    await mutation.mutateAsync(
+    await mutation(
       !isEditing
         ? values
         : {
@@ -186,7 +196,7 @@ export default function PermissionList() {
               `${!isEditing ? 'Thêm mới' : 'Cập nhật'} quyền thành công`
             );
             handleClose();
-            permissionListQuery.refetch();
+            getPermissionList();
           } else {
             const errCode = res.code;
             if (errCode) {
@@ -220,7 +230,7 @@ export default function PermissionList() {
   };
 
   const handleDelete = async (record: PermissionResType) => {
-    deletePermissionMutation.mutateAsync(record.id);
+    deletePermissionMutate(record.id);
   };
 
   const handleClose = () => {
@@ -474,22 +484,16 @@ export default function PermissionList() {
                   <Button
                     disabled={
                       !form.formState.isDirty ||
-                      createPermissionMutation.isPending ||
-                      updatePermissionMutation.isPending
+                      createPermissionLoading ||
+                      updatePermissionLoading
                     }
                     type='submit'
                     variant={'primary'}
                     className='w-full'
+                    loading={createPermissionLoading || updatePermissionLoading}
                   >
-                    {createPermissionMutation.isPending ||
-                    updatePermissionMutation.isPending ? (
-                      <CircleLoading />
-                    ) : (
-                      <>
-                        <Save />
-                        {!isEditing ? 'Thêm' : 'Cập nhật'}
-                      </>
-                    )}
+                    <Save />
+                    {!isEditing ? 'Thêm' : 'Cập nhật'}
                   </Button>
                 </Col>
               </Row>

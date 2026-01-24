@@ -93,8 +93,8 @@ const useDragDrop = <T extends Record<string, any>>({
       });
 
       await updateOrderingMutation.mutateAsync(dataUpdate, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({
             queryKey: [key]
           });
           setIsChanged(false);
