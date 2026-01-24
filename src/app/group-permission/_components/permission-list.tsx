@@ -129,7 +129,14 @@ export default function PermissionList() {
       action: selectedPermission?.action ?? '',
       showMenu: selectedPermission?.showMenu ?? false
     }),
-    [selectedGroupPermissionId, selectedPermission]
+    [
+      selectedGroupPermissionId,
+      selectedPermission?.action,
+      selectedPermission?.description,
+      selectedPermission?.name,
+      selectedPermission?.permissionCode,
+      selectedPermission?.showMenu
+    ]
   );
 
   // const onSubmit = async (

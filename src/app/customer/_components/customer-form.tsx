@@ -95,7 +95,15 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
       logoPath: data?.logoPath ?? '',
       phone: data?.phone ?? ''
     };
-  }, [data]);
+  }, [
+    data?.avatarPath,
+    data?.email,
+    data?.fullName,
+    data?.logoPath,
+    data?.phone,
+    data?.status,
+    data?.username
+  ]);
 
   const handleCancel = async () => {
     await avatarImageManager.handleCancel();

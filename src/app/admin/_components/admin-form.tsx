@@ -104,7 +104,15 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       confirmPassword: '',
       phone: data?.phone ?? ''
     };
-  }, [data]);
+  }, [
+    data?.avatarPath,
+    data?.email,
+    data?.fullName,
+    data?.group?.id,
+    data?.phone,
+    data?.status,
+    data?.username
+  ]);
 
   const handleCancel = async () => {
     await imageManager.handleCancel();
