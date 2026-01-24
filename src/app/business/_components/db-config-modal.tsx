@@ -38,9 +38,15 @@ export default function DbConfigModal({
   open: boolean;
   onClose: () => void;
 }) {
-  const { data: serverProviderList } = useServerProviderListQuery({
+  const { data: serverProviderListData } = useServerProviderListQuery({
     enabled: open
   });
+
+  const serverProviderList =
+    serverProviderListData?.data?.content?.map((item) => ({
+      label: item.name,
+      value: item.id.toString()
+    })) || [];
 
   const {
     data: dbConfig,
@@ -198,12 +204,7 @@ export default function DbConfigModal({
                   placeholder='Nhà cung cấp máy chủ'
                   required
                   disabled={isEditing}
-                  options={
-                    serverProviderList?.data?.content?.map((item) => ({
-                      label: item.name,
-                      value: item.id.toString()
-                    })) || []
-                  }
+                  options={serverProviderList}
                   getLabel={(opt) => opt.label}
                   getValue={(opt) => opt.value}
                 />
