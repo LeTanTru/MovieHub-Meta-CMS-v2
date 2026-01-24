@@ -32,8 +32,9 @@ import type { UseFormReturn } from 'react-hook-form';
 export default function CustomerForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
 
-  const uploadImageMutation = useUploadAvatarMutation();
-  const deleteFileMutation = useDeleteFileMutation();
+  const { mutateAsync: uploadImageMutate, isPending: uploadImageLoading } =
+    useUploadAvatarMutation();
+  const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const {
     data,
@@ -70,14 +71,14 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
 
   const avatarImageManager = useFileUploadManager({
     initialUrl: data?.avatarPath,
-    deleteFileMutation: deleteFileMutation,
+    deleteFileMutate: deleteFileMutate,
     isEditing,
     onOpen: true
   });
 
   const logoImageManager = useFileUploadManager({
     initialUrl: data?.avatarPath,
-    deleteFileMutation: deleteFileMutation,
+    deleteFileMutate: deleteFileMutate,
     isEditing,
     onOpen: true
   });
@@ -143,13 +144,13 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
               <Col>
                 <UploadImageField
                   value={renderImageUrl(avatarImageManager.currentUrl)}
-                  loading={uploadImageMutation.isPending}
+                  loading={uploadImageLoading}
                   control={form.control}
                   name='avatarPath'
                   onChange={avatarImageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
-                    const res = await uploadImageMutation.mutateAsync({ file });
+                    const res = await uploadImageMutate({ file });
                     return res.data?.filePath ?? '';
                   }}
                   label='Ảnh đại diện'
@@ -159,13 +160,13 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
               <Col>
                 <UploadImageField
                   value={renderImageUrl(logoImageManager.currentUrl)}
-                  loading={uploadImageMutation.isPending}
+                  loading={uploadImageLoading}
                   control={form.control}
                   name='logoPath'
                   onChange={logoImageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
-                    const res = await uploadImageMutation.mutateAsync({ file });
+                    const res = await uploadImageMutate({ file });
                     return res.data?.filePath ?? '';
                   }}
                   label='Logo'

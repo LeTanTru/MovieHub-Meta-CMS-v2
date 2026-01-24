@@ -13,7 +13,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
 import { LazyMotion, domAnimation, m } from 'framer-motion';
 import { Loader } from 'lucide-react';
-import { useAppLoading, useAuthStore } from '@/store';
+import { useAppLoadingStore, useAuthStore } from '@/store';
 import { route } from '@/routes';
 import { storageKeys } from '@/constants';
 import type { RouteItem } from '@/routes/route';
@@ -22,7 +22,7 @@ import { useShallow } from 'zustand/react/shallow';
 export default function PermissionGuard({ children }: { children: ReactNode }) {
   const { permissionCode: userPermissions, isAuthenticated } = useAuth();
 
-  const { loading, setLoading } = useAppLoading(
+  const { loading, setLoading } = useAppLoadingStore(
     useShallow((s) => ({ loading: s.loading, setLoading: s.setLoading }))
   );
 

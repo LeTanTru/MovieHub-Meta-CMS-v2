@@ -37,15 +37,16 @@ import type { UseFormReturn } from 'react-hook-form';
 export default function AdminForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
 
-  const groupListQuery = useGroupListQuery({ kind: GROUP_KIND_ADMIN });
-  const groupList = groupListQuery.data?.data.content || [];
+  const { data: groupData } = useGroupListQuery({ kind: GROUP_KIND_ADMIN });
+  const groupList = groupData?.data.content || [];
   const groupOptions = groupList.map((item) => ({
     label: item.name,
     value: item.id.toString()
   }));
 
-  const uploadImageMutation = useUploadAvatarMutation();
-  const deleteFileMutation = useDeleteFileMutation();
+  const { mutateAsync: uploadImageMutate, isPending: uploadImageLoading } =
+    useUploadAvatarMutation();
+  const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const {
     data,
@@ -86,7 +87,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
 
   const imageManager = useFileUploadManager({
     initialUrl: data?.avatarPath,
-    deleteFileMutation: deleteFileMutation,
+    deleteFileMutate: deleteFileMutate,
     isEditing,
     onOpen: true
   });
@@ -150,13 +151,13 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               <Col span={24}>
                 <UploadImageField
                   value={renderImageUrl(imageManager.currentUrl)}
-                  loading={uploadImageMutation.isPending}
+                  loading={uploadImageLoading}
                   control={form.control}
                   name='avatarPath'
                   onChange={imageManager.trackUpload}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
-                    const res = await uploadImageMutation.mutateAsync({ file });
+                    const res = await uploadImageMutate({ file });
                     return res.data?.filePath ?? '';
                   }}
                   label='Ảnh đại diện'

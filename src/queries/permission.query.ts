@@ -63,9 +63,9 @@ export const useDeletePermissionMutation = () => {
           id
         }
       }),
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       if (res.result) {
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: ['permission-list']
         });
         notify.success('Xóa quyền thành công');

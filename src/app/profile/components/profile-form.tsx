@@ -35,10 +35,12 @@ import type { UseFormReturn } from 'react-hook-form';
 export default function ProfileForm() {
   const navigate = useNavigate();
   const profile = useAuthStore((s) => s.profile);
-  const profileMutation = useUpdateProfileMutation();
+  const { mutateAsync: updateProfileMutate, isPending: updateProfileLoading } =
+    useUpdateProfileMutation();
 
-  const fileMutation = useUploadAvatarMutation();
-  const deleteFileMutation = useDeleteFileMutation();
+  const { mutateAsync: uploadAvatarMutate, isPending: uploadAvatarLoading } =
+    useUploadAvatarMutation();
+  const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const defaultValues: ProfileBodyType = {
     email: '',
@@ -52,7 +54,7 @@ export default function ProfileForm() {
 
   const imageManager = useFileUploadManager({
     initialUrl: profile?.avatarPath,
-    deleteFileMutation: deleteFileMutation,
+    deleteFileMutate: deleteFileMutate,
     isEditing: true,
     onOpen: true
   });
@@ -74,7 +76,7 @@ export default function ProfileForm() {
   ) => {
     await imageManager.handleSubmit();
 
-    await profileMutation.mutateAsync(
+    await updateProfileMutate(
       { ...values, avatarPath: imageManager.currentUrl },
       {
         onSuccess: (res) => {
@@ -116,13 +118,13 @@ export default function ProfileForm() {
             <Col span={24}>
               <UploadImageField
                 value={renderImageUrl(imageManager.currentUrl)}
-                loading={fileMutation.isPending}
+                loading={uploadAvatarLoading}
                 name='avatarPath'
                 control={form.control}
                 onChange={imageManager.trackUpload}
                 size={100}
                 uploadImageFn={async (file: Blob) => {
-                  const res = await fileMutation.mutateAsync({
+                  const res = await uploadAvatarMutate({
                     file
                   });
                   return res.data?.filePath ?? '';
@@ -209,9 +211,9 @@ export default function ProfileForm() {
             </Col>
             <Col className='w-40!'>
               <Button
-                disabled={!form.formState.isDirty || profileMutation.isPending}
+                disabled={!form.formState.isDirty || updateProfileLoading}
                 variant={'primary'}
-                loading={profileMutation.isPending}
+                loading={updateProfileLoading}
               >
                 <Save />
                 Cập nhật

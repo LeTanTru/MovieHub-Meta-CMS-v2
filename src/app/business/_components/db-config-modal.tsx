@@ -38,12 +38,9 @@ export default function DbConfigModal({
   open: boolean;
   onClose: () => void;
 }) {
-  const serverProviderListQuery = useServerProviderListQuery({ enabled: open });
-  const serverProviderList =
-    serverProviderListQuery.data?.data?.content?.map((item) => ({
-      label: item.name,
-      value: item.id.toString()
-    })) || [];
+  const { data: serverProviderList } = useServerProviderListQuery({
+    enabled: open
+  });
 
   const {
     data: dbConfig,
@@ -100,7 +97,15 @@ export default function DbConfigModal({
       host: dbInfo?.host,
       port: dbInfo?.port
     };
-  }, [dbConfig, data?.id]);
+  }, [
+    data?.id,
+    dbConfig?.driverClassName,
+    dbConfig?.initialize,
+    dbConfig?.maxConnection,
+    dbConfig?.serverProvider?.id,
+    dbInfo?.host,
+    dbInfo?.port
+  ]);
 
   const onSubmit = async (
     values: DbConfigBodyType,
@@ -193,7 +198,12 @@ export default function DbConfigModal({
                   placeholder='Nhà cung cấp máy chủ'
                   required
                   disabled={isEditing}
-                  options={serverProviderList}
+                  options={
+                    serverProviderList?.data?.content?.map((item) => ({
+                      label: item.name,
+                      value: item.id.toString()
+                    })) || []
+                  }
                   getLabel={(opt) => opt.label}
                   getValue={(opt) => opt.value}
                 />

@@ -1,5 +1,4 @@
 'use client';
-
 import { Activity } from '@/components/activity';
 import {
   Button,
@@ -11,7 +10,6 @@ import {
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
-import { CircleLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -48,24 +46,26 @@ export default function GroupForm() {
   const isCreate = id === 'create';
   const queryClient = useQueryClient();
 
-  const groupQuery = useGroupQuery(id);
-  const permissionListQuery = usePermissionListQuery({
+  const { data: groupData } = useGroupQuery(id);
+  const { data: permissionListData } = usePermissionListQuery({
     page: DEFAULT_TABLE_PAGE_START,
     size: MAX_PAGE_SIZE
   });
-  const groupPermissionListQuery = useGroupPermissionListQuery({
+  const { data: groupPermissionListData } = useGroupPermissionListQuery({
     page: DEFAULT_TABLE_PAGE_START,
     size: MAX_PAGE_SIZE
   });
 
-  const group = groupQuery.data?.data;
+  const group = groupData?.data;
   const groupPermissions = useMemo(() => {
-    return groupPermissionListQuery.data?.data?.content || [];
-  }, [groupPermissionListQuery.data?.data?.content]);
-  const permissions = permissionListQuery.data?.data.content;
+    return groupPermissionListData?.data?.content || [];
+  }, [groupPermissionListData?.data?.content]);
+  const permissions = permissionListData?.data.content;
 
-  const createGroupMutation = useCreateGroupMutation();
-  const updateGroupMutation = useUpdateGroupMutation();
+  const { mutateAsync: createGroupMutate, isPending: createGroupLoading } =
+    useCreateGroupMutation();
+  const { mutateAsync: updateGroupMutate, isPending: updateGroupLoading } =
+    useUpdateGroupMutation();
 
   const groupedPermissions = (permissions || []).reduce((acc, permission) => {
     const group = permission.groupPermission.name || 'Unknown';
@@ -140,17 +140,17 @@ export default function GroupForm() {
     values: GroupBodyType,
     form: UseFormReturn<GroupBodyType>
   ) => {
-    const mutation = isCreate ? createGroupMutation : updateGroupMutation;
+    const mutation = isCreate ? createGroupMutate : updateGroupMutate;
 
     const { kind: _, ...rest } = values;
 
-    await mutation.mutateAsync(isCreate ? values : { ...rest, id }, {
-      onSuccess: (res) => {
+    await mutation(isCreate ? values : { ...rest, id }, {
+      onSuccess: async (res) => {
         if (res.result) {
           notify.success(
             `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò thành công`
           );
-          queryClient.invalidateQueries({ queryKey: ['group', id] });
+          await queryClient.invalidateQueries({ queryKey: ['group', id] });
           navigate(route.group.getList.path);
         } else {
           const errCode = res.code;
@@ -175,7 +175,7 @@ export default function GroupForm() {
         { label: 'Vai trò', href: route.group.getList.path },
         { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò` }
       ]}
-      notFound={groupQuery.data?.code === ErrorCode.GROUP_ERROR_NOT_FOUND}
+      notFound={groupData?.code === ErrorCode.GROUP_ERROR_NOT_FOUND}
       notFoundContent='Không tìm thấy vai trò này'
     >
       <BaseForm
@@ -382,21 +382,15 @@ export default function GroupForm() {
                 <Button
                   disabled={
                     !form.formState.isDirty ||
-                    createGroupMutation.isPending ||
-                    updateGroupMutation.isPending
+                    createGroupLoading ||
+                    updateGroupLoading
                   }
                   type='submit'
                   variant={'primary'}
+                  loading={createGroupLoading || updateGroupLoading}
                 >
-                  {createGroupMutation.isPending ||
-                  updateGroupMutation.isPending ? (
-                    <CircleLoading />
-                  ) : (
-                    <>
-                      <Save />
-                      {isCreate ? 'Thêm' : 'Cập nhật'}
-                    </>
-                  )}
+                  <Save />
+                  {isCreate ? 'Thêm' : 'Cập nhật'}
                 </Button>
               </Col>
             </Row>

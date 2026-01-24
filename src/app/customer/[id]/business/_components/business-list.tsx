@@ -114,11 +114,11 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
     }
   });
 
-  const snsConfigQuery = useSnsConfigQuery(businessId);
+  const { refetch: getSnsConfig } = useSnsConfigQuery(businessId);
 
   const handleConfigSns = async (id: string) => {
     setBusinessId(id);
-    await snsConfigQuery.refetch();
+    await getSnsConfig();
     notify.success('Cấu hình sns thành công');
   };
 

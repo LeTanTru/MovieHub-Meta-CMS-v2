@@ -262,10 +262,12 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
     options?: { onSuccess?: () => void; onError?: (code: string) => void }
   ) => {
     await deleteMutation.mutateAsync(id, {
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
-          queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
+          await queryClient.invalidateQueries({
+            queryKey: [`${queryKey}-list`]
+          });
           options?.onSuccess?.();
         } else {
           if (res.code) {
@@ -561,8 +563,8 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
     );
   };
 
-  const invalidateQueries = () => {
-    queryClient.invalidateQueries({
+  const invalidateQueries = async () => {
+    await queryClient.invalidateQueries({
       queryKey: [`${queryKey}-list`, queryFilter]
     });
   };

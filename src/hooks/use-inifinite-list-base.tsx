@@ -277,10 +277,10 @@ const useInfiniteListBase = <
     options?: { onSuccess?: () => void; onError?: (code: string) => void }
   ) => {
     await deleteMutation.mutateAsync(id, {
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
-          queryClient.invalidateQueries({
+          await queryClient.invalidateQueries({
             queryKey: [`${queryKey}-infinite`]
           });
           options?.onSuccess?.();
@@ -578,8 +578,8 @@ const useInfiniteListBase = <
     );
   };
 
-  const invalidateQueries = () => {
-    queryClient.invalidateQueries({
+  const invalidateQueries = async () => {
+    await queryClient.invalidateQueries({
       queryKey: [`${queryKey}-infinite`, queryFilter]
     });
   };
