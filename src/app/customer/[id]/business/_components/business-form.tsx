@@ -129,7 +129,24 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
       zipCode: data?.zipCode ?? '',
       status: data?.status ?? STATUS_ACTIVE
     };
-  }, [data, customerId]);
+  }, [
+    customerId,
+    data?.address,
+    data?.bannerPath,
+    data?.businessTenantId,
+    data?.city,
+    data?.expireDate,
+    data?.extDate,
+    data?.hotline,
+    data?.lang,
+    data?.logoPath,
+    data?.name,
+    data?.note,
+    data?.settings,
+    data?.status,
+    data?.taxNumber,
+    data?.zipCode
+  ]);
 
   const handleCancel = async () => {
     await logoImageManager.handleCancel();

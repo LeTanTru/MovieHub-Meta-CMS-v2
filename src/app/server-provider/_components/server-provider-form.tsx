@@ -90,7 +90,17 @@ export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
       host: jdbcUrlInfo.host,
       port: jdbcUrlInfo.port
     };
-  }, [data]);
+  }, [
+    data?.driverClassName,
+    data?.maxTenant,
+    data?.mySqlJdbcUrl,
+    data?.mySqlRootPassword,
+    data?.mySqlRootUser,
+    data?.name,
+    data?.url,
+    jdbcUrlInfo.host,
+    jdbcUrlInfo.port
+  ]);
 
   // const onSubmit = async (
   //   values: ServerProviderBodyType,
