@@ -23,7 +23,7 @@ export default function Pagination({
       <span
         key={page}
         className={cn(
-          'bg-background text-dodger-blue border-dodger-blue flex h-8 w-8 cursor-pointer items-center justify-center rounded border font-medium'
+          'bg-background text-main-color border-main-color flex h-8 w-8 cursor-pointer items-center justify-center rounded border font-medium'
         )}
       >
         {page}

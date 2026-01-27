@@ -44,12 +44,14 @@ export default function CheckboxField<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => (
         <FormItem className={cn('relative flex flex-col space-y-1', className)}>
-          <div className={cn('flex items-center space-x-2', itemClassName)}>
+          <div
+            className={cn('mb-0 flex items-center space-x-2', itemClassName)}
+          >
             <FormControl>
               <Checkbox
                 id={field.name}
                 className={cn(
-                  'cursor-pointer transition-colors duration-300 ease-in-out',
+                  'cursor-pointer transition-colors duration-300 ease-in-out focus-visible:ring-0',
                   'data-[state=checked]:bg-primary',
                   'data-[state=unchecked]:bg-muted',
                   disabled && 'cursor-not-allowed',

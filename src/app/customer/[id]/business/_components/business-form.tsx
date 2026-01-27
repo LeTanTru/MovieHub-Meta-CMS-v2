@@ -397,7 +397,7 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
             </>
             <Activity visible={loading}>
               <div className='absolute inset-0 bg-white/80'>
-                <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
+                <CircleLoading className='stroke-main-color mt-20 size-8' />
               </div>
             </Activity>
           </>

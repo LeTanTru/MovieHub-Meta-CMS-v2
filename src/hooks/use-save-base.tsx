@@ -203,7 +203,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
                     }
                     options?.onCancel?.();
                   }}
-                  className='bg-dodger-blue hover:bg-dodger-blue/80 w-20! cursor-pointer transition-all duration-200 ease-linear'
+                  className='bg-main-color hover:bg-main-color/80 w-20! cursor-pointer transition-all duration-200 ease-linear'
                 >
                   Có
                 </AlertDialogAction>

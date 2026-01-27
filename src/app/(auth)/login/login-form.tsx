@@ -82,7 +82,7 @@ export default function LoginForm() {
                 control={form.control}
                 label='Mật khẩu'
                 placeholder='Mật khẩu'
-                className='focus-visible:ring-dodger-blue'
+                className='focus-visible:ring-main-color'
                 required
               />
             </Col>

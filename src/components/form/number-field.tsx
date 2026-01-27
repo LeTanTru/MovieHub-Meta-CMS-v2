@@ -177,12 +177,11 @@ export default function NumberField<T extends FieldValues>({
                     {
                       'pl-10': prefixIcon,
                       'pr-10': suffixIcon,
-                      'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/80 text-gray-500':
+                      'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/80 text-gray-500 dark:border-slate-800':
                         disabled,
                       'border-red-500 focus-visible:ring-red-500':
                         fieldState.error,
-                      'focus-visible:ring-dodger-blue focus-visible:ring-2':
-                        !fieldState.error,
+                      'focus-visible:ring-main-color': !fieldState.error,
                       'pb-[0.25px]': !field.value,
                       'pb-[0.5px]': !!field.value
                     }
