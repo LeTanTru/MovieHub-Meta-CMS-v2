@@ -311,7 +311,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
               className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
               {...buttonProps}
             >
-              <AiOutlineEdit className='text-dodger-blue size-4' />
+              <AiOutlineEdit className='text-main-color size-4' />
             </Button>
           </span>
         </ToolTip>
@@ -364,7 +364,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
                   e.stopPropagation();
                   handleDeleteClick(record.id);
                 }}
-                className='bg-dodger-blue hover:bg-dodger-blue/80 w-20 cursor-pointer transition-all duration-200 ease-linear'
+                className='bg-main-color hover:bg-main-color/80 w-20 cursor-pointer transition-all duration-200 ease-linear'
               >
                 Có
               </AlertDialogAction>

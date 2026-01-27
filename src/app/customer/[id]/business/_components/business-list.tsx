@@ -68,7 +68,7 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <AiOutlineApartment className='text-dodger-blue size-4' />
+                  <AiOutlineApartment className='text-main-color size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -90,7 +90,7 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <Bell className='text-dodger-blue size-4' />
+                  <Bell className='text-main-color size-4' />
                 </Button>
               </span>
             </ToolTip>

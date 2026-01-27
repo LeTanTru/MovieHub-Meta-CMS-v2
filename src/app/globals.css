@@ -43,7 +43,7 @@
   --color-sidebar-item-active: rgb(32, 42, 73);
   --color-sidebar: #181b24;
   --color-sidebar-active-menu: rgb(12, 19, 26);
-  --color-dodger-blue: #1678ff;
+  --color-main-color: #1678ff;
   --color-page-wrapper: #f0f2f5;
   --color-base-table: #fff;
   --color-list-page-wrapper: #fff;
@@ -142,7 +142,7 @@ body {
   }
 }
 *::selection {
-  background-color: var(--color-dodger-blue);
+  background-color: var(--color-main-color);
   color: white;
 }
 

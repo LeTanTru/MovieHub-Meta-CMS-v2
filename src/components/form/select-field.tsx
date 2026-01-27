@@ -25,8 +25,13 @@ import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
-import { useEffect, useState, useRef, ReactNode, type MouseEvent } from 'react';
-import { useIsMounted } from '@/hooks';
+import {
+  useEffect,
+  useState,
+  useRef,
+  type ReactNode,
+  type MouseEvent
+} from 'react';
 
 type SelectFieldProps<
   TFieldValues extends FieldValues,
@@ -92,7 +97,6 @@ export default function SelectField<
   getPrefix = (opt) => opt.prefix,
   onValueChange
 }: SelectFieldProps<TFieldValues, TOption>) {
-  const isMounted = useIsMounted();
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -105,8 +109,6 @@ export default function SelectField<
   useEffect(() => {
     if (!searchValue) setHighlightedIndex(-1);
   }, [searchValue]);
-
-  if (!isMounted) return null;
 
   return (
     <FormField
@@ -157,13 +159,11 @@ export default function SelectField<
                   aria-label='Select'
                   disabled={disabled}
                   className={cn(
-                    'focus-visible:border-dodger-blue w-full justify-between border px-3! py-0 text-black shadow-none',
+                    'dark:bg-input/30 w-full justify-between border px-3! py-0 text-black focus-visible:border-transparent dark:border-gray-200/30 dark:text-white dark:hover:text-white',
                     {
-                      'ring-dodger-blue border-transparent ring-2': open,
+                      'ring-main-color border-transparent! ring-2': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
-                      'border-red-500 ring-red-500': !!fieldState.error,
-                      'cursor-not-allowed border-gray-300 bg-gray-200/50 text-gray-400':
-                        disabled
+                      'border-red-500 ring-red-500': !!fieldState.error
                     }
                   )}
                 >
@@ -197,7 +197,7 @@ export default function SelectField<
                 </FormDescription>
               )}
 
-              <PopoverContent className='w-(--radix-popover-trigger-width) p-0'>
+              <PopoverContent className='w-(--radix-popover-trigger-width) border-none p-0 shadow-[0px_0px_10px_2px] shadow-gray-200 dark:shadow-[#222]'>
                 <Command
                   ref={commandRef}
                   className='bg-background'
@@ -265,7 +265,7 @@ export default function SelectField<
                             {
                               'bg-accent text-accent-foreground':
                                 highlightedIndex === idx,
-                              'bg-dodger-blue/10': isSelected
+                              'bg-main-color/10': isSelected
                             }
                           )}
                         >

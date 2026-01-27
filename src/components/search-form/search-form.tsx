@@ -223,7 +223,7 @@ export default function SearchForm<S extends FieldValues>({
                   <Button
                     type='button'
                     onClick={() => handleReset(form)}
-                    className='hover:[&>svg]:stroke-dodger-blue hover:border-dodger-blue border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
+                    className='hover:[&>svg]:stroke-main-color hover:border-main-color border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
                   >
                     <BrushCleaning className='transition-all duration-200 ease-linear' />
                   </Button>
@@ -241,7 +241,7 @@ export default function SearchForm<S extends FieldValues>({
               <Button
                 type='button'
                 onClick={() => handleReset(form)}
-                className='hover:[&>svg]:stroke-dodger-blue hover:border-dodger-blue border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
+                className='hover:[&>svg]:stroke-main-color hover:border-main-color border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
               >
                 <BrushCleaning className='transition-all duration-200 ease-linear' />
               </Button>

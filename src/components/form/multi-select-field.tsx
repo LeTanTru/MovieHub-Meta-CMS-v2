@@ -165,11 +165,11 @@ export default function MultiSelectField<
                   role='combobox'
                   disabled={disabled}
                   className={cn(
-                    'focus-visible:border-dodger-blue h-auto min-h-9 w-full justify-between border px-1! py-1 text-black shadow-none focus:ring-0 focus-visible:border-2',
+                    'focus-visible:border-main-color h-auto min-h-9 w-full justify-between border px-1! py-1 text-black shadow-none focus:ring-0 focus-visible:border-2 dark:hover:text-white',
                     {
-                      'cursor-not-allowed border-gray-300 bg-gray-200/80 text-gray-500':
+                      'cursor-not-allowed border-gray-300 bg-gray-200/80 text-gray-500 dark:border-slate-800':
                         disabled,
-                      'ring-dodger-blue border-transparent ring-2': open,
+                      'ring-main-color border-transparent ring-2': open,
                       'border-red-500 ring-red-500': !!fieldState.error
                     }
                   )}
@@ -284,7 +284,7 @@ export default function MultiSelectField<
                             {
                               'bg-accent text-accent-foreground':
                                 highlightedIndex === idx,
-                              'bg-dodger-blue/10': isSelected
+                              'bg-main-color/10': isSelected
                             }
                           )}
                         >

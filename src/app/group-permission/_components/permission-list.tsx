@@ -249,7 +249,7 @@ export default function PermissionList() {
     <>
       <ListPageWrapper>
         {loading ? (
-          <CircleLoading className='stroke-dodger-blue mt-4 size-8!' />
+          <CircleLoading className='stroke-main-color mt-4 size-8!' />
         ) : (
           <div className='flex flex-col gap-y-4 px-4 py-4 max-[1560px]:max-w-300'>
             {sortedGroupPermissions.map((groupPermission) => {
@@ -264,7 +264,7 @@ export default function PermissionList() {
                     <div className='font-semibold'>{group}</div>
                     <ToolTip sideOffset={8} title={`Thêm quyền`}>
                       <Plus
-                        className='stroke-dodger-blue size-4 cursor-pointer transition-all duration-200 ease-linear hover:opacity-80'
+                        className='stroke-main-color size-4 cursor-pointer transition-all duration-200 ease-linear hover:opacity-80'
                         onClick={() => handleAdd(group)}
                       />
                     </ToolTip>
@@ -290,7 +290,7 @@ export default function PermissionList() {
                                       className='h-5 border-none bg-transparent p-0! shadow-none hover:bg-transparent'
                                       onClick={() => handleEdit(permission)}
                                     >
-                                      <AiOutlineEdit className='text-dodger-blue size-4' />
+                                      <AiOutlineEdit className='text-main-color size-4' />
                                     </Button>
                                   </ToolTip>
                                   <AlertDialog>

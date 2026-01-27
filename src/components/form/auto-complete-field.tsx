@@ -9,10 +9,10 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import {
-  useWatch,
   type Control,
   type FieldPath,
-  type FieldValues
+  type FieldValues,
+  useWatch
 } from 'react-hook-form';
 import {
   Command,
@@ -262,11 +262,11 @@ export default function AutoCompleteField<
                   disabled={disabled}
                   title={selectedOption?.label ?? ''}
                   className={cn(
-                    'w-full flex-nowrap justify-between truncate border px-3! py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
+                    'w-full flex-nowrap justify-between truncate border px-3! py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0 dark:text-white dark:hover:text-white',
                     {
                       'disabled:cursor-not-allowed disabled:opacity-100 disabled:hover:bg-transparent disabled:[&>div>span]:opacity-80':
                         disabled,
-                      'ring-dodger-blue border-transparent ring-2': open,
+                      'ring-main-color border-transparent ring-2': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
                       'border-red-500 ring-red-500': !!fieldState.error
                     }
@@ -368,7 +368,7 @@ export default function AutoCompleteField<
                       }}
                     >
                       {loading ? (
-                        <CircleLoading className='stroke-dodger-blue my-2 size-7' />
+                        <CircleLoading className='stroke-main-color my-2 size-7' />
                       ) : (
                         combinedOptions.map((opt, idx) => (
                           <CommandItem

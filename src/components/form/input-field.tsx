@@ -134,11 +134,11 @@ function InputFieldInner<T extends FieldValues>(
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,
-                    'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500':
+                    'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500 dark:border-slate-800':
                       disabled,
                     'border-red-500 focus-visible:ring-red-500':
                       !!fieldState.error,
-                    'focus-visible:ring-dodger-blue': !fieldState.error
+                    'focus-visible:ring-main-color': !fieldState.error
                   }
                 )}
                 onChange={(e) => {
@@ -203,7 +203,7 @@ function InputFieldInner<T extends FieldValues>(
                           >
                             <span className='flex-1'>{option}</span>
                             {field.value === option && (
-                              <Check className='text-dodger-blue h-4 w-4' />
+                              <Check className='text-main-color h-4 w-4' />
                             )}
                           </div>
                         ))}

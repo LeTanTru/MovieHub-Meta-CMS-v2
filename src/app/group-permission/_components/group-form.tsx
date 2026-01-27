@@ -278,7 +278,7 @@ export default function GroupForm() {
                               });
                             }
                           }}
-                          className='data-[state=checked]:bg-dodger-blue [&>span[data-state=indeterminate]]:bg-dodger-blue mb-0! cursor-pointer transition-all duration-100 ease-linear data-[state=checked]:border-transparent data-[state=indeterminate]:bg-transparent [&>span[data-state=indeterminate]]:m-auto [&>span[data-state=indeterminate]]:h-1/2 [&>span[data-state=indeterminate]]:w-1/2 [&>span[data-state=indeterminate]>svg]:hidden'
+                          className='data-[state=checked]:bg-main-color [&>span[data-state=indeterminate]]:bg-main-color mb-0! cursor-pointer transition-all duration-100 ease-linear data-[state=checked]:border-transparent data-[state=indeterminate]:bg-transparent [&>span[data-state=indeterminate]]:m-auto [&>span[data-state=indeterminate]]:h-1/2 [&>span[data-state=indeterminate]]:w-1/2 [&>span[data-state=indeterminate]>svg]:hidden'
                         />
                         <label
                           className='cursor-pointer select-none'
@@ -332,7 +332,7 @@ export default function GroupForm() {
                                     onCheckedChange={handleToggle}
                                     id={permission.id.toString()}
                                     className={
-                                      'data-[state=checked]:bg-dodger-blue data-[state=checked]:border-dodger-blue cursor-pointer transition-all duration-100 ease-linear data-[state=unchecked]:text-white'
+                                      'data-[state=checked]:bg-main-color data-[state=checked]:border-main-color cursor-pointer transition-all duration-100 ease-linear data-[state=unchecked]:text-white'
                                     }
                                   />
                                   <label

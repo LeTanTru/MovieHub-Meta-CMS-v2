@@ -205,7 +205,7 @@ export default function BaseTable<T extends Record<any, any>>({
                 transition={{ duration: 0.2, ease: 'linear' }}
                 className='absolute inset-0 top-[55px] z-50 flex items-start justify-center bg-white/70 pt-5'
               >
-                <CircleLoading className='stroke-dodger-blue size-8' />
+                <CircleLoading className='stroke-main-color size-8' />
               </m.div>
             )}
           </AnimatePresence>

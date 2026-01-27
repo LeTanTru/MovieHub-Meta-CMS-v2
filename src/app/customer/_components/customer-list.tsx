@@ -64,7 +64,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
                     {record.status === STATUS_ACTIVE ? (
                       <AiOutlineLock className='text-destructive size-4' />
                     ) : (
-                      <AiOutlineCheck className='text-dodger-blue size-4' />
+                      <AiOutlineCheck className='text-main-color size-4' />
                     )}
                   </Button>
                 </span>
@@ -123,7 +123,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
           href={generatePath(route.customer.business.getList.path, {
             id: record.id
           })}
-          className='text-dodger-blue'
+          className='text-main-color'
         >
           {value ?? '---'}
         </Link>
