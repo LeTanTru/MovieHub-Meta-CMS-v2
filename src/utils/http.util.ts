@@ -21,7 +21,9 @@ import {
   removeAccessTokenFromLocalStorage,
   removeRefreshTokenFromLocalStorage,
   removeAccessTokenFromCookie,
-  removeRefreshTokenFromCookie
+  removeRefreshTokenFromCookie,
+  removeData,
+  removeCookieData
 } from '@/utils';
 import axios, {
   AxiosError,
@@ -136,16 +138,18 @@ axiosInstance.interceptors.response.use(
         if (
           error instanceof AxiosError &&
           error?.response?.status === HttpStatusCode.BadRequest &&
-          error?.response?.data?.length &&
-          error?.response?.data?.includes('refresh token')
+          error?.response?.data?.message &&
+          error?.response?.data?.message?.includes('Invalid refresh token')
         ) {
           if (isClient()) {
             removeAccessTokenFromLocalStorage();
             removeRefreshTokenFromLocalStorage();
+            removeData(storageKeys.USER_KIND);
             window.location.href = route.login.path;
           } else {
             await removeAccessTokenFromCookie();
             await removeRefreshTokenFromCookie();
+            await removeCookieData(storageKeys.USER_KIND);
             redirect(route.login.path);
           }
         }

@@ -47,32 +47,6 @@ const useDragDrop = <T extends Record<string, any>>({
       })
   });
 
-  const onDragEnd = useCallback(
-    async (event: DragEndEvent) => {
-      const { active, over } = event;
-
-      if (!active || !over || active.id === over.id) return;
-
-      const currentData = sortedData;
-
-      const activeIndex = currentData.findIndex(
-        (item) => item.id === active.id
-      );
-      const overIndex = currentData.findIndex((item) => item.id === over.id);
-
-      if (activeIndex === -1 || overIndex === -1) return;
-
-      const newData = arrayMove(currentData, activeIndex, overIndex);
-      setSortedData(newData);
-      setIsChanged(true);
-
-      if (updateOnDragEnd) {
-        await handleUpdate(newData);
-      }
-    },
-    [sortedData, updateOnDragEnd]
-  );
-
   const handleUpdate = useCallback(
     async (dataOverride?: T[]) => {
       const finalData = dataOverride || sortedData;
@@ -118,6 +92,32 @@ const useDragDrop = <T extends Record<string, any>>({
       key,
       objectName
     ]
+  );
+
+  const onDragEnd = useCallback(
+    async (event: DragEndEvent) => {
+      const { active, over } = event;
+
+      if (!active || !over || active.id === over.id) return;
+
+      const currentData = sortedData;
+
+      const activeIndex = currentData.findIndex(
+        (item) => item.id === active.id
+      );
+      const overIndex = currentData.findIndex((item) => item.id === over.id);
+
+      if (activeIndex === -1 || overIndex === -1) return;
+
+      const newData = arrayMove(currentData, activeIndex, overIndex);
+      setSortedData(newData);
+      setIsChanged(true);
+
+      if (updateOnDragEnd) {
+        await handleUpdate(newData);
+      }
+    },
+    [handleUpdate, sortedData, updateOnDragEnd]
   );
 
   useEffect(() => {
