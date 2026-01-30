@@ -45,7 +45,7 @@ export default function TimePickerField<T extends FieldValues>({
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
   const seconds = Array.from({ length: 60 }, (_, i) => i);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const showHour = timeFormat.includes('HH');
   const showMinute = timeFormat.includes('mm');
@@ -154,7 +154,7 @@ export default function TimePickerField<T extends FieldValues>({
                 side='bottom'
                 align='start'
               >
-                <div className='flex flex-col divide-y sm:h-[250px] sm:flex-row sm:divide-x sm:divide-y-0'>
+                <div className='flex flex-col divide-y sm:h-62.5 sm:flex-row sm:divide-x sm:divide-y-0'>
                   {showHour && (
                     <ScrollArea className='w-64 sm:w-auto'>
                       <div className='flex p-2 sm:flex-col'>
