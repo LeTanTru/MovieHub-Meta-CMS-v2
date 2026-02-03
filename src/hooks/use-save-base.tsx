@@ -117,6 +117,9 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
             await queryClient.invalidateQueries({
               queryKey: [queryKey, pathParams.id]
             });
+            await queryClient.invalidateQueries({
+              queryKey: [`${queryKey}-list`]
+            });
             if (showNotify)
               notify.success(
                 `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`
