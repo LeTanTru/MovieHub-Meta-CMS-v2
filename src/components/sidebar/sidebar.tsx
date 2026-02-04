@@ -1,7 +1,7 @@
 'use client';
 
 import './sidebar.css';
-import { ChevronDown, CircleUserRound } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -426,9 +426,6 @@ const AppSidebar = () => {
               src={renderImageUrl(profile?.avatarPath)}
               disablePreview
               size={40}
-              icon={
-                <CircleUserRound className='size-8 fill-transparent stroke-gray-600 stroke-2' />
-              }
             />
           </SidebarMenuItem>
         </SidebarMenu>
