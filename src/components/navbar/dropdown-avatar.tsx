@@ -10,7 +10,7 @@ import { route } from '@/routes';
 import { useAppLoadingStore, useAuthStore } from '@/store';
 import { getData, notify, removeData, renderImageUrl, setData } from '@/utils';
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
-import { ChevronDown, CircleUserRound, LogOut, User } from 'lucide-react';
+import { ChevronDown, LogOut, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -89,9 +89,6 @@ export default function DropdownAvatar() {
           src={renderImageUrl(profile?.avatarPath)}
           disablePreview
           size={40}
-          icon={
-            <CircleUserRound className='size-8 fill-transparent stroke-gray-600 stroke-2' />
-          }
           className='rounded-full'
         />
         <ChevronDown className='size-5' />

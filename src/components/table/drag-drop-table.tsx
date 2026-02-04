@@ -95,7 +95,7 @@ function SortableRow<T extends Record<any, any>>({
     <TableRow
       ref={setNodeRef}
       className={cn(
-        'border-b-[0.2px] hover:bg-zinc-50',
+        'not-last:border-b-[0.2px] hover:bg-zinc-50',
         rowClassName?.(row, rowIndex)
       )}
       onClick={onSelect}
@@ -163,7 +163,7 @@ export default function DragDropTable<T extends Record<any, any>>({
   }, [dataSource, rows]);
 
   return (
-    <div className='mr-2 flex flex-col gap-y-5 rounded-br-lg rounded-bl-lg bg-white text-sm'>
+    <div className='mr-2 flex flex-col gap-y-5 overflow-hidden rounded-lg bg-white text-sm'>
       <div
         className='base-table relative flex-1 overflow-hidden'
         ref={tableRef}
@@ -175,7 +175,7 @@ export default function DragDropTable<T extends Record<any, any>>({
         >
           <Table className='w-full table-fixed overflow-hidden'>
             <TableHeader className='bg-gray-50'>
-              <TableRow className='border-b-[0.2px]'>
+              <TableRow className='not-last:border-b-[0.2px]'>
                 {columns.map((col, idx) => {
                   const isLast = idx === columns.length - 1;
                   return (
@@ -198,7 +198,7 @@ export default function DragDropTable<T extends Record<any, any>>({
                 })}
               </TableRow>
             </TableHeader>
-            <TableBody className='[&_tr:last-child]:border-b'>
+            <TableBody>
               {rows.length > 0 ? (
                 <>
                   <SortableContext

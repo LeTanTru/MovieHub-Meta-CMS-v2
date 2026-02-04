@@ -18,7 +18,6 @@ import type {
   SearchFormProps
 } from '@/types';
 import { renderImageUrl } from '@/utils';
-import { AiOutlineUser } from 'react-icons/ai';
 
 export default function AdminList({ queryKey }: { queryKey: string }) {
   const { data, pagination, loading, handlers } = useListBase<
@@ -49,7 +48,6 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
           size={50}
           disablePreview={!value}
           src={renderImageUrl(value)}
-          icon={<AiOutlineUser className='size-7 text-slate-800' />}
         />
       )
     },
