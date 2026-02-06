@@ -1,14 +1,7 @@
 'use client';
 
-import { type ReactNode, useRef, useState, useEffect } from 'react';
-import {
-  LazyMotion,
-  domAnimation,
-  m,
-  AnimatePresence,
-  type HTMLMotionProps
-} from 'framer-motion';
-
+import { ReactNode, useRef, useState, useEffect } from 'react';
+import { AnimatePresence, m, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
 import { useIsMounted } from '@/hooks';
@@ -24,12 +17,16 @@ export type ModalProps = Omit<HTMLMotionProps<'div'>, 'title'> & {
   closeOnBackdropClick?: boolean;
   title?: string | ReactNode;
   showClose?: boolean;
-  width?: number;
   variants?: {
     initial: Record<string, any>;
     animate: Record<string, any>;
     exit: Record<string, any>;
   };
+  headerClassName?: string;
+  bodyClassName?: string;
+  bodyRef?: React.RefObject<HTMLDivElement | null>;
+  bodyStyle?: React.CSSProperties;
+  scrollable?: boolean;
 };
 
 export default function Modal({
@@ -50,14 +47,20 @@ export default function Modal({
     animate: { y: 0, opacity: 1, scale: 1 },
     exit: { y: -100, opacity: 0, scale: 0.95 }
   },
-  width,
+  headerClassName,
+  bodyClassName,
+  bodyRef,
+  bodyStyle,
+  scrollable = false,
   ...rest
 }: ModalProps) {
   const isMounted = useIsMounted();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [showScrollArrow, setShowScrollArrow] = useState(false);
+  const [showScrollArrow, setShowScrollArrow] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!scrollable) return;
+
     const checkOverflow = () => {
       if (scrollRef.current) {
         const { scrollHeight, clientHeight, scrollTop } = scrollRef.current;
@@ -76,7 +79,7 @@ export default function Modal({
       scrollElement?.removeEventListener('scroll', checkOverflow);
       window.removeEventListener('resize', checkOverflow);
     };
-  }, [open, children]);
+  }, [open, children, scrollable]);
 
   const handleScrollDown = () => {
     if (scrollRef.current) {
@@ -87,86 +90,94 @@ export default function Modal({
   if (!isMounted) return;
 
   return createPortal(
-    <LazyMotion features={domAnimation} strict>
-      <AnimatePresence>
-        {open && (
-          <>
-            <Activity visible={backdrop}>
-              <m.div
-                className='fixed inset-0 z-20 bg-black/50'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={closeOnBackdropClick ? onClose : undefined}
-              />
-            </Activity>
-
+    <AnimatePresence>
+      {open && (
+        <m.div
+          onClick={(e) => e.stopPropagation()}
+          className={cn(
+            'fixed inset-0 z-20 flex items-center justify-center',
+            className
+          )}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          {...rest}
+        >
+          <Activity visible={backdrop}>
             <m.div
-              onClick={(e) => e.stopPropagation()}
-              className={cn(
-                'fixed inset-0 z-20 flex items-center justify-center overflow-auto p-4',
-                className
-              )}
+              className='backdrop absolute inset-0 bg-black/50'
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              {...rest}
-            >
-              <m.div
-                className='content scrollbar-none relative flex max-h-[80vh] w-full flex-col rounded-lg bg-white shadow-[0px_0px_10px_5px] shadow-black/20'
-                initial={variants.initial}
-                animate={variants.animate}
-                exit={variants.exit}
-                transition={{ duration: 0.15, ease: 'linear' }}
-                onClick={(e) => e.stopPropagation()}
-                style={{ maxWidth: width ?? 'auto' }}
+              onClick={closeOnBackdropClick ? onClose : undefined}
+            />
+          </Activity>
+
+          <m.div
+            className={
+              'body-wrapper absolute top-1/2 left-1/2 h-[80vh] min-h-[80vh] w-300 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
+            }
+            initial={variants.initial}
+            animate={variants.animate}
+            exit={variants.exit}
+            transition={{ duration: 0.15, ease: 'linear' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Activity visible={!!title || !!showClose}>
+              <div
+                className={cn(
+                  'flex items-center justify-between border-b border-gray-200 px-4 dark:border-none',
+                  headerClassName
+                )}
               >
-                <Activity visible={!!title || !!showClose}>
-                  <div className='flex shrink-0 items-center justify-between border-b border-gray-200 pr-2 pl-4'>
-                    <div className='text-base font-semibold text-gray-800'>
-                      {title}
-                    </div>
-
-                    <Activity visible={showClose}>
-                      <Button
-                        className='p-0! text-gray-500 transition hover:text-black'
-                        onClick={onClose}
-                        variant={'ghost'}
-                      >
-                        <X className='size-5' />
-                      </Button>
-                    </Activity>
-                  </div>
-                </Activity>
-
-                <div
-                  ref={scrollRef}
-                  className='scrollbar-none relative flex-1 overflow-auto rounded-lg'
-                >
-                  {children}
-
-                  <AnimatePresence>
-                    {showScrollArrow && (
-                      <m.button
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.1, ease: [0.4, 0, 0.2, 1] }}
-                        onClick={handleScrollDown}
-                        className='absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce rounded-full bg-white p-2 shadow-[0px_0px_10px_2px] shadow-gray-300 transition hover:bg-gray-50'
-                        aria-label='Scroll down'
-                      >
-                        <ChevronDown className='size-5 text-slate-800' />
-                      </m.button>
-                    )}
-                  </AnimatePresence>
+                <div className='text-base font-semibold text-gray-800 dark:text-white'>
+                  {title}
                 </div>
-              </m.div>
-            </m.div>
-          </>
-        )}
-      </AnimatePresence>
-    </LazyMotion>,
+
+                <Activity visible={showClose && onClose !== undefined}>
+                  <Button
+                    className='p-0! text-gray-500 transition hover:bg-transparent hover:text-black dark:hover:bg-transparent'
+                    onClick={onClose}
+                    variant='ghost'
+                  >
+                    <X className='size-5' />
+                  </Button>
+                </Activity>
+              </div>
+            </Activity>
+
+            <div ref={bodyRef} className='body relative h-full'>
+              <div
+                ref={scrollRef}
+                className={cn(
+                  'scrollbar-none h-full rounded-br-lg rounded-bl-lg',
+                  { 'overflow-auto': scrollable },
+                  bodyClassName
+                )}
+                style={bodyStyle}
+              >
+                {children}
+              </div>
+
+              <AnimatePresence>
+                {scrollable && showScrollArrow && (
+                  <m.button
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    onClick={handleScrollDown}
+                    className='absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce rounded-full p-2 text-white shadow-[0px_0px_10px_2px] shadow-gray-300 transition'
+                    aria-label='Scroll down'
+                  >
+                    <ChevronDown className='size-5 text-slate-800' />
+                  </m.button>
+                )}
+              </AnimatePresence>
+            </div>
+          </m.div>
+        </m.div>
+      )}
+    </AnimatePresence>,
     document.body
   );
 }

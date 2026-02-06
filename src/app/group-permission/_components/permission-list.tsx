@@ -386,7 +386,7 @@ export default function PermissionList() {
         title={`${!isEditing ? 'Thêm' : 'Cập nhật'} quyền`}
         open={opened}
         onClose={handleClose}
-        width={800}
+        className='[&_.body-wrapper]:top-1/2 [&_.body-wrapper]:h-auto [&_.body-wrapper]:min-h-0 [&_.body-wrapper]:w-200'
       >
         <BaseForm
           defaultValues={defaultValues}
