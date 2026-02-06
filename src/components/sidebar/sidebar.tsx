@@ -95,7 +95,7 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
   const handleSubItemClick = (sub: MenuItem) => {
     let path = sub.path;
     let query = '';
-    if (!path || pathname.includes(path)) return;
+    if (!path || pathname === path) return;
     if (sub.query) query = serializeParams(sub.query);
     setSidebarState('expanded');
     if (query) path = `${path}?${query}`;

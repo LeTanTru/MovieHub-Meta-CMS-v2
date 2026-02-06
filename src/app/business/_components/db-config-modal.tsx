@@ -141,7 +141,7 @@ export default function DbConfigModal({
     <Modal
       open={open}
       onClose={onClose}
-      width={800}
+      className='[&_.body-wrapper]:top-1/3 [&_.body-wrapper]:h-auto [&_.body-wrapper]:min-h-0 [&_.body-wrapper]:w-200'
       title={`${!isEditing ? 'Thêm' : 'Cập nhật'} cấu hình cơ sở dữ liệu`}
     >
       <BaseForm

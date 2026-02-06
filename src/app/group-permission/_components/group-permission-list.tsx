@@ -206,8 +206,7 @@ export default function GroupPermissionList({
         title={`${!isEditing ? 'Thêm' : 'Cập nhật'} nhóm quyền`}
         open={opened}
         onClose={handleClose}
-        width={700}
-        className='[&_.content]:bottom-[25%] [&_.content]:h-fit'
+        className='[&_.body-wrapper]:top-1/3 [&_.body-wrapper]:h-auto [&_.body-wrapper]:min-h-0 [&_.body-wrapper]:w-200'
       >
         <BaseForm
           defaultValues={defaultValues}

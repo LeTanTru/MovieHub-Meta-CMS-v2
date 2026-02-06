@@ -82,7 +82,7 @@ export default function SearchForm<S extends FieldValues>({
         <Col
           span={24}
           className={cn('my-0', {
-            grow: searchFields.length > 4
+            grow: searchFields.length >= 4
           })}
         >
           <Row
@@ -213,7 +213,7 @@ export default function SearchForm<S extends FieldValues>({
               }
             })}
             <Activity
-              visible={!!searchFields.length && searchFields.length <= 4}
+              visible={!!searchFields.length && searchFields.length < 4}
             >
               <Col style={{ width: 'auto' }} className='my-0 inline-block px-0'>
                 <div className='flex items-center gap-2'>
@@ -232,7 +232,7 @@ export default function SearchForm<S extends FieldValues>({
             </Activity>
           </Row>
         </Col>
-        <Activity visible={searchFields.length > 4}>
+        <Activity visible={searchFields.length >= 4}>
           <Col style={{ width: 'auto' }} className='my-0 inline-block px-0'>
             <div className='flex items-center gap-2'>
               <Button type='submit' variant='primary'>
