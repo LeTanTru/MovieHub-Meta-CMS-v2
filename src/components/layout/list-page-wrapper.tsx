@@ -1,4 +1,3 @@
-import { Activity } from '@/components/activity';
 import { cn } from '@/lib';
 import type { ReactNode } from 'react';
 
@@ -31,9 +30,7 @@ export default function ListPageWrapper({
           }
         )}
       >
-        <Activity visible={!!searchForm}>
-          <div className='flex-1'>{searchForm}</div>
-        </Activity>
+        {!!searchForm && <div className='flex-1'>{searchForm}</div>}
         <div
           className={cn('flex gap-2', {
             'ml-auto': !searchForm,

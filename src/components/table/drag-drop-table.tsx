@@ -32,7 +32,6 @@ import { CSS } from '@dnd-kit/utilities';
 import { Grip } from 'lucide-react';
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
 import { CircleLoading } from '@/components/loading';
-import { Activity } from '@/components/activity';
 
 function getValueByPath<T extends Record<string, any>>(
   obj: T,
@@ -219,26 +218,24 @@ export default function DragDropTable<T extends Record<any, any>>({
                     ))}
                   </SortableContext>
                 </>
-              ) : (
-                <Activity visible={!dataSource.length}>
-                  <TableRow className='hover:bg-transparent'>
-                    <TableCell
-                      colSpan={columns.length}
-                      className='py-8 text-center align-middle'
-                    >
-                      <div className='flex flex-col items-center justify-center'>
-                        <Image
-                          src={emptyData.src}
-                          alt='Không có dữ liệu'
-                          width={150}
-                          height={50}
-                        />
-                        <span>Không có dữ liệu</span>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                </Activity>
-              )}
+              ) : dataSource.length === 0 ? (
+                <TableRow className='hover:bg-transparent'>
+                  <TableCell
+                    colSpan={columns.length}
+                    className='py-8 text-center align-middle'
+                  >
+                    <div className='flex flex-col items-center justify-center'>
+                      <Image
+                        src={emptyData.src}
+                        alt='Không có dữ liệu'
+                        width={150}
+                        height={50}
+                      />
+                      <span>Không có dữ liệu</span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : null}
             </TableBody>
           </Table>
         </DndContext>

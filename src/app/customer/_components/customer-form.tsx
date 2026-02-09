@@ -1,6 +1,5 @@
 'use client';
 
-import { Activity } from '@/components/activity';
 import {
   Col,
   InputField,
@@ -309,11 +308,11 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
                 onCancel: handleCancel
               })}
             </>
-            <Activity visible={loading}>
+            {loading && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-main-color mt-20 size-8' />
               </div>
-            </Activity>
+            )}
           </>
         )}
       </BaseForm>

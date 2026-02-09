@@ -7,7 +7,6 @@ import { createPortal } from 'react-dom';
 import { useIsMounted } from '@/hooks';
 import { X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/form';
-import { Activity } from '@/components/activity';
 
 export type ModalProps = Omit<HTMLMotionProps<'div'>, 'title'> & {
   children: ReactNode;
@@ -103,7 +102,7 @@ export default function Modal({
           exit={{ opacity: 0 }}
           {...rest}
         >
-          <Activity visible={backdrop}>
+          {backdrop && (
             <m.div
               className='backdrop absolute inset-0 bg-black/50'
               initial={{ opacity: 0 }}
@@ -111,7 +110,7 @@ export default function Modal({
               exit={{ opacity: 0 }}
               onClick={closeOnBackdropClick ? onClose : undefined}
             />
-          </Activity>
+          )}
 
           <m.div
             className={
@@ -123,7 +122,7 @@ export default function Modal({
             transition={{ duration: 0.15, ease: 'linear' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <Activity visible={!!title || !!showClose}>
+            {(!!title || !!showClose) && (
               <div
                 className={cn(
                   'flex items-center justify-between border-b border-gray-200 px-4 dark:border-none',
@@ -134,7 +133,7 @@ export default function Modal({
                   {title}
                 </div>
 
-                <Activity visible={showClose && onClose !== undefined}>
+                {showClose && onClose !== undefined && (
                   <Button
                     className='p-0! text-gray-500 transition hover:bg-transparent hover:text-black dark:hover:bg-transparent'
                     onClick={onClose}
@@ -142,9 +141,9 @@ export default function Modal({
                   >
                     <X className='size-5' />
                   </Button>
-                </Activity>
+                )}
               </div>
-            </Activity>
+            )}
 
             <div ref={bodyRef} className='body relative h-full'>
               <div
