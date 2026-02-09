@@ -17,7 +17,6 @@ import { CircleLoading } from '@/components/loading';
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Pagination } from '@/components/pagination';
-import { Activity } from '@/components/activity';
 
 function getValueByPath<T extends Record<string, any>>(
   obj: T,
@@ -162,31 +161,29 @@ export default function BaseTable<T extends Record<any, any>>({
                     </TableRow>
                   )} */}
                 </>
-              ) : (
-                <Activity visible={dataSource.length === 0 && !loading}>
-                  <TableRow className='hover:bg-transparent'>
-                    <TableCell
-                      colSpan={columns.length}
-                      className='py-8 text-center align-middle'
-                      style={{ textAlign: 'center' }}
-                    >
-                      <div className='flex flex-col items-center justify-center'>
-                        <Image
-                          src={emptyData.src}
-                          alt='Không có dữ liệu'
-                          width={150}
-                          height={50}
-                        />
-                        <span>Không có dữ liệu</span>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                </Activity>
-              )}
+              ) : dataSource.length === 0 && !loading ? (
+                <TableRow className='hover:bg-transparent'>
+                  <TableCell
+                    colSpan={columns.length}
+                    className='py-8 text-center align-middle'
+                    style={{ textAlign: 'center' }}
+                  >
+                    <div className='flex flex-col items-center justify-center'>
+                      <Image
+                        src={emptyData.src}
+                        alt='Không có dữ liệu'
+                        width={150}
+                        height={50}
+                      />
+                      <span>Không có dữ liệu</span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : null}
             </TableBody>
           </Table>
         </div>
-        <Activity visible={!(!total || total <= 1)}>
+        {!(!total || total <= 1) && (
           <div className='flex justify-end'>
             <Pagination
               changePagination={changePagination}
@@ -194,7 +191,7 @@ export default function BaseTable<T extends Record<any, any>>({
               totalPages={total}
             />
           </div>
-        </Activity>
+        )}
         <LazyMotion features={domAnimation} strict>
           <AnimatePresence>
             {loading && (

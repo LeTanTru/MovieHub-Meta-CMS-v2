@@ -1,4 +1,3 @@
-import { Activity } from '@/components/activity';
 import { getLanguageLabel } from '@/utils';
 import {
   Menu,
@@ -196,11 +195,11 @@ function VideoQualitySubmenu() {
               <span className='ml-2'>
                 {label === 'Auto' ? 'Tự động' : label}
               </span>
-              <Activity visible={!!bitrateText}>
+              {!!bitrateText && (
                 <span className='ml-auto text-sm text-white/40'>
                   {bitrateText}
                 </span>
-              </Activity>
+              )}
             </Menu.Radio>
           ))}
         </Menu.RadioGroup>

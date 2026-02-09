@@ -1,5 +1,5 @@
 'use client';
-import { Activity } from '@/components/activity';
+
 import {
   Button,
   Col,
@@ -196,7 +196,7 @@ export default function GroupForm() {
                   required
                 />
               </Col>
-              <Activity visible={isCreate}>
+              {isCreate && (
                 <Col>
                   <SelectField
                     getLabel={(option) => option.label}
@@ -209,7 +209,7 @@ export default function GroupForm() {
                     required
                   />
                 </Col>
-              </Activity>
+              )}
             </Row>
             <Row>
               <Col span={24}>

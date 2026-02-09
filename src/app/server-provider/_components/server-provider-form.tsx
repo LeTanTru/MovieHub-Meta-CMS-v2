@@ -1,6 +1,5 @@
 'use client';
 
-import { Activity } from '@/components/activity';
 import { Col, FieldSet, InputField, NumberField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
@@ -239,11 +238,11 @@ export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
               </Row>
             </FieldSet>
             <>{renderActions(form)}</>
-            <Activity visible={loading}>
+            {loading && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-main-color mt-20 size-8' />
               </div>
-            </Activity>
+            )}
           </>
         )}
       </BaseForm>

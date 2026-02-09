@@ -114,12 +114,14 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
       {
         onSuccess: async (res) => {
           if (res.result) {
-            await queryClient.invalidateQueries({
-              queryKey: [queryKey, pathParams.id]
-            });
-            await queryClient.invalidateQueries({
-              queryKey: [`${queryKey}-list`]
-            });
+            await Promise.all([
+              queryClient.invalidateQueries({
+                queryKey: [queryKey, pathParams.id]
+              }),
+              queryClient.invalidateQueries({
+                queryKey: [`${queryKey}-list`]
+              })
+            ]);
             if (showNotify)
               notify.success(
                 `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`

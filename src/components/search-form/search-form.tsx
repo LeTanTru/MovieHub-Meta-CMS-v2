@@ -1,6 +1,5 @@
 'use client';
 
-import { Activity } from '@/components/activity';
 import {
   AutoCompleteField,
   BooleanField,
@@ -212,9 +211,7 @@ export default function SearchForm<S extends FieldValues>({
                 }
               }
             })}
-            <Activity
-              visible={!!searchFields.length && searchFields.length < 4}
-            >
+            {!!searchFields.length && searchFields.length < 4 && (
               <Col style={{ width: 'auto' }} className='my-0 inline-block px-0'>
                 <div className='flex items-center gap-2'>
                   <Button type='submit' variant='primary'>
@@ -229,10 +226,10 @@ export default function SearchForm<S extends FieldValues>({
                   </Button>
                 </div>
               </Col>
-            </Activity>
+            )}
           </Row>
         </Col>
-        <Activity visible={searchFields.length >= 4}>
+        {searchFields.length >= 4 && (
           <Col style={{ width: 'auto' }} className='my-0 inline-block px-0'>
             <div className='flex items-center gap-2'>
               <Button type='submit' variant='primary'>
@@ -247,7 +244,7 @@ export default function SearchForm<S extends FieldValues>({
               </Button>
             </div>
           </Col>
-        </Activity>
+        )}
       </Row>
     );
   };
