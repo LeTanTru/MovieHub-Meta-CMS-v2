@@ -84,11 +84,7 @@ export default function SearchForm<S extends FieldValues>({
             grow: searchFields.length >= 4
           })}
         >
-          <Row
-            className={cn(
-              'mr-0 mb-0 grid grid-cols-4 gap-2 *:my-0 *:p-0 min-[1560px]:grid-cols-5'
-            )}
-          >
+          <Row className={cn('mr-0 mb-0 grid grid-cols-4 gap-2 *:my-0 *:p-0')}>
             {searchFields.map((sf) => {
               switch (sf.type) {
                 case FieldTypes.SELECT: {
