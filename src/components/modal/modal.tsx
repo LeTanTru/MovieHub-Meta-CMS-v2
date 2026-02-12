@@ -122,7 +122,7 @@ export default function Modal({
             transition={{ duration: 0.15, ease: 'linear' }}
             onClick={(e) => e.stopPropagation()}
           >
-            {(!!title || !!showClose) && (
+            {(!!title || showClose) && (
               <div
                 className={cn(
                   'flex items-center justify-between border-b border-gray-200 px-4 dark:border-none',
