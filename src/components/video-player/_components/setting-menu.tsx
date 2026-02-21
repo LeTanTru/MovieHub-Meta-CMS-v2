@@ -195,7 +195,7 @@ function VideoQualitySubmenu() {
               <span className='ml-2'>
                 {label === 'Auto' ? 'Tự động' : label}
               </span>
-              {!!bitrateText && (
+              {bitrateText && (
                 <span className='ml-auto text-sm text-white/40'>
                   {bitrateText}
                 </span>
