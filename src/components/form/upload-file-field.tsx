@@ -18,10 +18,11 @@ import {
 import { Button } from '@/components/form';
 import { FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib';
-import { formatBytes, useFileUpload } from '@/hooks';
+import { useFileUpload } from '@/hooks';
 import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
 import type { ApiResponse } from '@/types';
+import { formatBytes } from '@/hooks/use-file-upload';
 
 type UploadFileFieldProps<T extends FieldValues> = {
   control: Control<T>;

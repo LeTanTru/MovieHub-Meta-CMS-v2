@@ -142,7 +142,7 @@ export default function ImageField({
           )
         ) : (
           <div className='flex h-full w-full items-center justify-center opacity-50'>
-            <AiOutlineFileImage className='h-12 w-12' />
+            <AiOutlineFileImage className='h-12! w-12!' />
           </div>
         )}
 

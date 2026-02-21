@@ -40,6 +40,11 @@ type InputFieldProps<T extends FieldValues> = {
   onOptionSelect?: (value: string) => void;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'name' | 'defaultValue'>;
 
+const toNumberIfPossible = (value: string): string | number => {
+  const num = Number(value);
+  return !isNaN(num) && value.trim() !== '' ? num : value;
+};
+
 function InputFieldInner<T extends FieldValues>(
   {
     control,
@@ -134,7 +139,7 @@ function InputFieldInner<T extends FieldValues>(
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,
-                    'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500 dark:border-slate-800':
+                    'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500':
                       disabled,
                     'border-red-500 focus-visible:ring-red-500':
                       !!fieldState.error,
@@ -142,9 +147,12 @@ function InputFieldInner<T extends FieldValues>(
                   }
                 )}
                 onChange={(e) => {
-                  field.onChange(e);
+                  const raw = e.target.value;
+                  const transformed =
+                    type === 'number' ? toNumberIfPossible(raw) : raw;
+                  field.onChange(transformed);
                   if (options.length > 0) {
-                    handleFilterOptions(e.target.value);
+                    handleFilterOptions(raw);
                     setShowOptions(true);
                   }
                 }}
