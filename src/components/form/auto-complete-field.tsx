@@ -219,6 +219,8 @@ export default function AutoCompleteField<
       control={control}
       name={name}
       render={({ field, fieldState }) => {
+        const selectedValue = field.value;
+
         const toggleValue = (val: string | number) => {
           field.onChange(val.toString());
           const picked = combinedOptions.find((o) => o.value === val);
@@ -373,36 +375,40 @@ export default function AutoCompleteField<
                       {loading ? (
                         <CircleLoading className='stroke-main-color my-2 size-7' />
                       ) : (
-                        combinedOptions.map((opt, idx) => (
-                          <CommandItem
-                            key={opt.value}
-                            onSelect={() => toggleValue(opt.value)}
-                            onMouseEnter={() => setHighlightedIndex(idx)}
-                            onMouseLeave={() => setHighlightedIndex(-1)}
-                            title={opt.label}
-                            className={cn(
-                              'block cursor-pointer truncate rounded transition-all duration-200 ease-linear',
-                              {
-                                'bg-accent text-accent-foreground':
-                                  field.value === opt.value ||
-                                  highlightedIndex === idx
-                              }
-                            )}
-                          >
-                            {renderOption ? (
-                              renderOption(opt)
-                            ) : (
-                              <>
-                                {opt.prefix && (
-                                  <span className='mr-1 font-mono text-xs opacity-70'>
-                                    {opt.prefix}
-                                  </span>
-                                )}
-                                {opt.label}
-                              </>
-                            )}
-                          </CommandItem>
-                        ))
+                        combinedOptions.map((opt, idx) => {
+                          const value = opt.value;
+                          const isSelected = value === selectedValue;
+                          return (
+                            <CommandItem
+                              key={opt.value}
+                              onSelect={() => toggleValue(opt.value)}
+                              onMouseEnter={() => setHighlightedIndex(idx)}
+                              onMouseLeave={() => setHighlightedIndex(-1)}
+                              title={opt.label}
+                              className={cn(
+                                'block cursor-pointer truncate rounded transition-all duration-200 ease-linear',
+                                {
+                                  'bg-accent text-accent-foreground':
+                                    highlightedIndex === idx,
+                                  'bg-main-color/10': isSelected
+                                }
+                              )}
+                            >
+                              {renderOption ? (
+                                renderOption(opt)
+                              ) : (
+                                <>
+                                  {opt.prefix && (
+                                    <span className='mr-1 font-mono text-xs opacity-70'>
+                                      {opt.prefix}
+                                    </span>
+                                  )}
+                                  {opt.label}
+                                </>
+                              )}
+                            </CommandItem>
+                          );
+                        })
                       )}
                     </CommandGroup>
                   )}
