@@ -8,13 +8,7 @@ import {
   useRef,
   useState
 } from 'react';
-import {
-  ArrowLeftIcon,
-  UploadIcon,
-  XIcon,
-  ZoomInIcon,
-  ZoomOutIcon
-} from 'lucide-react';
+import { UploadIcon, XIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
 
 import {
   Cropper,
@@ -29,7 +23,6 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { Slider } from '@/components/ui/slider';
 import { Button, ImageField } from '@/components/form';
 import { FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib';
@@ -43,6 +36,9 @@ import {
 } from 'react-hook-form';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import type { ApiResponse } from '@/types';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
+import { CircleLoading } from '@/components/loading';
 
 type Area = { x: number; y: number; width: number; height: number };
 
@@ -57,7 +53,8 @@ const createImage = (url: string): Promise<HTMLImageElement> =>
 
 async function getCroppedImg(
   imageSrc: string,
-  pixelCrop: Area
+  pixelCrop: Area,
+  outputType?: string
 ): Promise<Blob | null> {
   try {
     const image = await createImage(imageSrc);
@@ -82,7 +79,7 @@ async function getCroppedImg(
     );
 
     return new Promise((resolve) => {
-      canvas.toBlob((blob) => resolve(blob), 'image/jpeg');
+      canvas.toBlob((blob) => resolve(blob), outputType || 'image/jpeg');
     });
   } catch (error) {
     logger.error('getCroppedImg error:', error);
@@ -102,6 +99,8 @@ type UploadImageFieldProps<T extends FieldValues> = {
   loading?: boolean;
   aspect?: number;
   defaultCrop?: boolean;
+  showCrop?: boolean;
+  originalSize?: boolean;
   onChange?: (url: string) => void;
   uploadImageFn: (file: Blob) => Promise<string>;
   deleteImageFn?: (url: string) => Promise<ApiResponse<any> | undefined>;
@@ -118,14 +117,18 @@ export default function UploadImageField<T extends FieldValues>({
   size = 70,
   loading,
   aspect = 1,
-  defaultCrop,
+  defaultCrop = true,
+  showCrop = true,
+  originalSize = false,
   onChange,
   uploadImageFn,
   deleteImageFn
 }: UploadImageFieldProps<T>) {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [shouldCrop, setShouldCrop] = useState<boolean>(defaultCrop ?? false);
+  const [shouldCrop, setShouldCrop] = useState<boolean>(
+    showCrop && defaultCrop
+  );
   const [zoom, setZoom] = useState<number>(1);
   const {
     field: { value: fieldValue, onChange: fieldOnChange },
@@ -143,7 +146,7 @@ export default function UploadImageField<T extends FieldValues>({
       getInputProps,
       clearFiles
     }
-  ] = useFileUpload({ accept: 'image/*' });
+  ] = useFileUpload({ accept: '*' });
 
   const previewUrl = files[0]?.preview;
 
@@ -157,10 +160,14 @@ export default function UploadImageField<T extends FieldValues>({
   const handleApply = async () => {
     if (!previewUrl || !fileId || !uploadImageFn) return;
 
+    const fileType =
+      files[0]?.file instanceof File ? files[0].file.type : undefined;
+    const outputType = fileType || 'image/jpeg';
+
     let blob: Blob | null = null;
 
     if (shouldCrop && croppedAreaPixels) {
-      blob = await getCroppedImg(previewUrl, croppedAreaPixels);
+      blob = await getCroppedImg(previewUrl, croppedAreaPixels, outputType);
     } else {
       const image = await createImage(previewUrl);
       const canvas = document.createElement('canvas');
@@ -172,7 +179,7 @@ export default function UploadImageField<T extends FieldValues>({
       ctx.drawImage(image, 0, 0);
 
       blob = await new Promise((resolve) =>
-        canvas.toBlob((b) => resolve(b), 'image/jpeg')
+        canvas.toBlob((b) => resolve(b), outputType)
       );
     }
 
@@ -204,9 +211,14 @@ export default function UploadImageField<T extends FieldValues>({
 
   useEffect(() => {
     if (fileId && fileId !== previousFileIdRef.current) {
-      setDialogOpen(true);
-      setZoom(1);
-      setCroppedAreaPixels(null);
+      if (showCrop) {
+        setDialogOpen(true);
+        setZoom(1);
+        setCroppedAreaPixels(null);
+      } else {
+        // Upload directly without showing dialog when showCrop is false
+        handleApply();
+      }
     }
     previousFileIdRef.current = fileId;
   }, [fileId]);
@@ -232,13 +244,17 @@ export default function UploadImageField<T extends FieldValues>({
           <Button
             variant={'ghost'}
             type='button'
-            style={{ width: size * aspect, height: size }}
+            style={{
+              width: size * aspect,
+              height: size
+            }}
             className={cn(
               'border-input hover:bg-accent/50 focus-visible:border-ring relative flex cursor-pointer items-center justify-center overflow-hidden border border-dashed p-0 transition-colors outline-none focus-visible:ring-[3px]',
               className,
               {
                 'border border-solid border-red-500': !!error,
-                'border-none': !!value
+                'border-none': !!value,
+                'flex items-center justify-center': originalSize
               }
             )}
             onClick={openFileDialog}
@@ -255,10 +271,13 @@ export default function UploadImageField<T extends FieldValues>({
                 disablePreview
                 src={value}
                 className='size-full rounded-none border-none object-cover'
-                aspect={aspect}
-                width={size * aspect}
-                height={size}
+                aspect={originalSize ? undefined : aspect}
+                width={originalSize ? undefined : size * aspect}
+                height={originalSize ? undefined : size}
+                originalSize={originalSize}
               />
+            ) : loading && !showCrop ? (
+              <CircleLoading className='stroke-main-color dark:stroke-white' />
             ) : (
               <UploadIcon
                 strokeWidth={1}
@@ -301,92 +320,101 @@ export default function UploadImageField<T extends FieldValues>({
         )}
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent
-          className='gap-0 p-0 sm:max-w-140'
-          showCloseButton={false}
-        >
-          <DialogHeader className='text-left'>
-            <DialogTitle className='flex items-center justify-between border-b p-4 text-base'>
-              <div className='flex items-center gap-2'>
-                <Button
-                  type='button'
-                  variant='ghost'
-                  size='icon'
-                  className='-my-1 opacity-60'
-                  onClick={() => setDialogOpen(false)}
-                >
-                  <ArrowLeftIcon />
-                </Button>
-                <span>Cắt ảnh</span>
-              </div>
-              <Button
-                type='button'
-                variant={'primary'}
-                className='-my-1 w-25'
-                onClick={handleApply}
-                disabled={!previewUrl || loading}
-                loading={loading}
-              >
-                Áp dụng
-              </Button>
-            </DialogTitle>
-          </DialogHeader>
-
-          <AspectRatio
-            ratio={aspect < 1 ? 1 : aspect}
-            className='bg-muted h-full'
+      {showCrop && (
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent
+            className='gap-0 p-0 sm:max-w-85 md:max-w-90 lg:max-w-95 xl:max-w-100 2xl:max-w-115'
+            showCloseButton={false}
           >
-            {previewUrl && shouldCrop ? (
-              <Cropper
-                aspectRatio={aspect}
-                className='h-full w-full'
-                image={previewUrl}
-                zoom={zoom}
-                onCropChange={handleCropChange}
-                onZoomChange={setZoom}
-              >
-                <CropperDescription />
-                <CropperImage />
-                <CropperCropArea />
-              </Cropper>
-            ) : (
-              previewUrl && (
-                <img
-                  src={previewUrl}
-                  alt='Preview'
-                  className='h-full w-full object-cover'
-                />
-              )
-            )}
-          </AspectRatio>
+            <DialogHeader className='text-left'>
+              <DialogTitle className='border-none p-0 outline-none'></DialogTitle>
+            </DialogHeader>
 
-          <DialogFooter className='flex flex-col gap-4 border-t px-4 py-6 sm:justify-between'>
-            <label className='flex cursor-pointer items-center gap-2'>
-              <input
-                type='checkbox'
-                checked={shouldCrop}
-                onChange={(e) => setShouldCrop(e.target.checked)}
-              />
-              <span className='text-sm'>Cắt ảnh trước khi lưu</span>
-            </label>
+            <AspectRatio
+              ratio={aspect < 1 ? 1 : aspect}
+              className='bg-muted h-full'
+            >
+              {previewUrl && shouldCrop ? (
+                <Cropper
+                  aspectRatio={aspect}
+                  className='h-full w-full'
+                  image={previewUrl}
+                  zoom={zoom}
+                  onCropChange={handleCropChange}
+                  onZoomChange={setZoom}
+                >
+                  <CropperDescription />
+                  <CropperImage />
+                  <CropperCropArea className='border-main-color border-2' />
+                </Cropper>
+              ) : (
+                previewUrl && (
+                  <img
+                    src={previewUrl}
+                    alt='Preview'
+                    className='h-full w-full object-cover'
+                  />
+                )
+              )}
+            </AspectRatio>
 
-            {shouldCrop && (
-              <div className='mx-auto flex w-full max-w-80 items-center gap-4'>
-                <ZoomOutIcon className='shrink-0 opacity-60' size={16} />
-                <Slider
-                  value={[zoom]}
-                  min={1}
-                  max={3}
-                  step={0.01}
-                  onValueChange={(val) => setZoom(val[0])}
-                />
-                <ZoomInIcon className='shrink-0 opacity-60' size={16} />
+            <DialogFooter className='flex flex-col flex-wrap gap-4 border-t px-4 py-6 sm:justify-between'>
+              {shouldCrop && (
+                <div className='mx-auto flex w-full max-w-80 items-center gap-4'>
+                  <ZoomOutIcon className='shrink-0 opacity-60' size={16} />
+                  <Slider
+                    value={[zoom]}
+                    min={1}
+                    max={3}
+                    step={0.01}
+                    onValueChange={(val) => setZoom(val[0])}
+                    showTooltip
+                    className='cursor-pointer [&_span[role="slider"]]:bg-gray-500'
+                  />
+                  <ZoomInIcon className='shrink-0 opacity-60' size={16} />
+                </div>
+              )}
+
+              <div className='flex w-full justify-between'>
+                <label
+                  id='crop-image'
+                  className='flex cursor-pointer items-center gap-2'
+                >
+                  <Checkbox
+                    id='crop-image'
+                    className='mb-0! cursor-pointer border-transparent transition-colors duration-200 ease-linear focus-visible:ring-0 data-[state=checked]:border-transparent data-[state=checked]:bg-blue-700! data-[state=checked]:text-white'
+                    checked={shouldCrop}
+                    onCheckedChange={(checked) => setShouldCrop(!!checked)}
+                  />
+                  <span className='text-sm'>Cắt ảnh</span>
+                </label>
+
+                <div className='flex items-center justify-center gap-2'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='icon'
+                    className='border-destructive text-destructive hover:border-destructive/80 hover:text-destructive/80! -my-1 w-25'
+                    onClick={() => setDialogOpen(false)}
+                  >
+                    Đóng
+                  </Button>
+                  <Button
+                    type='button'
+                    variant={'primary'}
+                    className='-my-1 w-25'
+                    onClick={handleApply}
+                    disabled={!previewUrl || loading}
+                    loading={loading}
+                  >
+                    Áp dụng
+                  </Button>
+                </div>
               </div>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
