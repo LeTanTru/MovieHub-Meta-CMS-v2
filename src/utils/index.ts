@@ -8,5 +8,6 @@ export * from './menu-config.util';
 export * from './notify.util';
 export * from './number.util';
 export * from './storage.util';
+export * from './text.util';
 export * from './url.util';
 export * from './validate-permission.util';

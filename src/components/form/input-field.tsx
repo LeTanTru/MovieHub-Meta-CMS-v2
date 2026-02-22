@@ -135,7 +135,7 @@ function InputFieldInner<T extends FieldValues>(
                 ref={ref}
                 className={cn(
                   className,
-                  'pt-0! pb-px font-normal shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
+                  'pt-0! pb-px! font-normal shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,

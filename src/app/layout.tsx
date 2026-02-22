@@ -1,5 +1,5 @@
 import './globals.css';
-import { Inter } from 'next/font/google';
+import { Be_Vietnam_Pro } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import NextTopLoader from 'nextjs-toploader';
 import { type ReactNode, Suspense } from 'react';
@@ -11,10 +11,12 @@ import {
 import { Metadata } from 'next';
 import { PermissionGuard } from '@/components/permission-guard';
 
-const inter = Inter({
+const inter = Be_Vietnam_Pro({
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
   subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap'
+  variable: '--font-be-vietnam-pro',
+  display: 'swap',
+  preload: false
 });
 
 export const metadata: Metadata = {

@@ -159,7 +159,7 @@ export default function SelectField<
                   aria-label='Select'
                   disabled={disabled}
                   className={cn(
-                    'w-full justify-between border px-3! py-0 text-black focus-visible:border-transparent',
+                    'hover:border-input w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent',
                     {
                       'ring-main-color border-transparent! ring-2': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
@@ -197,7 +197,10 @@ export default function SelectField<
                 </FormDescription>
               )}
 
-              <PopoverContent className='w-(--radix-popover-trigger-width) border-none p-0 shadow-[0px_0px_10px_2px] shadow-gray-200'>
+              <PopoverContent
+                sideOffset={8}
+                className='w-(--radix-popover-trigger-width) border-none p-0 shadow-[0px_0px_10px_2px] shadow-gray-200'
+              >
                 <Command
                   ref={commandRef}
                   className='bg-background'

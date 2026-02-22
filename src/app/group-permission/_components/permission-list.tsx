@@ -318,7 +318,7 @@ export default function PermissionList() {
                                         <AlertDialogCancel asChild>
                                           <Button
                                             variant='outline'
-                                            className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
+                                            className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
                                           >
                                             Không
                                           </Button>

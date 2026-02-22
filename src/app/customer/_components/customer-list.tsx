@@ -111,8 +111,12 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
       dataIndex: 'avatarPath',
       width: 80,
       align: 'center',
-      render: (value) => (
-        <AvatarField disablePreview={!value} src={renderImageUrl(value)} />
+      render: (value, record) => (
+        <AvatarField
+          disablePreview={!value}
+          src={renderImageUrl(value)}
+          alt={record.fullName}
+        />
       )
     },
     {
@@ -132,7 +136,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
     {
       title: 'Email',
       dataIndex: 'email',
-      width: 220,
+      width: 300,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
           {value ?? '----'}
@@ -142,7 +146,7 @@ export default function CustomerList({ queryKey }: { queryKey: string }) {
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
-      width: 120,
+      width: 200,
       render: (value) => (
         <span className='line-clamp-1' title={value}>
           {value ?? '-----'}
