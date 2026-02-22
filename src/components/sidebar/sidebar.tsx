@@ -34,7 +34,7 @@ import {
 } from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 import { createPortal } from 'react-dom';
-import { renderImageUrl } from '@/utils';
+import { getLastWord, renderImageUrl } from '@/utils';
 import { menuConfig } from '@/constants';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -426,6 +426,7 @@ const AppSidebar = () => {
               src={renderImageUrl(profile?.avatarPath)}
               disablePreview
               size={40}
+              alt={getLastWord(profile?.fullName || '')}
             />
           </SidebarMenuItem>
         </SidebarMenu>

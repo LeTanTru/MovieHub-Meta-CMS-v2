@@ -8,7 +8,14 @@ import { logger } from '@/logger';
 import { useLogoutMutation } from '@/queries';
 import { route } from '@/routes';
 import { useAppLoadingStore, useAuthStore } from '@/store';
-import { getData, notify, removeData, renderImageUrl, setData } from '@/utils';
+import {
+  getData,
+  getLastWord,
+  notify,
+  removeData,
+  renderImageUrl,
+  setData
+} from '@/utils';
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
 import { ChevronDown, LogOut, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -90,6 +97,7 @@ export default function DropdownAvatar() {
           disablePreview
           size={40}
           className='rounded-full'
+          alt={getLastWord(profile?.fullName || '')}
         />
         <ChevronDown className='size-5' />
       </div>

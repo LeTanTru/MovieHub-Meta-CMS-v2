@@ -5,7 +5,6 @@ import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { AiOutlineUser } from 'react-icons/ai';
 import {
   type HTMLAttributes,
   type MouseEvent,
@@ -32,7 +31,6 @@ type AvatarFieldProps = {
   previewAspect?: number;
   alt?: string;
   zoomOnScroll?: boolean;
-  showHoverIcon?: boolean;
 } & HTMLAttributes<HTMLElement>;
 
 export default function AvatarField({
@@ -47,51 +45,52 @@ export default function AvatarField({
   width,
   height,
   previewAspect = 1,
-  showHoverIcon = true,
   zoomOnScroll = true,
   alt,
   ...props
 }: AvatarFieldProps) {
   const isMounted = useIsMounted();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [scale, setScale] = useState<number>(1);
 
   const { isError: imageError } = useImageStatus(src);
 
   const previewRef = useRef<HTMLDivElement | null>(null);
 
+  // Preview is only available when there's a valid src
   const shouldDisablePreview = disablePreview || !src || imageError;
+
+  // Fallback priority:
+  // 1. If src is valid → AvatarImage handles it
+  // 2. If alt is provided → show first char uppercased
+  // 3. Otherwise → show default avatar image
+  const altInitial = alt?.trim().charAt(0).toUpperCase();
 
   const handleClick = (e: MouseEvent) => {
     if (shouldDisablePreview) return;
     e.preventDefault();
     e.stopPropagation();
-    setIsModalOpen(true);
+    setOpen(true);
   };
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
       if (!zoomOnScroll) return;
-
       e.preventDefault();
-
       setScale((prev) => {
-        let next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
-        next = Math.max(1, Math.min(3, next));
-        return next;
+        const next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
+        return Math.max(1, Math.min(3, next));
       });
     },
     [zoomOnScroll]
   );
 
   useEffect(() => {
-    if (!isModalOpen || !previewRef.current) return;
-
+    if (!open || !previewRef.current) return;
     const node = previewRef.current;
     node.addEventListener('wheel', handleWheel, { passive: false });
-
     return () => node.removeEventListener('wheel', handleWheel);
-  }, [handleWheel, isModalOpen]);
+  }, [handleWheel, open]);
 
   if (!isMounted) return null;
 
@@ -101,40 +100,49 @@ export default function AvatarField({
         {...props}
         onClick={props?.onClick ?? handleClick}
         className={cn(
-          'relative mx-auto',
+          'relative',
           { 'cursor-pointer': !shouldDisablePreview },
           className
         )}
         style={{ width: width || size, height: height || size }}
       >
         <Avatar
-          className={cn('h-full w-full shadow-sm', {
+          className={cn('bg-avatar shadow-sm', {
             'transition-all duration-200 ease-linear hover:scale-105 hover:opacity-90':
               !shouldDisablePreview
           })}
+          style={{ width: width || size, height: height || size }}
         >
-          <AvatarImage
-            src={src}
-            alt={alt ?? 'Avatar'}
-            className='object-cover'
-          />
+          {/* 1. Show src if provided */}
+          {src && (
+            <AvatarImage
+              src={src}
+              alt={alt ?? 'Avatar'}
+              className='object-cover'
+            />
+          )}
+
           <AvatarFallback className='bg-muted'>
-            {fallbackSrc || defaultAvatar ? (
+            {altInitial ? (
+              /* 2. Show first char of alt */
+              <span className='text-xl leading-none font-medium'>
+                {altInitial}
+              </span>
+            ) : (
+              /* 3. Default avatar image */
               <Image
                 src={fallbackSrc || defaultAvatar}
-                alt={alt || 'Avatar'}
+                alt='Avatar'
                 width={width || size}
                 height={height || size}
                 className='h-full w-full object-cover'
                 unoptimized
               />
-            ) : (
-              <AiOutlineUser className='h-1/2 w-1/2' />
             )}
           </AvatarFallback>
         </Avatar>
 
-        {!shouldDisablePreview && showHoverIcon && (
+        {!shouldDisablePreview && (
           <div className='absolute inset-0 flex items-center justify-center rounded-full bg-black/30 opacity-0 transition-all duration-200 ease-linear hover:opacity-100'>
             <EyeIcon className='h-6 w-6 text-white' />
           </div>
@@ -144,7 +152,7 @@ export default function AvatarField({
       {createPortal(
         <LazyMotion features={domAnimation} strict>
           <AnimatePresence>
-            {isModalOpen && !shouldDisablePreview && (
+            {open && !shouldDisablePreview && (
               <m.div
                 className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
                 initial={{ opacity: 0 }}
@@ -153,7 +161,7 @@ export default function AvatarField({
                 onClick={(e) => {
                   e.stopPropagation();
                   setScale(1);
-                  setIsModalOpen(false);
+                  setOpen(false);
                 }}
               >
                 <m.div

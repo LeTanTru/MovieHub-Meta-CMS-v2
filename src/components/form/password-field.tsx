@@ -152,12 +152,9 @@ export default function PasswordField<T extends FieldValues>({
                       'border-red-500 focus-visible:ring-red-500':
                         !!fieldState.error,
                       'focus-visible:ring-main-color': !fieldState.error,
-                      // 'pb-1.5': isVisible,
-                      // 'pb-[6.5px]': !isVisible
-                      'pb-0.5': !!field.value,
-                      'pb-1.25': !field.value,
-                      'pb-1.5': !isVisible,
-                      'pb-[5.2px]': isVisible
+                      'pb-0.5': !isVisible && !!field.value, // not show and have value
+                      'pb-1': (!isVisible && !field.value) || isVisible, // not show and no value
+                      'pb-1.25': isVisible && !!field.value
                     }
                   )}
                 />

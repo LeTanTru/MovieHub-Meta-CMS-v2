@@ -33,7 +33,6 @@ type ImageFieldProps = {
   previewClassName?: string;
   imagePreviewClassName?: string;
   hoverIcon?: ComponentType<SVGProps<SVGSVGElement>>;
-  showHoverIcon?: boolean;
   zoomOnScroll?: boolean;
 } & HTMLAttributes<HTMLDivElement>;
 
@@ -51,12 +50,11 @@ export default function ImageField({
   previewClassName,
   imagePreviewClassName,
   hoverIcon: HoverIcon = EyeIcon,
-  showHoverIcon = true,
   zoomOnScroll = true,
   ...props
 }: ImageFieldProps) {
   const isMounted = useIsMounted();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [scale, setScale] = useState<number>(1);
 
   const { isError: imageError } = useImageStatus(src);
@@ -69,7 +67,7 @@ export default function ImageField({
     if (shouldDisablePreview) return;
     e.preventDefault();
     e.stopPropagation();
-    setIsOpen(true);
+    setOpen(true);
   };
 
   const handleWheel = useCallback(
@@ -88,13 +86,13 @@ export default function ImageField({
   );
 
   useEffect(() => {
-    if (!isOpen || !previewRef.current) return;
+    if (!open || !previewRef.current) return;
 
     const node = previewRef.current;
     node.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => node.removeEventListener('wheel', handleWheel);
-  }, [handleWheel, isOpen]);
+  }, [handleWheel, open]);
 
   if (!isMounted) return null;
 
@@ -146,7 +144,7 @@ export default function ImageField({
           </div>
         )}
 
-        {!shouldDisablePreview && showHoverIcon && (
+        {!shouldDisablePreview && (
           <div className='absolute inset-0 flex items-center justify-center rounded bg-black/30 opacity-0 transition-opacity hover:opacity-100'>
             <HoverIcon className='h-7 w-7 text-white' />
           </div>
@@ -155,7 +153,7 @@ export default function ImageField({
       {createPortal(
         <LazyMotion features={domAnimation} strict>
           <AnimatePresence>
-            {isOpen && !shouldDisablePreview && (
+            {open && !shouldDisablePreview && (
               <m.div
                 className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
                 initial={{ opacity: 0 }}
@@ -163,7 +161,7 @@ export default function ImageField({
                 exit={{ opacity: 0 }}
                 onClick={(e) => {
                   setScale(1);
-                  setIsOpen(false);
+                  setOpen(false);
                   e.stopPropagation();
                 }}
               >

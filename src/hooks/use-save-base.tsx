@@ -116,7 +116,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
           if (res.result) {
             await Promise.all([
               queryClient.invalidateQueries({
-                queryKey: [queryKey, pathParams]
+                queryKey: [queryKey]
               }),
               queryClient.invalidateQueries({
                 queryKey: [`${queryKey}-list`]
@@ -159,7 +159,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
         {!form.formState.isDirty ? (
           <Button
             type='button'
-            variant={'ghost'}
+            variant={'outline'}
             onClick={() => {
               if (listPageUrl) {
                 navigate(getBackPath());
@@ -167,7 +167,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
                 options?.onCancel?.();
               }
             }}
-            className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
+            className='border border-red-500 text-red-500 hover:border-red-500/50 hover:text-red-500/50'
           >
             <ArrowLeftFromLine />
             Hủy
@@ -177,8 +177,8 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
             <AlertDialogTrigger asChild>
               <Button
                 type='button'
-                variant={'ghost'}
-                className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
+                variant={'outline'}
+                className='border border-red-500 text-red-500 hover:border-red-500/50 hover:text-red-500/50'
               >
                 <ArrowLeftFromLine />
                 Hủy
