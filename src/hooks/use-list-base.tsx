@@ -438,8 +438,13 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
         );
         return (
           <Badge
-            className='text-sm font-normal'
-            style={{ backgroundColor: status?.color }}
+            className='border border-solid text-sm font-medium'
+            variant='outline'
+            style={{
+              borderColor: `${status?.color}80`,
+              color: `${status?.color}`,
+              backgroundColor: `${status?.color}10`
+            }}
           >
             {status?.label}
           </Badge>

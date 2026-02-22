@@ -92,6 +92,17 @@ export default function AvatarField({
     return () => node.removeEventListener('wheel', handleWheel);
   }, [handleWheel, open]);
 
+  // Lock body scroll without layout shift when modal opens
+  useEffect(() => {
+    if (!open) return;
+
+    document.body.classList.add('body-lock');
+
+    return () => {
+      document.body.classList.remove('body-lock');
+    };
+  }, [open]);
+
   if (!isMounted) return null;
 
   return (
@@ -113,7 +124,7 @@ export default function AvatarField({
           })}
           style={{ width: width || size, height: height || size }}
         >
-          {/* 1. Show src if provided */}
+          {/* AvatarImage handles showing/hiding automatically based on src */}
           {src && (
             <AvatarImage
               src={src}
@@ -121,15 +132,15 @@ export default function AvatarField({
               className='object-cover'
             />
           )}
-
-          <AvatarFallback className='bg-muted'>
+          {/* AvatarFallback is shown when src is empty or image fails to load */}
+          <div className='flex size-full items-center justify-center'>
             {altInitial ? (
-              /* 2. Show first char of alt */
+              /* Show first char of alt if available */
               <span className='text-xl leading-none font-medium'>
                 {altInitial}
               </span>
             ) : (
-              /* 3. Default avatar image */
+              /* Default avatar image */
               <Image
                 src={fallbackSrc || defaultAvatar}
                 alt='Avatar'
@@ -139,7 +150,7 @@ export default function AvatarField({
                 unoptimized
               />
             )}
-          </AvatarFallback>
+          </div>
         </Avatar>
 
         {!shouldDisablePreview && (

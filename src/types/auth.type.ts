@@ -11,7 +11,7 @@ export type LoginResType = {
   scope: string;
   user_kind: number;
   tenant_info: string;
-  user_id: number;
+  user_id: string;
   grant_type: string;
   additional_info: string;
   jti: string;
@@ -37,7 +37,7 @@ export type RefreshTokenResType = {
   scope: string;
   user_kind: number;
   tenant_info: string;
-  user_id: number;
+  user_id: string;
   grant_type: string;
   additional_info: string;
   jti: string;

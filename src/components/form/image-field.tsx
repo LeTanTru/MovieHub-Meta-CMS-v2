@@ -28,6 +28,7 @@ type ImageFieldProps = {
   previewAspect?: number;
   previewSize?: number;
   disablePreview?: boolean;
+  originalSize?: boolean;
   className?: string;
   imageClassName?: string;
   previewClassName?: string;
@@ -45,6 +46,7 @@ export default function ImageField({
   previewAspect = 16 / 9,
   previewSize = 500,
   disablePreview = false,
+  originalSize = false,
   className,
   imageClassName,
   previewClassName,
@@ -103,12 +105,29 @@ export default function ImageField({
         onClick={props?.onClick ?? openPreview}
         className={cn(
           'relative rounded border bg-gray-100 shadow-sm select-none',
-          !shouldDisablePreview && 'cursor-pointer',
+          {
+            'cursor-pointer': !shouldDisablePreview,
+            'flex items-center justify-center bg-black': originalSize
+          },
           className
         )}
       >
         {src && !imageError ? (
-          aspect ? (
+          originalSize ? (
+            <Image
+              src={src}
+              alt={alt}
+              width={0}
+              height={0}
+              sizes='100vw'
+              className={cn(
+                'rounded object-contain',
+                'h-auto w-auto max-w-full',
+                imageClassName
+              )}
+              unoptimized
+            />
+          ) : aspect ? (
             <AspectRatio
               style={{ width, height }}
               ratio={aspect}
