@@ -64,7 +64,7 @@ export const statusOptions = [
   {
     value: STATUS_ACTIVE,
     label: 'Hoạt động',
-    color: '#28a745'
+    color: '#00c950'
   },
   {
     value: STATUS_PENDING,
