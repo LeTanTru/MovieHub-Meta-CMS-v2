@@ -154,6 +154,9 @@ export default function RichTextField<T extends FieldValues>({
                       });
                     }
                   });
+                  editor.on('paste cut', function () {
+                    editor.setDirty(true);
+                  });
                 }
               }}
               onEditorChange={(content) => field.onChange(content)}

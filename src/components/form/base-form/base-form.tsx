@@ -75,7 +75,7 @@ export default function BaseForm<T extends Record<string, any>>({
         ref={ref}
         id={id}
         className={cn('relative rounded-lg bg-white p-4', className)}
-        onSubmit={form.handleSubmit((values) => onSubmit(values, form))}
+        onSubmit={form.handleSubmit((values) => onSubmit(values, enhancedForm))}
         {...rest}
       >
         {children?.(enhancedForm as UseFormReturn<T>)}
