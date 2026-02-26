@@ -62,7 +62,8 @@ function SortableRow<T extends Record<any, any>>({
   rowKey,
   onSelect,
   rowClassName,
-  rowStyle
+  rowStyle,
+  scrollAtEnd
 }: {
   row: T;
   rowIndex: number;
@@ -71,6 +72,7 @@ function SortableRow<T extends Record<any, any>>({
   onSelect?: () => void;
   rowClassName?: (row: T, index: number) => string;
   rowStyle?: (row: T, index: number) => CSSProperties;
+  scrollAtEnd: boolean;
 }) {
   const {
     attributes,
@@ -107,9 +109,17 @@ function SortableRow<T extends Record<any, any>>({
       {columns.map((col, colIndex) => (
         <TableCell
           key={colIndex}
-          className={`h-[65px] px-4 leading-8 ${
-            col.align ? `text-${col.align}` : 'text-left'
-          }`}
+          className={cn(
+            `relative h-[65px] px-4 leading-8 ${
+              col.align ? `text-${col.align}` : 'text-left'
+            }`,
+            {
+              'sticky right-0 z-10 bg-white transition-all duration-300':
+                col.fixed,
+              'before:absolute before:top-0 before:-bottom-px before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
+                col.fixed && !scrollAtEnd
+            }
+          )}
         >
           {col.key === 'sort' ? (
             <button
@@ -144,7 +154,8 @@ export default function DragDropTable<T extends Record<any, any>>({
   rowStyle
 }: DragDropTableProps<T>) {
   const [rows, setRows] = useState(() => dataSource || []);
-  const tableRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollAtEnd, setScrollAtEnd] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -161,45 +172,67 @@ export default function DragDropTable<T extends Record<any, any>>({
     }
   }, [dataSource, rows]);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      const div = scrollRef.current?.querySelector('div');
+      const maxScrollLeft = (div?.scrollWidth ?? 0) - (div?.clientWidth ?? 0);
+      setScrollAtEnd((div?.scrollLeft ?? 0) >= maxScrollLeft);
+    };
+
+    el.querySelector('div')?.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => {
+      el.querySelector('div')?.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <div className='mr-2 flex flex-col gap-y-5 overflow-hidden rounded-lg bg-white text-sm'>
-      <div
-        className='base-table relative flex-1 overflow-hidden'
-        ref={tableRef}
-      >
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCorners}
-          onDragEnd={onDragEnd}
+      <div className='base-table relative flex-1 overflow-hidden'>
+        <div
+          className='scroll-wrapper bg-base-table w-full [&>div]:overflow-y-hidden'
+          ref={scrollRef}
         >
-          <Table className='w-full table-fixed overflow-hidden'>
-            <TableHeader className='bg-gray-50'>
-              <TableRow className='not-last:border-b-[0.2px]'>
-                {columns.map((col, idx) => {
-                  const isLast = idx === columns.length - 1;
-                  return (
-                    <TableHead
-                      key={idx}
-                      className={cn(
-                        `relative bg-zinc-50 px-4 py-4 text-sm! leading-5.5 text-black ${
-                          col.align ? `text-${col.align}` : 'text-left'
-                        }`,
-                        {
-                          'before:absolute before:top-1/2 before:right-0 before:h-1/2 before:w-0.5 before:-translate-y-1/2 before:bg-zinc-100':
-                            !isLast
-                        }
-                      )}
-                      style={{ width: col.width }}
-                    >
-                      {col.title}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.length > 0 ? (
-                <>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCorners}
+            onDragEnd={onDragEnd}
+          >
+            <Table className='w-full min-w-200'>
+              <TableHeader className='bg-gray-50'>
+                <TableRow className='not-last:border-b-[0.2px]'>
+                  {columns.map((col, idx) => {
+                    const isLast = idx === columns.length - (col.fixed ? 2 : 1);
+                    return (
+                      <TableHead
+                        key={idx}
+                        className={cn(
+                          `relative bg-zinc-50 px-4 py-4 text-sm! leading-5.5 text-black ${
+                            col.align ? `text-${col.align}` : 'text-left'
+                          }`,
+                          {
+                            'before:absolute before:top-1/2 before:right-0 before:h-1/2 before:w-0.5 before:-translate-y-1/2 before:bg-zinc-100':
+                              !isLast && !col.fixed,
+                            'sticky right-0 z-10 bg-white transition-all duration-300':
+                              col.fixed,
+                            'before:absolute before:top-0 before:bottom-px before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
+                              col.fixed && !scrollAtEnd
+                          }
+                        )}
+                        style={{ width: col.width }}
+                      >
+                        {col.title}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rows.length > 0 ? (
                   <SortableContext
                     items={rows.map((r) => r[rowKey])}
                     strategy={verticalListSortingStrategy}
@@ -214,31 +247,34 @@ export default function DragDropTable<T extends Record<any, any>>({
                         onSelect={() => onSelectRow?.(row)}
                         rowClassName={rowClassName}
                         rowStyle={rowStyle}
+                        scrollAtEnd={scrollAtEnd}
                       />
                     ))}
                   </SortableContext>
-                </>
-              ) : dataSource.length === 0 ? (
-                <TableRow className='hover:bg-transparent'>
-                  <TableCell
-                    colSpan={columns.length}
-                    className='py-8 text-center align-middle'
-                  >
-                    <div className='flex flex-col items-center justify-center'>
-                      <Image
-                        src={emptyData.src}
-                        alt='Không có dữ liệu'
-                        width={150}
-                        height={50}
-                      />
-                      <span>Không có dữ liệu</span>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : null}
-            </TableBody>
-          </Table>
-        </DndContext>
+                ) : (
+                  !dataSource.length && (
+                    <TableRow className='hover:bg-transparent'>
+                      <TableCell
+                        colSpan={columns.length}
+                        className='py-8 text-center align-middle'
+                      >
+                        <div className='flex flex-col items-center justify-center'>
+                          <Image
+                            src={emptyData.src}
+                            alt='Không có dữ liệu'
+                            width={150}
+                            height={50}
+                          />
+                          <span>Không có dữ liệu</span>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
+              </TableBody>
+            </Table>
+          </DndContext>
+        </div>
         <LazyMotion features={domAnimation} strict>
           <AnimatePresence>
             {loading && (

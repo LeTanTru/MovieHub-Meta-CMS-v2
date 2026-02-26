@@ -8,7 +8,7 @@ export * from './business.type';
 export * from './customer.type';
 export * from './db-config.type';
 export * from './file.type';
-export * from './form-error.type';
+export * from './form.type';
 export * from './group-permission.type';
 export * from './group.type';
 export * from './menu-config.type';
