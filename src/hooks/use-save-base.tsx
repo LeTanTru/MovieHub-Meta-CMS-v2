@@ -19,6 +19,7 @@ import { applyFormErrors, http, notify } from '@/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
+import { useState } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type HandlerType<T> = {
@@ -60,6 +61,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
   const navigate = useNavigate();
   const isCreate = mode === 'create';
   const { searchParams, queryString, serializeParams } = useQueryParams();
+  const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
 
   const itemQuery = useQuery({
     queryKey: [queryKey, pathParams],
@@ -148,6 +150,10 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
         }
       }
     );
+  };
+
+  const onFormChange = (isFormChanged: boolean) => {
+    setIsFormChanged(isFormChanged);
   };
 
   const renderActions = (
@@ -256,11 +262,13 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     handlers,
     itemQuery,
     queryString,
+    isFormChanged,
     isEditing: !isCreate,
     loading: itemQuery.isLoading || itemQuery.isFetching,
     responseCode: itemQuery.data?.code,
     handleSubmit,
-    renderActions
+    renderActions,
+    onFormChange
   };
 };
 

@@ -16,8 +16,8 @@ export type ModalProps = Omit<HTMLMotionProps<'div'>, 'title'> & {
   backdrop?: boolean;
   title?: string | ReactNode;
   showClose?: boolean;
-  confirmClose?: boolean;
-  confirmCloseMessage?: string;
+  confirmOnClose?: boolean;
+  confirmOnCloseMessage?: string;
   variants?: {
     initial: Record<string, any>;
     animate: Record<string, any>;
@@ -39,8 +39,8 @@ export default function Modal({
   className,
   title,
   showClose = true,
-  confirmClose = false,
-  confirmCloseMessage = 'Bạn có chắc chắn muốn hủy không ?',
+  confirmOnClose = false,
+  confirmOnCloseMessage = 'Bạn có chắc chắn muốn hủy không ?',
   variants = {
     initial: { opacity: 0.5, scale: 0.5 },
     animate: { opacity: 1, scale: 1 },
@@ -100,7 +100,7 @@ export default function Modal({
   };
 
   const handleCloseRequest = () => {
-    if (confirmClose) {
+    if (confirmOnClose) {
       setShowConfirm(true);
     } else {
       onClose?.();
@@ -228,7 +228,7 @@ export default function Modal({
                     transition={{ duration: 0.05, ease: 'linear' }}
                   >
                     <p className='text-center text-sm font-medium text-gray-700 dark:text-gray-200'>
-                      {confirmCloseMessage}
+                      {confirmOnCloseMessage}
                     </p>
                     <div className='flex gap-3'>
                       <Button

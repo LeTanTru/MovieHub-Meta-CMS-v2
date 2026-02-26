@@ -37,6 +37,7 @@ export default function GroupPermissionList({
   const [selectedRow, setSelectedRow] = useState<
     GroupPermissionResType | null | undefined
   >(null);
+  const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
 
   const {
     data: groupPermissionList,
@@ -207,12 +208,14 @@ export default function GroupPermissionList({
         open={opened}
         onClose={handleClose}
         bodyWrapperClassName='w-200'
+        confirmOnClose={isFormChanged}
       >
         <BaseForm
           defaultValues={defaultValues}
           initialValues={initialValues}
           onSubmit={onSubmit}
           schema={groupPermissionSchema}
+          onFormChange={setIsFormChanged}
         >
           {(form) => (
             <>

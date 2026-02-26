@@ -50,6 +50,8 @@ export default function DbConfigModal({
     data: dbConfig,
     itemQuery,
     isEditing,
+    isFormChanged,
+    onFormChange,
     renderActions,
     handleSubmit
   } = useSaveBase<DbConfigResType, DbConfigBodyType>({
@@ -141,12 +143,14 @@ export default function DbConfigModal({
       onClose={onClose}
       bodyWrapperClassName='w-200'
       title={`${!isEditing ? 'Thêm' : 'Cập nhật'} cấu hình cơ sở dữ liệu`}
+      confirmOnClose={isFormChanged}
     >
       <BaseForm
         schema={dbConfigSchema}
         defaultValues={defaultValues}
         initialValues={initialValues}
         onSubmit={onSubmit}
+        onFormChange={onFormChange}
       >
         {(form) => (
           <>

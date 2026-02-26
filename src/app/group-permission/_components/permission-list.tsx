@@ -53,6 +53,7 @@ import MediaQuery from 'react-responsive';
 export default function PermissionList() {
   const { opened, open, close } = useDisclosure(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isFormChanged, setIsFormChange] = useState<boolean>(false);
   const [selectedGroupPermissionId, setSelectedGroupPermissionId] =
     useState<string>('');
   const [selectedPermission, setSelectedPermission] =
@@ -387,12 +388,14 @@ export default function PermissionList() {
         open={opened}
         onClose={handleClose}
         bodyWrapperClassName='w-200'
+        confirmOnClose={isFormChanged}
       >
         <BaseForm
           defaultValues={defaultValues}
           initialValues={initialValues}
           onSubmit={onSubmit}
           schema={permissionSchema}
+          onFormChange={setIsFormChange}
         >
           {(form) => (
             <>
