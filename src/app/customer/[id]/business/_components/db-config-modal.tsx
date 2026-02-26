@@ -4,7 +4,6 @@ import {
   BooleanField,
   Col,
   InputField,
-  NumberField,
   Row,
   SelectField
 } from '@/components/form';
@@ -140,7 +139,7 @@ export default function DbConfigModal({
     <Modal
       open={open}
       onClose={onClose}
-      className='[&_.body-wrapper]:top-1/3 [&_.body-wrapper]:h-auto [&_.body-wrapper]:min-h-0 [&_.body-wrapper]:w-200'
+      bodyWrapperClassName='w-200'
       title={`${!isEditing ? 'Thêm' : 'Cập nhật'} cấu hình cơ sở dữ liệu`}
     >
       <BaseForm
@@ -185,12 +184,13 @@ export default function DbConfigModal({
                 />
               </Col>
               <Col>
-                <NumberField
+                <InputField
                   control={form.control}
                   name='maxConnection'
                   label='Số kết nối tối đa'
                   placeholder='Số kết nối tối đa'
                   required
+                  type='number'
                 />
               </Col>
             </Row>

@@ -177,7 +177,10 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { edit: true, configSns: true, dbConfig: true, delete: true }
+      actions: { edit: true, configSns: true, dbConfig: true, delete: true },
+      columnProps: {
+        width: 150
+      }
     })
   ];
 
