@@ -221,7 +221,7 @@ export default function Modal({
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   <m.div
-                    className='mx-4 flex flex-col items-center gap-4 rounded-lg bg-white px-6 py-5 shadow-lg dark:bg-gray-800'
+                    className='flex flex-col items-center gap-4 rounded-lg bg-white px-6 py-5 shadow-lg dark:bg-gray-800'
                     initial={{ scale: 0.85, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.85, opacity: 0 }}
@@ -233,13 +233,13 @@ export default function Modal({
                     <div className='flex gap-3'>
                       <Button
                         variant='outline'
-                        className='w-20 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
+                        className='w-20 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80 dark:border-red-500 dark:hover:border-red-500/80 dark:hover:text-red-500/80'
                         onClick={handleConfirmNo}
                       >
                         Không
                       </Button>
                       <Button
-                        className='bg-main-color hover:bg-main-color/80 w-20 text-white'
+                        className='bg-main-color hover:bg-main-color/80 dark:bg-primary-button w-20 text-white dark:text-black'
                         onClick={handleConfirmYes}
                       >
                         Có
