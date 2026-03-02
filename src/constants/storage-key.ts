@@ -5,7 +5,8 @@ const storageKeys = {
   ACTIVE_GROUP_TAB: 'active_group_tab',
   PREVIOUS_PATH: 'previous_path',
   USER_KIND: 'user_kind',
-  PATH_NO_LOGIN: 'path_no_login'
+  PATH_NO_LOGIN: 'path_no_login',
+  X_CLIENT_TYPE: 'X-Client-Type'
 };
 
 export default storageKeys;

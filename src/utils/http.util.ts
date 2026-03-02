@@ -167,8 +167,15 @@ export const sendRequest = async <T>(
   apiConfig: ApiConfig,
   payload: Payload = {}
 ): Promise<T> => {
-  let { baseUrl, headers, method, ignoreAuth, isRequiredTenantId, isUpload } =
-    apiConfig;
+  let {
+    baseUrl,
+    headers,
+    method,
+    ignoreAuth,
+    isRequiredTenantId,
+    isRequiredXClientType,
+    isUpload
+  } = apiConfig;
 
   const {
     params = {},
@@ -180,6 +187,7 @@ export const sendRequest = async <T>(
 
   let accessToken: string | null = '';
   let tenantId: string | null | undefined = '';
+  let clientType: string | null | undefined = '';
 
   if (!ignoreAuth) {
     if (isClient()) {
@@ -198,6 +206,15 @@ export const sendRequest = async <T>(
     }
   }
 
+  if (isRequiredXClientType) {
+    if (isClient()) {
+      clientType =
+        getData(storageKeys.X_CLIENT_TYPE) || envConfig.NEXT_PUBLIC_CLIENT_TYPE;
+    } else {
+      clientType = envConfig.NEXT_PUBLIC_CLIENT_TYPE;
+    }
+  }
+
   const baseHeader: Record<string, string> = { ...headers };
 
   if (!ignoreAuth && accessToken) {
@@ -210,6 +227,10 @@ export const sendRequest = async <T>(
 
   if (tenantId) {
     baseHeader[storageKeys.X_TENANT] = tenantId;
+  }
+
+  if (clientType) {
+    baseHeader[storageKeys.X_CLIENT_TYPE] = clientType;
   }
 
   Object.entries(pathParams).forEach(([key, value]) => {
