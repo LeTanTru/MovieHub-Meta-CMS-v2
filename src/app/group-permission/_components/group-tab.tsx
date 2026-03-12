@@ -16,12 +16,13 @@ import {
   TAB_GROUP_PERMISSION,
   TAB_PERMISSION
 } from '@/constants';
-import { useIsMounted } from '@/hooks';
+import { useIsMounted, useQueryParams } from '@/hooks';
 
 export default function GroupTab() {
   const [activeTab, setActiveTab] = useState(
     getData(storageKeys.ACTIVE_GROUP_TAB) || TAB_GROUP
   );
+  const { setQueryParams } = useQueryParams();
   const isMounted = useIsMounted();
 
   const tabs = [
@@ -44,12 +45,17 @@ export default function GroupTab() {
     [TAB_PERMISSION]: 'Quyền'
   };
 
+  const handleTabChange = (activeTab: string) => {
+    setQueryParams({});
+    setActiveTab(activeTab);
+  };
+
   if (!isMounted) return null;
 
   return (
     <PageWrapper breadcrumbs={[{ label: groupMaps[activeTab] }]}>
       <div className='rounded-lg bg-white'>
-        <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
+        <Tabs defaultValue={activeTab} onValueChange={handleTabChange}>
           <TabsList className='relative h-auto w-full justify-start gap-0.5 bg-transparent p-4 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-zinc-100'>
             {tabs.map((tab) => (
               <TabsTrigger

@@ -46,3 +46,6 @@ export const INITIAL_AUTO_COMPLETE_SIZE = 10;
 export const TAB_GROUP = 'group-list';
 export const TAB_GROUP_PERMISSION = 'group-permission-list';
 export const TAB_PERMISSION = 'permission-list';
+
+export const EMPTY_OBJECT = {};
+export const EMPTY_ARRAY = [];

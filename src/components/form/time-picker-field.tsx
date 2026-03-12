@@ -9,7 +9,8 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel
+  FormLabel,
+  FormMessage
 } from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
@@ -120,7 +121,7 @@ export default function TimePickerField<T extends FieldValues>({
           >
             {label && (
               <FormLabel
-                className={cn('ml-2 gap-1.5', labelClassName, {
+                className={cn('ml-2', labelClassName, {
                   'opacity-50 select-none': disabled
                 })}
               >
@@ -173,10 +174,10 @@ export default function TimePickerField<T extends FieldValues>({
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent
+                sideOffset={8}
                 className='w-auto p-0'
                 side='bottom'
                 align='start'
-                sideOffset={8}
               >
                 <div className='flex flex-col divide-y sm:h-62.5 sm:flex-row sm:divide-x sm:divide-y-0'>
                   {showHour && (
@@ -285,8 +286,8 @@ export default function TimePickerField<T extends FieldValues>({
               </PopoverContent>
             </Popover>
             {fieldState.error && (
-              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
-                {fieldState.error.message}
+              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                <FormMessage className='leading-5.5' />
               </div>
             )}
           </FormItem>

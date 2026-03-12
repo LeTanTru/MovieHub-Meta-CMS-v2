@@ -1,0 +1,70 @@
+# Stage 1: Dependencies
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+
+# Cài tất cả deps kể cả devDependencies để build
+RUN yarn install --frozen-lockfile --prefer-offline && yarn cache clean
+
+# Stage 2: Builder
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# nhận biến từ docker build --build-arg
+ARG NEXT_PUBLIC_NODE_ENV
+ARG NEXT_PUBLIC_API_ENDPOINT_URL
+ARG NEXT_PUBLIC_API_MEDIA_URL
+ARG NEXT_PUBLIC_APP_USERNAME
+ARG NEXT_PUBLIC_APP_PASSWORD
+ARG NEXT_PUBLIC_URL
+ARG NEXT_PUBLIC_TINYMCE_URL
+ARG NEXT_PUBLIC_GRANT_TYPE
+ARG NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
+ARG NEXT_PUBLIC_MEDIA_HOST
+ARG NEXT_PUBLIC_CLIENT_TYPE
+
+# expose env cho next build
+ENV NEXT_PUBLIC_NODE_ENV=$NEXT_PUBLIC_NODE_ENV
+ENV NEXT_PUBLIC_API_ENDPOINT_URL=$NEXT_PUBLIC_API_ENDPOINT_URL
+ENV NEXT_PUBLIC_API_MEDIA_URL=$NEXT_PUBLIC_API_MEDIA_URL
+ENV NEXT_PUBLIC_APP_USERNAME=$NEXT_PUBLIC_APP_USERNAME
+ENV NEXT_PUBLIC_APP_PASSWORD=$NEXT_PUBLIC_APP_PASSWORD
+ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
+ENV NEXT_PUBLIC_TINYMCE_URL=$NEXT_PUBLIC_TINYMCE_URL
+ENV NEXT_PUBLIC_GRANT_TYPE=$NEXT_PUBLIC_GRANT_TYPE
+ENV NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=$NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
+ENV NEXT_PUBLIC_MEDIA_HOST=$NEXT_PUBLIC_MEDIA_HOST
+ENV NEXT_PUBLIC_CLIENT_TYPE=$NEXT_PUBLIC_CLIENT_TYPE
+
+# Bỏ qua husky (không có .git trong container)
+RUN yarn config set ignore-scripts true && yarn build
+
+# Stage 3: Runner
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3002
+
+ENV PORT=3002
+ENV HOSTNAME=0.0.0.0
+
+CMD ["node", "server.js"]

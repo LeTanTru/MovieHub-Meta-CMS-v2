@@ -118,7 +118,7 @@ export default function UploadVideoField<T extends FieldValues>({
       {label && (
         <FormLabel
           className={cn(
-            'ml-2 flex items-center gap-1',
+            'ml-2',
             error && !uploading && 'text-destructive',
             className
           )}
@@ -130,7 +130,7 @@ export default function UploadVideoField<T extends FieldValues>({
 
       <div
         className={cn(
-          'bg-muted/30 hover:bg-accent/50 relative mb-0 flex cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear',
+          'bg-muted/30 hover:bg-accent/50 relative mb-0 flex min-h-17 cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear',
           isDragging && 'border-primary bg-primary/10',
           {
             'border border-solid border-red-500': !!error && !uploading
@@ -208,8 +208,12 @@ export default function UploadVideoField<T extends FieldValues>({
         )}
       </div>
 
-      {error?.message && !uploading && (
-        <p className='text-destructive ml-2 text-sm'>{error.message}</p>
+      {error?.message && (
+        <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+          <p className='text-destructive text-sm leading-5.5'>
+            {error.message}
+          </p>
+        </div>
       )}
     </div>
   );

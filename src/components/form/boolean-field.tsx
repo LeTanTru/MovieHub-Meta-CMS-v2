@@ -38,14 +38,14 @@ export default function BooleanField<T extends FieldValues>({
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem
           className={cn('flex h-full items-center space-x-2', className)}
         >
           {label && (
             <FormLabel
               htmlFor={id}
-              className={cn('ml-2 cursor-pointer gap-1.5', labelClassName, {
+              className={cn('ml-2 cursor-pointer', labelClassName, {
                 'opacity-50 select-none': disabled
               })}
             >
@@ -61,7 +61,7 @@ export default function BooleanField<T extends FieldValues>({
                 disabled={disabled}
                 checked={field.value}
                 onCheckedChange={field.onChange}
-                className='peer data-[state=checked]:bg-main-color absolute inset-0 h-[inherit] w-auto cursor-pointer data-[state=unchecked]:bg-gray-300 [&_span]:z-10 [&_span]:size-5.5 [&_span]:transition-transform [&_span]:duration-300 [&_span]:ease-[cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:translate-x-[calc(100%+7px)] [&_span]:data-[state=checked]:rtl:-translate-x-full'
+                className='peer data-[state=checked]:bg-main-color absolute inset-0 h-[inherit] w-auto cursor-pointer focus-visible:ring-0 data-[state=unchecked]:bg-gray-300 [&_span]:z-10 [&_span]:size-5.5 [&_span]:transition-transform [&_span]:duration-300 [&_span]:ease-[cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:translate-x-[calc(100%+7px)] [&_span]:data-[state=checked]:rtl:-translate-x-full'
               />
               <span className='relative flex min-w-7 items-center justify-center text-center text-white transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] peer-data-[state=checked]:invisible peer-data-[state=unchecked]:translate-x-[calc(100%-5px)] peer-data-[state=unchecked]:rtl:-translate-x-full'>
                 <X size={16} aria-hidden='true' />
@@ -72,7 +72,11 @@ export default function BooleanField<T extends FieldValues>({
             </div>
           </FormControl>
 
-          <FormMessage />
+          {fieldState.error && (
+            <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+              <FormMessage className='leading-5.5' />
+            </div>
+          )}
         </FormItem>
       )}
     />

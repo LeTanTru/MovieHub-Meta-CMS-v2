@@ -13,15 +13,21 @@ import {
   type SVGProps,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState
 } from 'react';
 import { useImageStatus, useIsMounted } from '@/hooks';
 import { createPortal } from 'react-dom';
+import { isMobileDevice } from '@/utils';
 
 type ImageFieldProps = {
   src?: string;
   alt?: string;
+  size?: number;
+  // Format: [{ breakpoint: 640, size: 220 }, { breakpoint: 1024, size: 320 }]
+  // Base uses `size`; matching breakpoints override it
+  breakpoints?: Array<{ breakpoint: number; size: number }>;
   width?: number;
   height?: number;
   aspect?: number;
@@ -44,10 +50,12 @@ type ImageFieldProps = {
 export default function ImageField({
   src,
   alt = 'Image',
+  size,
+  breakpoints,
   width,
   height,
   aspect = 1,
-  previewAspect = 16 / 9,
+  previewAspect = 1 / 1,
   previewSize = 500,
   disablePreview = false,
   originalSize = false,
@@ -64,10 +72,40 @@ export default function ImageField({
   const isMounted = useIsMounted();
   const [open, setOpen] = useState<boolean>(false);
   const [scale, setScale] = useState<number>(1);
+  const [viewportWidth, setViewportWidth] = useState<number>(0);
 
   const { isError: imageError } = useImageStatus(src);
 
   const previewRef = useRef<HTMLDivElement | null>(null);
+
+  const responsiveRules = useMemo(() => {
+    if (!breakpoints?.length)
+      return [] as Array<{ breakpoint: number; size: number }>;
+
+    return [...breakpoints]
+      .filter(
+        (rule) =>
+          typeof rule?.breakpoint === 'number' && typeof rule?.size === 'number'
+      )
+      .sort((a, b) => a.breakpoint - b.breakpoint);
+  }, [breakpoints]);
+
+  const resolvedSize = useMemo(() => {
+    if (!responsiveRules.length || viewportWidth <= 0 || size === undefined) {
+      return size;
+    }
+
+    let next = size;
+    for (const rule of responsiveRules) {
+      if (viewportWidth >= rule.breakpoint) {
+        next = rule.size;
+      }
+    }
+    return next;
+  }, [responsiveRules, size, viewportWidth]);
+
+  const resolvedWidth = width ?? resolvedSize;
+  const resolvedHeight = height ?? resolvedSize;
 
   const shouldDisablePreview = disablePreview || !src || imageError;
 
@@ -101,6 +139,28 @@ export default function ImageField({
 
     return () => node.removeEventListener('wheel', handleWheel);
   }, [handleWheel, open]);
+
+  // Lock body scroll without layout shift when modal opens
+  useEffect(() => {
+    if (!open) return;
+
+    if (isMobileDevice()) document.body.classList.add('body-lock', 'mobile');
+    else document.body.classList.add('body-lock');
+    return () => {
+      document.body.classList.remove('body-lock');
+      document.body.classList.remove('body-lock', 'mobile');
+    };
+  }, [open]);
+
+  useEffect(() => {
+    const handleResize = () => setViewportWidth(window.innerWidth);
+    handleResize();
+
+    if (!responsiveRules.length) return;
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [responsiveRules.length]);
 
   if (!isMounted) return null;
 
@@ -150,7 +210,7 @@ export default function ImageField({
             />
           ) : aspect ? (
             <AspectRatio
-              style={{ width, height }}
+              style={{ width: resolvedWidth, height: resolvedHeight }}
               ratio={aspect}
               className='h-full w-full'
             >
@@ -159,6 +219,7 @@ export default function ImageField({
                 alt={alt}
                 fill
                 className={cn('rounded object-cover', imageClassName)}
+                sizes='(max-width: 768px) 100vw, 50vw'
                 unoptimized
               />
             </AspectRatio>
@@ -166,12 +227,13 @@ export default function ImageField({
             <Image
               src={src}
               alt={alt}
-              width={width}
-              height={height}
+              width={resolvedWidth}
+              height={resolvedHeight}
               className={cn(
                 'rounded object-cover',
                 {
-                  'h-full w-full': !imageClassName && !width && !height
+                  'h-full w-full':
+                    !imageClassName && !resolvedWidth && !resolvedHeight
                 },
                 imageClassName
               )}
@@ -195,7 +257,7 @@ export default function ImageField({
           <AnimatePresence>
             {open && !shouldDisablePreview && (
               <m.div
-                className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
+                className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -267,6 +329,7 @@ export default function ImageField({
                             transform: `scale(${scale})`,
                             transformOrigin: 'center center'
                           }}
+                          sizes='(max-width: 768px) 100vw, 50vw'
                           unoptimized
                         />
                       </div>

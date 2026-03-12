@@ -20,7 +20,7 @@ export default function Col({
   return (
     <div
       style={{ width }}
-      className={cn('my-1 flex flex-col px-2', className)}
+      className={cn('mb-1 flex flex-col px-2', className)}
       {...rest}
     >
       {children}
