@@ -40,9 +40,7 @@ export default function ColorPickerField<T extends FieldValues>({
         return (
           <FormItem className={className}>
             {label && (
-              <FormLabel
-                className={cn('relative ml-2 gap-1.5', labelClassName)}
-              >
+              <FormLabel className={cn('ml-2', labelClassName)}>
                 {label}
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
@@ -63,8 +61,8 @@ export default function ColorPickerField<T extends FieldValues>({
             </div>
             {description && <FormDescription>{description}</FormDescription>}
             {fieldState.error && (
-              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
-                <FormMessage />
+              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                <FormMessage className='leading-5.5' />
               </div>
             )}
           </FormItem>

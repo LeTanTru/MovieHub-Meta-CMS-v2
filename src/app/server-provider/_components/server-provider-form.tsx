@@ -1,6 +1,6 @@
 'use client';
 
-import { Col, FieldSet, InputField, NumberField, Row } from '@/components/form';
+import { Col, FieldSet, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
@@ -174,11 +174,12 @@ export default function ServerProviderForm({ queryKey }: { queryKey: string }) {
                   />
                 </Col>
                 <Col>
-                  <NumberField
+                  <InputField
                     control={form.control}
                     name='maxTenant'
                     label='Số lượng tối đa'
                     placeholder='Số lượng tối đa'
+                    type='number'
                     required
                   />
                 </Col>

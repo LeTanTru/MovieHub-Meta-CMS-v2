@@ -137,6 +137,20 @@ export default function BusinessList({ queryKey }: { queryKey: string }) {
       )
     },
     {
+      title: '#',
+      dataIndex: 'bannerPath',
+      width: 80,
+      align: 'center',
+      render: (value) => (
+        <ImageField
+          disablePreview={!value}
+          src={renderImageUrl(value)}
+          aspect={16 / 9}
+          previewAspect={16 / 9}
+        />
+      )
+    },
+    {
       title: 'Tên doanh nghiệp',
       dataIndex: 'name',
       render: (value) => <span>{value ?? '---'}</span>

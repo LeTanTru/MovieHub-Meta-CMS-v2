@@ -11,18 +11,18 @@ import {
 import { Metadata } from 'next';
 import { PermissionGuard } from '@/components/permission-guard';
 
-const inter = Be_Vietnam_Pro({
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+const beVietnamPro = Be_Vietnam_Pro({
+  weight: ['300', '400', '500', '600', '700', '800'],
   subsets: ['latin'],
   variable: '--font-be-vietnam-pro',
   display: 'swap',
-  preload: false
+  preload: true
 });
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | MovieHub CMS',
-    default: 'MovieHub CMS'
+    template: '%s | Meta MovieHub CMS',
+    default: 'Meta MovieHub CMS'
   }
 };
 
@@ -32,8 +32,10 @@ export default async function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang={'vi'}>
-      <body className={`${inter.variable} ${inter.className} antialiased`}>
+    <html suppressHydrationWarning lang='vi'>
+      <body
+        className={`${beVietnamPro.variable} ${beVietnamPro.className} antialiased`}
+      >
         <ThemeProvider
           attribute='class'
           defaultTheme='light'

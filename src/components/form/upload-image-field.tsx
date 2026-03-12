@@ -112,6 +112,9 @@ type UploadImageFieldProps<T extends FieldValues> = {
   required?: boolean;
   labelClassName?: string;
   className?: string;
+  imageClassName?: string;
+  previewClassName?: string;
+  imagePreviewClassName?: string;
   size?: number;
   loading?: boolean;
   aspect?: number;
@@ -132,6 +135,9 @@ export default function UploadImageField<T extends FieldValues>({
   required,
   labelClassName,
   className,
+  imageClassName,
+  previewClassName,
+  imagePreviewClassName,
   size = 70,
   loading,
   aspect = 1,
@@ -190,6 +196,8 @@ export default function UploadImageField<T extends FieldValues>({
 
     if (shouldCrop && croppedAreaPixels) {
       blob = await getCroppedImg(previewUrl, croppedAreaPixels, outputType);
+    } else if (files[0]?.file instanceof File) {
+      blob = files[0].file;
     } else {
       const image = await createImage(previewUrl);
       const canvas = document.createElement('canvas');
@@ -247,12 +255,11 @@ export default function UploadImageField<T extends FieldValues>({
   }, [fileId]);
 
   return (
-    <div className='space-y-2'>
-      <div className='relative flex flex-col items-center justify-center gap-y-5'>
+    <div className='space-y-1'>
+      <div className='relative flex flex-col items-center justify-center gap-2'>
         {label && (
           <FormLabel
             className={cn(
-              'ml-0 gap-1.5',
               {
                 'text-destructive': error?.message
               },
@@ -298,6 +305,9 @@ export default function UploadImageField<T extends FieldValues>({
                 width={keepOriginalSize ? undefined : size * aspect}
                 height={keepOriginalSize ? undefined : size}
                 originalSize={keepOriginalSize}
+                imageClassName={imageClassName}
+                previewClassName={previewClassName}
+                imagePreviewClassName={imagePreviewClassName}
               />
             ) : loading && !showCrop ? (
               <CircleLoading className='stroke-main-color dark:stroke-white' />
@@ -337,9 +347,11 @@ export default function UploadImageField<T extends FieldValues>({
           </label>
         </div>
         {error?.message && (
-          <p className='text-destructive animate-in fade-in absolute -bottom-6 text-sm'>
-            {error.message}
-          </p>
+          <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+            <p className='text-destructive text-sm leading-5.5'>
+              {error.message}
+            </p>
+          </div>
         )}
       </div>
 
@@ -432,8 +444,8 @@ export default function UploadImageField<T extends FieldValues>({
               <div className='flex w-full justify-between'>
                 <div className='flex items-center gap-4'>
                   <label
-                    id='crop-image'
                     className='flex cursor-pointer items-center gap-2'
+                    htmlFor='crop-image'
                   >
                     <Checkbox
                       id='crop-image'
@@ -453,8 +465,8 @@ export default function UploadImageField<T extends FieldValues>({
                   </label>
                   {originalSize && (
                     <label
-                      id='keep-original-size'
                       className='flex cursor-pointer items-center gap-2'
+                      htmlFor='keep-original-size'
                     >
                       <Checkbox
                         id='keep-original-size'
@@ -480,7 +492,7 @@ export default function UploadImageField<T extends FieldValues>({
                     type='button'
                     variant='outline'
                     size='icon'
-                    className='border-destructive text-destructive hover:border-destructive/80 hover:text-destructive/80! -my-1 w-25'
+                    className='hover:border-destructive/80 text-destructive border-destructive dark:border-destructive dark:text-destructive dark:hover:border-destructive/80 hover:text-destructive/80 dark:hover:text-destructive/80 -my-1 w-25'
                     onClick={() => setDialogOpen(false)}
                   >
                     Đóng
