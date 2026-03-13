@@ -74,27 +74,28 @@ export default function ProfileForm() {
     values: ProfileBodyType,
     form: UseFormReturn<ProfileBodyType>
   ) => {
-    await imageManager.handleSubmit();
-
-    await updateProfileMutate(
-      { ...values, avatarPath: imageManager.currentUrl },
-      {
-        onSuccess: (res) => {
-          if (res.result) {
-            notify.success('Cập nhật hồ sơ thành công');
-          } else {
-            const code = res.code;
-            if (code && profileErrorMaps[code])
-              applyFormErrors(form, code, profileErrorMaps);
-            else notify.error('Cập nhật hồ sơ thất bại');
+    await Promise.all([
+      imageManager.handleSubmit(),
+      updateProfileMutate(
+        { ...values, avatarPath: imageManager.currentUrl },
+        {
+          onSuccess: (res) => {
+            if (res.result) {
+              notify.success('Cập nhật hồ sơ thành công');
+            } else {
+              const code = res.code;
+              if (code && profileErrorMaps[code])
+                applyFormErrors(form, code, profileErrorMaps);
+              else notify.error('Cập nhật hồ sơ thất bại');
+            }
+          },
+          onError: (error) => {
+            logger.error('Error while updating profile: ', error);
+            notify.error('Cập nhật hồ sơ thất bại');
           }
-        },
-        onError: (error) => {
-          logger.error('Error while updating profile: ', error);
-          notify.error('Cập nhật hồ sơ thất bại');
         }
-      }
-    );
+      )
+    ]);
   };
 
   const handleCancel = async () => {

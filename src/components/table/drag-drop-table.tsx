@@ -30,7 +30,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Grip } from 'lucide-react';
-import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { CircleLoading } from '@/components/loading';
 
 function getValueByPath<T extends Record<string, any>>(
@@ -275,21 +275,19 @@ export default function DragDropTable<T extends Record<any, any>>({
             </Table>
           </DndContext>
         </div>
-        <LazyMotion features={domAnimation} strict>
-          <AnimatePresence>
-            {loading && (
-              <m.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease: 'linear' }}
-                className='absolute inset-0 top-[55px] z-50 flex items-start justify-center bg-white/70 pt-5'
-              >
-                <CircleLoading className='stroke-main-color size-8' />
-              </m.div>
-            )}
-          </AnimatePresence>
-        </LazyMotion>
+        <AnimatePresence>
+          {loading && (
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'linear' }}
+              className='absolute inset-0 top-[55px] z-50 flex items-start justify-center bg-white/70 pt-5'
+            >
+              <CircleLoading className='stroke-main-color size-8' />
+            </m.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -156,20 +156,21 @@ export default function BusinessForm({ queryKey }: { queryKey: string }) {
     values: BusinessBodyType,
     form: UseFormReturn<BusinessBodyType>
   ) => {
-    await logoImageManager.handleSubmit();
-    await bannerImageManager.handleSubmit();
-
-    await handleSubmit(
-      {
-        ...values,
-        expireDate: convertLocalToUTC(values.expireDate),
-        extDate: convertLocalToUTC(values.extDate),
-        logoPath: logoImageManager.currentUrl,
-        bannerPath: bannerImageManager.currentUrl
-      },
-      form,
-      customerBusinessErrorMaps
-    );
+    await Promise.all([
+      logoImageManager.handleSubmit(),
+      bannerImageManager.handleSubmit(),
+      handleSubmit(
+        {
+          ...values,
+          expireDate: convertLocalToUTC(values.expireDate),
+          extDate: convertLocalToUTC(values.extDate),
+          logoPath: logoImageManager.currentUrl,
+          bannerPath: bannerImageManager.currentUrl
+        },
+        form,
+        customerBusinessErrorMaps
+      )
+    ]);
   };
 
   return (
