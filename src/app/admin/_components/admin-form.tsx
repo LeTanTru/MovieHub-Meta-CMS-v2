@@ -121,17 +121,19 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     values: AccountBodyType,
     form: UseFormReturn<AccountBodyType>
   ) => {
-    await imageManager.handleSubmit();
+    await Promise.all([
+      imageManager.handleSubmit(),
 
-    await handleSubmit(
-      {
-        ...values,
-        avatarPath: imageManager.currentUrl,
-        kind: GROUP_KIND_ADMIN
-      },
-      form,
-      adminErrorMaps
-    );
+      handleSubmit(
+        {
+          ...values,
+          avatarPath: imageManager.currentUrl,
+          kind: GROUP_KIND_ADMIN
+        },
+        form,
+        adminErrorMaps
+      )
+    ]);
   };
 
   return (

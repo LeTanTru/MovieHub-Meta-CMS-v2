@@ -3,13 +3,11 @@ import { Be_Vietnam_Pro } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import NextTopLoader from 'nextjs-toploader';
 import { type ReactNode, Suspense } from 'react';
-import {
-  AppProvider,
-  QueryProvider,
-  ThemeProvider
-} from '@/components/providers';
 import { Metadata } from 'next';
 import { PermissionGuard } from '@/components/permission-guard';
+import { ThemeProvider } from '@/components/providers/theme-provider';
+import { QueryProvider } from '@/components/providers/query-provider';
+import { AppProvider } from '@/components/providers/app-provider';
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['300', '400', '500', '600', '700', '800'],

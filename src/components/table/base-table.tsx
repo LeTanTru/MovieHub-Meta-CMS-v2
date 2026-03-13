@@ -14,7 +14,7 @@ import Image from 'next/image';
 import { emptyData } from '@/assets';
 import { cn } from '@/lib';
 import { CircleLoading } from '@/components/loading';
-import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Pagination } from '@/components/pagination';
 
@@ -192,21 +192,19 @@ export default function BaseTable<T extends Record<any, any>>({
             />
           </div>
         )}
-        <LazyMotion features={domAnimation} strict>
-          <AnimatePresence>
-            {loading && (
-              <m.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease: 'linear' }}
-                className='absolute inset-0 top-[55px] z-50 flex items-start justify-center bg-white/70 pt-5'
-              >
-                <CircleLoading className='stroke-main-color size-8' />
-              </m.div>
-            )}
-          </AnimatePresence>
-        </LazyMotion>
+        <AnimatePresence>
+          {loading && (
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'linear' }}
+              className='absolute inset-0 top-[55px] z-50 flex items-start justify-center bg-white/70 pt-5'
+            >
+              <CircleLoading className='stroke-main-color size-8' />
+            </m.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

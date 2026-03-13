@@ -34,7 +34,7 @@ function buildDefaultValues<S extends FieldValues>(
           break;
         case FieldTypes.SELECT:
         case FieldTypes.MULTI_SELECT:
-        case FieldTypes.AUTOCOMPLETE:
+        case FieldTypes.AUTO_COMPLETE:
           acc[field.key as string] = null;
           break;
         case FieldTypes.DATE:
@@ -135,7 +135,7 @@ export default function SearchForm<S extends FieldValues>({
                     </Col>
                   );
                 }
-                case FieldTypes.AUTOCOMPLETE: {
+                case FieldTypes.AUTO_COMPLETE: {
                   return (
                     <Col
                       key={sf.key as string}

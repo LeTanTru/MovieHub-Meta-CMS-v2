@@ -505,7 +505,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
             case FieldTypes.NUMBER:
               return [key, value ? Number(value) : undefined];
             case FieldTypes.SELECT:
-            case FieldTypes.AUTOCOMPLETE: {
+            case FieldTypes.AUTO_COMPLETE: {
               const option = field.options?.find(
                 (opt: any) => String(opt.value) === String(value)
               );

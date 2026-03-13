@@ -11,7 +11,7 @@ import {
 } from '@/utils';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
-import { LazyMotion, domAnimation, m } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Loader } from 'lucide-react';
 import { useAppLoadingStore, useAuthStore } from '@/store';
 import { route } from '@/routes';
@@ -150,7 +150,7 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
   }
 
   return (
-    <LazyMotion features={domAnimation} strict>
+    <>
       <m.div
         key='content'
         initial={{ opacity: 0 }}
@@ -171,6 +171,6 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
       >
         <Loader className='size-8 animate-spin' />
       </m.div>
-    </LazyMotion>
+    </>
   );
 }

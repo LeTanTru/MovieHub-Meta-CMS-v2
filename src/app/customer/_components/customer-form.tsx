@@ -113,18 +113,19 @@ export default function CustomerForm({ queryKey }: { queryKey: string }) {
     values: CustomerBodyType,
     form: UseFormReturn<CustomerBodyType>
   ) => {
-    await avatarImageManager.handleSubmit();
-    await logoImageManager.handleSubmit();
-
-    await handleSubmit(
-      {
-        ...values,
-        avatarPath: avatarImageManager.currentUrl,
-        logoPath: logoImageManager.currentUrl
-      },
-      form,
-      customerErrorMaps
-    );
+    await Promise.all([
+      avatarImageManager.handleSubmit(),
+      logoImageManager.handleSubmit(),
+      handleSubmit(
+        {
+          ...values,
+          avatarPath: avatarImageManager.currentUrl,
+          logoPath: logoImageManager.currentUrl
+        },
+        form,
+        customerErrorMaps
+      )
+    ]);
   };
 
   return (

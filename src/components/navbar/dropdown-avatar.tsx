@@ -16,7 +16,7 @@ import {
   renderImageUrl,
   setData
 } from '@/utils';
-import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { ChevronDown, LogOut, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -101,36 +101,34 @@ export default function DropdownAvatar() {
         />
         <ChevronDown className='size-5' />
       </div>
-      <LazyMotion features={domAnimation} strict>
-        <AnimatePresence>
-          {open && (
-            <m.div
-              initial={{ scale: 0.5, transformOrigin: '75% -20%' }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-              transition={{ duration: 0.1, ease: 'linear' }}
-              className='absolute top-full right-0 mt-4 w-45 rounded-md bg-white shadow-[0px_0px_10px_8px] shadow-gray-200'
-            >
-              <div className='z-2 before:absolute before:-top-4 before:left-0 before:h-4 before:w-full before:bg-transparent'></div>
-              <div className='absolute -top-2 right-9 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent'></div>
-              <List className='flex flex-col gap-y-2 p-1'>
-                <ListItem
-                  onClick={() => handleProfileClick()}
-                  className='flex w-full cursor-pointer items-center gap-2 rounded-md bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
-                >
-                  <User className='size-5' /> Hồ sơ
-                </ListItem>
-                <ListItem
-                  className='flex w-full cursor-pointer items-center gap-2 rounded-md bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
-                  onClick={handleLogout}
-                >
-                  <LogOut className='size-5' /> Đăng xuất
-                </ListItem>
-              </List>
-            </m.div>
-          )}
-        </AnimatePresence>
-      </LazyMotion>
+      <AnimatePresence>
+        {open && (
+          <m.div
+            initial={{ scale: 0.5, transformOrigin: '75% -20%' }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
+            transition={{ duration: 0.1, ease: 'linear' }}
+            className='absolute top-full right-0 mt-4 w-45 rounded-md bg-white shadow-[0px_0px_10px_8px] shadow-gray-200'
+          >
+            <div className='z-2 before:absolute before:-top-4 before:left-0 before:h-4 before:w-full before:bg-transparent'></div>
+            <div className='absolute -top-2 right-9 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent'></div>
+            <List className='flex flex-col gap-y-2 p-1'>
+              <ListItem
+                onClick={() => handleProfileClick()}
+                className='flex w-full cursor-pointer items-center gap-2 rounded-md bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
+              >
+                <User className='size-5' /> Hồ sơ
+              </ListItem>
+              <ListItem
+                className='flex w-full cursor-pointer items-center gap-2 rounded-md bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
+                onClick={handleLogout}
+              >
+                <LogOut className='size-5' /> Đăng xuất
+              </ListItem>
+            </List>
+          </m.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
