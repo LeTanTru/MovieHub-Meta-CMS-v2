@@ -113,7 +113,7 @@ jobs:
                 title: $title,
                 color: 3066993,
                 fields: [
-                  { name: "📦 Project", value: "fe-moviehub", inline: true },
+                  { name: "📦 Project", value: "meta-moviehub", inline: true },
                   { name: "🌿 Branch",  value: $branch,       inline: true },
                   { name: "👤 Author",  value: $actor,        inline: true },
                   { name: "📝 Commit",  value: ("[`\($sha)`](\($commit_url))"), inline: false },
